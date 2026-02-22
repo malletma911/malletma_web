@@ -1,3 +1,3 @@
 export default {
-  base: '/malletma_web/',
+  base: process.env.VITE_BASE ?? '/',
 }
