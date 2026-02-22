@@ -5,6 +5,11 @@ import { setupCounter } from './counter.js'
 
 document.querySelector('#app').innerHTML = `
   <div>
+    <div style="position:fixed;top:1rem;right:1rem;">
+      <a href="/api/auth/logout">
+        <button type="button">Logout</button>
+      </a>
+    </div>
     <a href="https://vite.dev" target="_blank">
       <img src="${viteLogo}" class="logo" alt="Vite logo" />
     </a>
