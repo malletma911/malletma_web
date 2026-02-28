@@ -3,15 +3,15 @@ import { getSupabase } from '../../lib/supabase.js'
 
 export const config = { runtime: 'nodejs' }
 
-export default async function handler(request) {
-  const url = new URL(request.url)
+export default async function handler(req, res) {
+  const url = new URL(req.url, `https://${req.headers.host}`)
   const code = url.searchParams.get('code')
-  if (!code) return new Response('Missing code', { status: 400 })
+  if (!code) return res.status(400).send('Missing code')
 
   // Benutzer aus Session-Cookie lesen
-  const cookieHeader = request.headers.get('cookie') || ''
+  const cookieHeader = req.headers['cookie'] || ''
   const sessionCookie = cookieHeader.split(';').find(c => c.trim().startsWith('session='))
-  if (!sessionCookie) return Response.redirect(new URL('/api/auth/login', request.url))
+  if (!sessionCookie) return res.redirect('/api/auth/login')
 
   const sessionToken = sessionCookie.trim().slice('session='.length)
   const secret = new TextEncoder().encode(process.env.AUTH0_SECRET)
@@ -21,7 +21,7 @@ export default async function handler(request) {
     const { payload } = await jwtVerify(sessionToken, secret)
     email = payload.email
   } catch {
-    return Response.redirect(new URL('/api/auth/login', request.url))
+    return res.redirect('/api/auth/login')
   }
 
   // Code gegen Strava-Tokens tauschen
@@ -37,7 +37,7 @@ export default async function handler(request) {
   })
 
   const tokens = await tokenRes.json()
-  if (!tokenRes.ok) return new Response(JSON.stringify(tokens), { status: 401, headers: { 'content-type': 'application/json' } })
+  if (!tokenRes.ok) return res.status(401).json(tokens)
 
   // Benutzer und Token in Supabase speichern
   const supabase = getSupabase()
@@ -52,5 +52,5 @@ export default async function handler(request) {
     expires_at: new Date(tokens.expires_at * 1000).toISOString(),
   }, { onConflict: 'user_email,provider' })
 
-  return Response.redirect(new URL('/', request.url))
+  return res.redirect('/')
 }
