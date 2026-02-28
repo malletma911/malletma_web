@@ -1,24 +1,12 @@
-import { jwtVerify } from 'jose'
+import { getSession } from '../../lib/session.js'
 import { getSupabase } from '../../lib/supabase.js'
 
 export const config = { runtime: 'nodejs' }
 
 export default async function handler(req, res) {
-  // Session lesen
-  const cookieHeader = req.headers['cookie'] || ''
-  const sessionCookie = cookieHeader.split(';').find(c => c.trim().startsWith('session='))
-  if (!sessionCookie) return res.status(401).json({ error: 'Nicht eingeloggt' })
-
-  const sessionToken = sessionCookie.trim().slice('session='.length)
-  const secret = new TextEncoder().encode(process.env.AUTH0_SECRET)
-
-  let email
-  try {
-    const { payload } = await jwtVerify(sessionToken, secret)
-    email = payload.email
-  } catch {
-    return res.status(401).json({ error: 'Session ungültig' })
-  }
+  const session = await getSession(req)
+  if (!session) return res.status(401).json({ error: 'Nicht eingeloggt' })
+  const { email } = session
 
   // Token aus Supabase laden
   const supabase = getSupabase()

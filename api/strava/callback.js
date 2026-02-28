@@ -1,4 +1,4 @@
-import { jwtVerify } from 'jose'
+import { getSession } from '../../lib/session.js'
 import { getSupabase } from '../../lib/supabase.js'
 
 export const config = { runtime: 'nodejs' }
@@ -8,21 +8,9 @@ export default async function handler(req, res) {
   const code = url.searchParams.get('code')
   if (!code) return res.status(400).send('Missing code')
 
-  // Benutzer aus Session-Cookie lesen
-  const cookieHeader = req.headers['cookie'] || ''
-  const sessionCookie = cookieHeader.split(';').find(c => c.trim().startsWith('session='))
-  if (!sessionCookie) return res.redirect('/api/auth/login')
-
-  const sessionToken = sessionCookie.trim().slice('session='.length)
-  const secret = new TextEncoder().encode(process.env.AUTH0_SECRET)
-
-  let email
-  try {
-    const { payload } = await jwtVerify(sessionToken, secret)
-    email = payload.email
-  } catch {
-    return res.redirect('/api/auth/login')
-  }
+  const session = await getSession(req)
+  if (!session) return res.redirect('/api/auth/login')
+  const { email } = session
 
   // Code gegen Strava-Tokens tauschen
   const tokenRes = await fetch('https://www.strava.com/oauth/token', {
