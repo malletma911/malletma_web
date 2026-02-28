@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { getSupabase } from '@/lib/supabase'
 import EventCountdown from '@/components/event-countdown'
 import EventVisuals from '@/components/event-visuals'
-import { MSR_ROUTE, MSR_ELEVATION, VATTERN_ROUTE, VATTERN_ELEVATION } from '@/lib/event-data'
+import { MSR_ROUTE, MSR_ELEVATION, VATTERN_ROUTE, VATTERN_ELEVATION, LETAPE_ROUTE, LETAPE_ELEVATION } from '@/lib/event-data'
 
 interface EventRow {
   id: string
@@ -49,30 +49,39 @@ const eventMeta: Record<string, {
   route: [number,number][],
   elevation: {d:number,e:number}[],
   color: string,
-  mapColor: string,
+  textClass: string,
+  dotClass: string,
   startTime: string,
   gradient: string,
 }> = {
   'Mecklenburger Seen Runde 300': {
     route: MSR_ROUTE,
     elevation: MSR_ELEVATION,
-    color: '#60a5fa',       // blue-400
-    mapColor: '#60a5fa',
+    color: '#60a5fa',
+    textClass: 'text-blue-400',
+    dotClass: 'bg-blue-400',
     startTime: '06:20 Uhr',
     gradient: 'from-blue-600/20 via-blue-900/10 to-transparent',
   },
   'Vätternrundan 315': {
     route: VATTERN_ROUTE,
     elevation: VATTERN_ELEVATION,
-    color: '#facc15',       // yellow-400
-    mapColor: '#facc15',
+    color: '#facc15',
+    textClass: 'text-yellow-400',
+    dotClass: 'bg-yellow-400',
     startTime: '04:56 Uhr',
     gradient: 'from-yellow-500/20 via-yellow-900/10 to-transparent',
   },
+  "L'Étape Denmark by Tour de France": {
+    route: LETAPE_ROUTE,
+    elevation: LETAPE_ELEVATION,
+    color: '#4ade80',
+    textClass: 'text-green-400',
+    dotClass: 'bg-green-400',
+    startTime: '',
+    gradient: 'from-green-600/20 via-green-900/10 to-transparent',
+  },
 }
-
-const dotColors = ['bg-blue-400','bg-yellow-400','bg-green-400','bg-orange-400','bg-purple-400']
-const textColors = ['text-blue-400','text-yellow-400','text-green-400','text-orange-400','text-purple-400']
 
 export default async function EventsPage() {
   const events = await getEvents()
@@ -119,24 +128,28 @@ export default async function EventsPage() {
                 {upcoming.map((event, i) => {
                   const date = new Date(event.date)
                   const meta = eventMeta[event.name]
+                  const fallbackDots = ['bg-blue-400','bg-yellow-400','bg-green-400','bg-orange-400']
+                  const fallbackText = ['text-blue-400','text-yellow-400','text-green-400','text-orange-400']
+                  const dotClass = meta?.dotClass ?? fallbackDots[i % fallbackDots.length]
+                  const textClass = meta?.textClass ?? fallbackText[i % fallbackText.length]
                   return (
                     <div key={event.id} className={`flex items-start gap-4 ${i < upcoming.length - 1 ? 'pb-6' : ''}`}>
-                      <div className={`mt-1.5 w-3.5 h-3.5 rounded-full flex-shrink-0 ${dotColors[i % dotColors.length]} ring-2 ring-background z-10`} />
+                      <div className={`mt-1.5 w-3.5 h-3.5 rounded-full flex-shrink-0 ${dotClass} ring-2 ring-background z-10`} />
                       <div className="flex-1 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4 min-w-0">
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`text-sm font-bold ${textColors[i % textColors.length]}`}>
+                            <span className={`text-sm font-bold ${textClass}`}>
                               {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
                             </span>
                             {event.country && <span className="text-sm">{countryFlags[event.country]}</span>}
                             <span className="font-bold text-foreground text-sm">{event.name}</span>
                           </div>
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            {[event.location, event.distance_km ? `${event.distance_km} km` : null, meta?.startTime].filter(Boolean).join(' · ')}
+                            {[event.location, event.distance_km ? `${event.distance_km} km` : null, meta?.startTime || null].filter(Boolean).join(' · ')}
                           </p>
                         </div>
                         {event.elevation_m && (
-                          <span className={`text-sm font-semibold flex-shrink-0 ${textColors[i % textColors.length]}`}>
+                          <span className={`text-sm font-semibold flex-shrink-0 ${textClass}`}>
                             ~{event.elevation_m.toLocaleString('de-DE')} Hm
                           </span>
                         )}
@@ -163,13 +176,13 @@ export default async function EventsPage() {
               const diff = difficultyConfig[event.difficulty ?? 'hard']
               const type = typeConfig[event.type ?? 'gran_fondo']
               const meta = eventMeta[event.name]
-              const cardGradients = [
+              const fallbackGradients = [
                 'from-blue-600/20 via-blue-900/10 to-transparent',
                 'from-yellow-500/20 via-yellow-900/10 to-transparent',
-                'from-red-600/20 via-red-900/10 to-transparent',
                 'from-green-600/20 via-green-900/10 to-transparent',
+                'from-orange-600/20 via-orange-900/10 to-transparent',
               ]
-              const gradient = meta?.gradient ?? cardGradients[i % cardGradients.length]
+              const gradient = meta?.gradient ?? fallbackGradients[i % fallbackGradients.length]
               const accentColor = meta?.color ?? '#FC4C02'
 
               return (
