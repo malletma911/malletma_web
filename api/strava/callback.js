@@ -29,7 +29,7 @@ export default async function handler(request) {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
-      client_id: process.env.STRAVA_CLIENT_ID,
+      client_id: Number(process.env.STRAVA_CLIENT_ID),
       client_secret: process.env.STRAVA_CLIENT_SECRET,
       code,
       grant_type: 'authorization_code',
