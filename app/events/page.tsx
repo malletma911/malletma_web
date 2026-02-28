@@ -44,7 +44,7 @@ const typeConfig: Record<string, { label: string; color: string }> = {
   gran_fondo: { label: 'Gran Fondo', color: 'text-primary border-primary/30 bg-primary/10' },
 }
 
-// Pro Event: Karte + Elevation + Farbe + Startzeit
+// Pro Event: Karte + Elevation + Farbe + Startzeit + Wetter
 const eventMeta: Record<string, {
   route: [number,number][],
   elevation: {d:number,e:number}[],
@@ -53,6 +53,7 @@ const eventMeta: Record<string, {
   dotClass: string,
   startTime: string,
   gradient: string,
+  weather: { tempMin: number; tempMax: number; rainDays: number; windKmh: number; sunrise: string; label: string }
 }> = {
   'Mecklenburger Seen Runde 300': {
     route: MSR_ROUTE,
@@ -62,6 +63,8 @@ const eventMeta: Record<string, {
     dotClass: 'bg-blue-400',
     startTime: '06:20 Uhr',
     gradient: 'from-blue-600/20 via-blue-900/10 to-transparent',
+    // Klimadaten: Neustrelitz, Mai — Quelle: DWD Klimanormen 1991–2020
+    weather: { tempMin: 8, tempMax: 19, rainDays: 11, windKmh: 14, sunrise: '05:02', label: 'Mecklenburg, Ende Mai' },
   },
   'Vätternrundan 315': {
     route: VATTERN_ROUTE,
@@ -71,6 +74,8 @@ const eventMeta: Record<string, {
     dotClass: 'bg-yellow-400',
     startTime: '04:56 Uhr',
     gradient: 'from-yellow-500/20 via-yellow-900/10 to-transparent',
+    // Klimadaten: Motala (58°N), Juni — Quelle: SMHI Klimatnormaler 1991–2020
+    weather: { tempMin: 10, tempMax: 21, rainDays: 10, windKmh: 11, sunrise: '03:58', label: 'Mittelschweden, Mitte Juni' },
   },
   "L'Étape Denmark — Hærvejsløbet": {
     route: LETAPE_ROUTE,
@@ -80,6 +85,8 @@ const eventMeta: Record<string, {
     dotClass: 'bg-green-400',
     startTime: '',
     gradient: 'from-green-600/20 via-green-900/10 to-transparent',
+    // Klimadaten: Viborg/Jutland, Juni — Quelle: DMI Klimanormer 1991–2020
+    weather: { tempMin: 10, tempMax: 20, rainDays: 12, windKmh: 19, sunrise: '04:28', label: 'Jütland, Ende Juni' },
   },
 }
 
@@ -257,6 +264,45 @@ export default async function EventsPage() {
                         </div>
                       )}
                     </div>
+
+                    {/* Historische Wetterdaten */}
+                    {meta?.weather && (
+                      <div className="mb-6 bg-black/20 backdrop-blur rounded-2xl p-4">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
+                          Ø Wetter · {meta.weather.label}
+                        </p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">🌡️</span>
+                            <div>
+                              <p className="text-sm font-semibold">{meta.weather.tempMin}° – {meta.weather.tempMax}°C</p>
+                              <p className="text-[10px] text-muted-foreground">Temperatur</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">🌧️</span>
+                            <div>
+                              <p className="text-sm font-semibold">{meta.weather.rainDays} Tage</p>
+                              <p className="text-[10px] text-muted-foreground">Regentage / Monat</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">💨</span>
+                            <div>
+                              <p className="text-sm font-semibold">Ø {meta.weather.windKmh} km/h</p>
+                              <p className="text-[10px] text-muted-foreground">Wind</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">🌅</span>
+                            <div>
+                              <p className="text-sm font-semibold">{meta.weather.sunrise} Uhr</p>
+                              <p className="text-[10px] text-muted-foreground">Sonnenaufgang</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Karte + Höhenprofil */}
                     {meta && (
