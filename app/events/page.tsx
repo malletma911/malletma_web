@@ -80,7 +80,7 @@ export default async function EventsPage() {
 
         {/* Saison-Stats */}
         {upcoming.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 mb-16 max-w-lg">
+          <div className="grid grid-cols-3 gap-3 mb-10 max-w-lg">
             <div className="bg-card border border-border rounded-xl p-4 text-center">
               <p className="text-3xl font-bold text-primary">{upcoming.length}</p>
               <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Events</p>
@@ -92,6 +92,55 @@ export default async function EventsPage() {
             <div className="bg-card border border-border rounded-xl p-4 text-center">
               <p className="text-3xl font-bold text-primary">{countries.length}</p>
               <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Länder</p>
+            </div>
+          </div>
+        )}
+
+        {/* Timeline-Kalender */}
+        {upcoming.length > 0 && (
+          <div className="mb-16 bg-card border border-border rounded-2xl p-6 md:p-8">
+            <p className="text-xs font-semibold tracking-[0.25em] uppercase text-muted-foreground mb-6">Rennsaison 2026</p>
+            <div className="relative">
+              {/* Vertikale Linie */}
+              <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border" />
+              <div className="space-y-0">
+                {upcoming.map((event, i) => {
+                  const date = new Date(event.date)
+                  const dotColors = ['bg-blue-400', 'bg-yellow-400', 'bg-green-400', 'bg-orange-400', 'bg-purple-400']
+                  const textColors = ['text-blue-400', 'text-yellow-400', 'text-green-400', 'text-orange-400', 'text-purple-400']
+                  const dotColor = dotColors[i % dotColors.length]
+                  const textColor = textColors[i % textColors.length]
+                  const isLast = i === upcoming.length - 1
+
+                  return (
+                    <div key={event.id} className={`flex items-start gap-5 ${!isLast ? 'pb-7' : ''}`}>
+                      {/* Dot */}
+                      <div className={`mt-1 w-[15px] h-[15px] rounded-full flex-shrink-0 ${dotColor} ring-2 ring-background z-10`} />
+                      {/* Content */}
+                      <div className="flex-1 flex flex-col md:flex-row md:items-start md:justify-between gap-1 md:gap-4 min-w-0">
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-sm font-bold ${textColor}`}>
+                              {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).replace('.', '.')}
+                            </span>
+                            {event.country && <span className="text-sm">{countryFlags[event.country]}</span>}
+                            <span className="font-bold text-foreground">{event.name}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-0.5">
+                            {[event.location, event.distance_km ? `${event.distance_km} km` : null]
+                              .filter(Boolean).join(' · ')}
+                          </p>
+                        </div>
+                        {event.elevation_m && (
+                          <span className={`text-sm font-semibold flex-shrink-0 ${textColor}`}>
+                            ~{event.elevation_m.toLocaleString('de-DE')} Hm
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
         )}
