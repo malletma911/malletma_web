@@ -1,7 +1,7 @@
 import { jwtVerify } from 'jose'
 import { getSupabase } from '../../lib/supabase.js'
 
-export const config = { runtime: 'edge' }
+export const config = { runtime: 'nodejs' }
 
 export default async function handler(request) {
   const url = new URL(request.url)
