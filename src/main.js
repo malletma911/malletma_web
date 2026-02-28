@@ -17,13 +17,17 @@ document.querySelector('#app').innerHTML = `
   </div>
 `
 
+function esc(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 async function loadActivities() {
   const container = document.getElementById('activities')
   try {
     const res = await fetch('/api/strava/activities')
     if (!res.ok) {
       const err = await res.json()
-      container.innerHTML = `<p>${err.error}</p>`
+      container.innerHTML = `<p>${esc(err.error)}</p>`
       return
     }
     const activities = await res.json()
@@ -33,8 +37,8 @@ async function loadActivities() {
     }
     container.innerHTML = activities.map(a => `
       <div style="border:1px solid #ccc;border-radius:8px;padding:1rem;margin:0.5rem 0;">
-        <strong>${a.name}</strong><br>
-        <span>${a.type} · ${(a.distance / 1000).toFixed(1)} km · ${Math.round(a.moving_time / 60)} min</span><br>
+        <strong>${esc(a.name)}</strong><br>
+        <span>${esc(a.type)} · ${(a.distance / 1000).toFixed(1)} km · ${Math.round(a.moving_time / 60)} min</span><br>
         <small>${new Date(a.start_date).toLocaleDateString('de-DE')}</small>
       </div>
     `).join('')
