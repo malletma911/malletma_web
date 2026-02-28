@@ -72,7 +72,7 @@ const eventMeta: Record<string, {
     startTime: '04:56 Uhr',
     gradient: 'from-yellow-500/20 via-yellow-900/10 to-transparent',
   },
-  "L'Étape Denmark by Tour de France": {
+  "L'Étape Denmark — Hærvejsløbet": {
     route: LETAPE_ROUTE,
     elevation: LETAPE_ELEVATION,
     color: '#4ade80',
