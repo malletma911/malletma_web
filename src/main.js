@@ -1,7 +1,4 @@
 import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -10,19 +7,40 @@ document.querySelector('#app').innerHTML = `
         <button type="button">Logout</button>
       </a>
     </div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
+    <h1>Meine Aktivitäten</h1>
     <div class="card">
       <a href="/api/strava/connect">
         <button type="button">Strava verbinden</button>
       </a>
     </div>
+    <div id="activities">Lade Aktivitäten...</div>
   </div>
 `
 
-setupCounter(document.querySelector('#counter'))
+async function loadActivities() {
+  const container = document.getElementById('activities')
+  try {
+    const res = await fetch('/api/strava/activities')
+    if (!res.ok) {
+      const err = await res.json()
+      container.innerHTML = `<p>${err.error}</p>`
+      return
+    }
+    const activities = await res.json()
+    if (activities.length === 0) {
+      container.innerHTML = '<p>Keine Aktivitäten gefunden.</p>'
+      return
+    }
+    container.innerHTML = activities.map(a => `
+      <div style="border:1px solid #ccc;border-radius:8px;padding:1rem;margin:0.5rem 0;">
+        <strong>${a.name}</strong><br>
+        <span>${a.type} · ${(a.distance / 1000).toFixed(1)} km · ${Math.round(a.moving_time / 60)} min</span><br>
+        <small>${new Date(a.start_date).toLocaleDateString('de-DE')}</small>
+      </div>
+    `).join('')
+  } catch {
+    container.innerHTML = '<p>Fehler beim Laden der Aktivitäten.</p>'
+  }
+}
+
+loadActivities()
