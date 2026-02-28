@@ -37,7 +37,7 @@ export default async function handler(request) {
   })
 
   const tokens = await tokenRes.json()
-  if (!tokenRes.ok) return new Response('Strava Authentifizierung fehlgeschlagen', { status: 401 })
+  if (!tokenRes.ok) return new Response(JSON.stringify(tokens), { status: 401, headers: { 'content-type': 'application/json' } })
 
   // Benutzer und Token in Supabase speichern
   const supabase = getSupabase()
