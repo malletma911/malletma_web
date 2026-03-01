@@ -193,7 +193,7 @@ export default function EventsFilterableContent({ events }: Props) {
           </div>
 
           {/* Leaflet-Karte — zeigt nur gefilterte Pins */}
-          <div className="lg:w-[45%] flex-shrink-0 min-h-[260px]">
+          <div className="lg:w-[45%] flex-shrink-0 h-[300px] lg:h-auto">
             <OverviewMap pins={pins} />
           </div>
         </div>

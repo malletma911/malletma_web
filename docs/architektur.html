@@ -292,7 +292,7 @@
   <div class="card-grid">
     <div class="card">
       <h3>🏁 Events</h3>
-      <p>Kalender mit bevorstehenden Rennen (MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche) inkl. Routenkarte, Höhenprofil, Countdown, Wetterdaten und Badges (Wettbewerb/Training, Rennrad/Gravel).</p>
+      <p>Kalender mit bevorstehenden Rennen (MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche, Kitzbüheler Radmarathon) inkl. Routenkarte, Höhenprofil, Countdown, Wetterdaten und Badges (Modus: Gran Fondo / Rennen / Training, Rennrad/Gravel). Filterbarer Client-Layer mit Auto-Hide-Logik.</p>
     </div>
     <div class="card">
       <h3>📊 Stats</h3>
@@ -516,54 +516,43 @@
   <h3>🗺️ Leaflet + Recharts — Karten & Diagramme</h3>
   <div class="card">
     <p>
-      <strong>Leaflet</strong> ist eine Open-Source-Bibliothek für interaktive Landkarten. Die
-      Routenkarten der Events (MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche) werden damit gezeichnet —
-      mit echten GPS-Daten direkt von Komoot und RideWithGPS.
+      <strong>Leaflet</strong> ist eine Open-Source-Bibliothek für interaktive Landkarten. Es kommt
+      auf der Events-Seite zweifach zum Einsatz:
     </p>
+    <ul style="color:#ccc;margin:8px 0 12px 20px">
+      <li style="margin-bottom:6px"><strong>Detaillierte Routenkarten</strong> (route-map.tsx) — jedes Event zeigt die GPS-Route mit echten Koordinaten von Komoot und RideWithGPS. Alle 5 Events: MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche, Kitzbüheler Radmarathon.</li>
+      <li><strong>Übersichtskarte</strong> (overview-map.tsx) — zeigt alle gefilterten Events als farbige Pins auf einer Karte. Reagiert live auf den Filter: wird ein Event ausgeblendet, verschwindet auch sein Pin. Die Karte zoomt automatisch mit <code>fitBounds</code> auf die sichtbaren Pins ein. Tiles: CARTO Dark Matter (ohne API-Key). <strong>Wichtig:</strong> Leaflet benötigt einen Container mit expliziter Pixelhöhe — der umschließende <code>div</code> nutzt daher <code>h-[300px] lg:h-auto</code>: auf Mobile feste 300 px, auf Desktop wird die Höhe über Flexbox-Stretch (<code>items-stretch</code>) automatisch vom Timeline-Panel übernommen.</li>
+    </ul>
     <p>
       <strong>Recharts</strong> ist eine Diagramm-Bibliothek für React. Die Höhenprofile (Elevation
       Charts) der Events werden damit als interaktive Kurvendiagramme dargestellt.
     </p>
   </div>
 
-  <h3>🌍 Europa-Übersichtskarte — SVG (ohne externe Bibliothek)</h3>
+  <h3>🎛️ Event-Filter — Flat Pills mit Auto-Hide</h3>
   <div class="card">
     <p>
-      Zusätzlich zu den detaillierten Routenkarten gibt es eine <strong>dezente Übersichtskarte
-      Europas</strong> (von Nordeuropa bis nach Italien), die auf einen Blick zeigt, wo die vier Events stattfinden —
-      Deutschland, Schweden, Dänemark, Italien. Diese Karte ist <strong>kein Leaflet</strong>, sondern
-      reines <strong>SVG</strong> (Scalable Vector Graphics) — ein standardisiertes
-      Bildformat, das direkt im Browser ohne Plugins funktioniert.
+      Die Events-Seite hat ein clientseitiges Filtersystem mit drei Dimensionen:
+    </p>
+    <table>
+      <tr><th>Dimension</th><th>Werte</th><th>Quelle</th></tr>
+      <tr><td><strong>Teilnahme</strong></td><td>Dabei · Geplant</td><td>code-seitig in <code>eventMeta</code></td></tr>
+      <tr><td><strong>Modus</strong></td><td>Gran Fondo · Rennen · Training</td><td>DB: <code>status</code> + <code>type</code></td></tr>
+      <tr><td><strong>Rad</strong></td><td>Rennrad · Gravel</td><td>code-seitig in <code>eventMeta</code></td></tr>
+    </table>
+    <p style="margin-top:10px">
+      <strong>Modus-Mapping:</strong> <code>status = 'training'</code> → Training; <code>type = 'race'</code> → Rennen; sonst → Gran Fondo.
     </p>
     <p>
-      Die Ländergrenzen sind als vereinfachte Polygone (Vielecke) aus GPS-Koordinaten
-      berechnet und in SVG-Pixel umgerechnet. Der verwendete Algorithmus ist eine einfache
-      <strong>Mercator-Projektion</strong> — dieselbe Methode, die Google Maps grundsätzlich
-      auch verwendet, nur in stark vereinfachter Form.
+      <strong>Auto-Hide:</strong> Dimensionen, bei denen nur eine Option einen Count &gt; 0 hat (keine sinnvolle Variation), werden automatisch ausgeblendet. Gibt es z.B. nur Rennrad-Events, erscheint der Rad-Filter gar nicht.
     </p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-      <div style="background:#111;border:1px solid #222;border-radius:8px;padding:12px">
-        <div style="color:#4ade80;font-size:11px;font-weight:700;margin-bottom:6px">✓ VORTEILE</div>
-        <ul style="color:#aaa;font-size:13px;margin:0 0 0 16px">
-          <li>Keine externe Bibliothek, kein API-Key</li>
-          <li>Extrem schnell — kein Netzwerk-Request</li>
-          <li>Vollständig im Design-System kontrollierbar</li>
-          <li>Funktioniert auch ohne JavaScript</li>
-        </ul>
-      </div>
-      <div style="background:#111;border:1px solid #222;border-radius:8px;padding:12px">
-        <div style="color:#facc15;font-size:11px;font-weight:700;margin-bottom:6px">~ ABWÄGUNG</div>
-        <ul style="color:#aaa;font-size:13px;margin:0 0 0 16px">
-          <li>Vereinfachte Ländergrenzen (kein GIS-Standard)</li>
-          <li>Nicht zoombar / interaktiv</li>
-          <li>Rein dekorativ, nicht navigierbar</li>
-        </ul>
-      </div>
-    </div>
-    <p style="margin-top:12px">
-      Für einen schnellen geografischen Überblick ("wo sind meine Rennen?") ist das SVG
-      die deutlich bessere Wahl als eine vollständige Karte — kleiner, schneller,
-      und perfekt ins dunkle Design integriert.
+    <p>
+      <strong>Empty-Prevention:</strong> Deaktiviert man die letzte aktive Pill einer Dimension, werden alle Optionen dieser Dimension wieder aktiviert — die Ergebnisliste bleibt nie leer.
+    </p>
+    <p>
+      <strong>Styling — aktiv/inaktiv:</strong>
+      Aktiv: <code>bg-white/8 border-white/12</code> | Inaktiv: <code>text-white/25 border-transparent</code>.
+      Dot-Separator <code>·</code> trennt die Dimensionen optisch.
     </p>
   </div>
 
@@ -634,24 +623,27 @@
       <tr><td><code>location</code></td><td>Text</td><td>z.B. "Neustrelitz"</td></tr>
       <tr><td><code>distance_km</code></td><td>Zahl</td><td>300</td></tr>
       <tr><td><code>elevation_m</code></td><td>Zahl</td><td>3200</td></tr>
-      <tr><td><code>country</code></td><td>Text</td><td>"DE", "SE", "DK", "IT"</td></tr>
+      <tr><td><code>country</code></td><td>Text</td><td>"DE", "SE", "DK", "IT", "AT"</td></tr>
       <tr><td><code>participants</code></td><td>Zahl</td><td>3900</td></tr>
       <tr><td><code>difficulty</code></td><td>Text</td><td>"hard", "extreme"</td></tr>
       <tr><td><code>type</code></td><td>Text</td><td>"race", "gran_fondo"</td></tr>
       <tr><td><code>url</code></td><td>Text</td><td>Link zur Event-Website</td></tr>
       <tr><td><code>notes</code></td><td>Text</td><td>Eigene Notizen</td></tr>
-      <tr><td><code>status</code></td><td>Text</td><td>"training" oder leer (= Wettbewerb)</td></tr>
+      <tr><td><code>status</code></td><td>Text</td><td>"training" oder leer</td></tr>
     </table>
     <p style="margin-top:12px;font-size:0.85rem;color:#999">
-      <strong>Aktuelle Events (Saison 2026):</strong> MSR 300 (DE, Rennrad, Wettbewerb) ·
-      Vätternrundan 315 (SE, Rennrad, Wettbewerb) ·
-      L'Étape Denmark (DK, Rennrad, Wettbewerb) ·
-      Strade Bianche (IT, Gravel, Training — 14.04.2026)
+      <strong>Aktuelle Events (Saison 2026):</strong>
+      MSR 300 (DE, Rennrad, Gran Fondo, Dabei) ·
+      Vätternrundan 315 (SE, Rennrad, Gran Fondo, Dabei) ·
+      L'Étape Denmark (DK, Rennrad, Rennen, Dabei) ·
+      Strade Bianche (IT, Gravel, Training, Dabei — 14.04.2026) ·
+      Kitzbüheler Radmarathon (AT, Rennrad, Gran Fondo, Geplant — 06.09.2026)
     </p>
     <p style="font-size:0.85rem;color:#999">
-      <strong>Badge-System (Events-Seite):</strong> Jede Event-Card zeigt automatisch zwei Badges:
-      (1) <em>Wettbewerb</em> (blau) oder <em>Training</em> (amber) — aus dem <code>status</code>-Feld;
-      (2) <em>Rennrad</em> oder <em>Gravel</em> — aus dem <code>bikeType</code>-Feld in <code>eventMeta</code> (code-seitig, kein DB-Feld nötig).
+      <strong>Badge-System (Events-Seite):</strong> Jede Event-Card zeigt drei Badges:
+      (1) <em>Dabei</em> (primary) oder <em>Geplant</em> (outline) — code-seitig aus <code>eventMeta.participation</code>;
+      (2) <em>Gran Fondo</em> (primary) / <em>Rennen</em> (rot) / <em>Training</em> (amber) — berechnet aus DB-Feldern <code>status</code> + <code>type</code> per <code>getEventModus()</code>;
+      (3) <em>Rennrad</em> oder <em>Gravel</em> — code-seitig aus <code>eventMeta.bikeType</code>.
     </p>
     <br>
     <h4>Tabelle: bikes (Garage)</h4>
@@ -909,9 +901,11 @@
 │   ├── <span class="highlight">nav.tsx</span>                  <span class="comment">← Navigationsleiste (oben, fixiert)</span>
 │   ├── <span class="highlight">event-countdown.tsx</span>      <span class="comment">← Live-Countdown bis zum Event</span>
 │   ├── <span class="highlight">event-visuals.tsx</span>        <span class="comment">← Wrapper für Karte + Höhenprofil</span>
-│   ├── <span class="highlight">route-map.tsx</span>            <span class="comment">← Leaflet-Karte mit GPS-Route</span>
+│   ├── <span class="highlight">route-map.tsx</span>            <span class="comment">← Leaflet-Karte mit GPS-Route (pro Event)</span>
 │   ├── <span class="highlight">elevation-chart.tsx</span>      <span class="comment">← Höhenprofil-Diagramm (Recharts)</span>
-│   ├── <span class="highlight">europe-map.tsx</span>           <span class="comment">← SVG-Übersichtskarte Nordeuropa (Startpunkte)</span>
+│   ├── <span class="highlight">overview-map.tsx</span>         <span class="comment">← Leaflet-Übersichtskarte mit gefilterten Event-Pins</span>
+│   ├── <span class="highlight">event-filters.tsx</span>        <span class="comment">← Filter-UI: Flat Pills mit Counts, Auto-Hide</span>
+│   ├── <span class="highlight">events-filterable-content.tsx</span> <span class="comment">← Client-Wrapper: Filter-State, Timeline-Dim, Cards</span>
 │   └── <span class="highlight">activity-feed.tsx</span>        <span class="comment">← Strava-Aktivitätsliste</span>
 │
 ├── <span class="folder">lib/</span>                           <span class="comment">← Hilfsfunktionen (kein UI)</span>
@@ -1062,12 +1056,8 @@
       Perfekt für die detaillierte GPS-Routendarstellung.</p>
     </div>
     <div class="card">
-      <h3>Warum SVG für die Europa-Übersichtskarte?</h3>
-      <p>Die kleine Übersichtskarte, die die drei Event-Startpunkte in Nordeuropa zeigt, wurde
-      als reines SVG ohne externe Bibliothek gebaut. Leaflet wäre für diesen Zweck überdimensioniert:
-      Es würde Kartenkacheln laden (Netzwerk-Requests), JavaScript benötigen und sich schwer ins
-      dunkle Design integrieren lassen. Das SVG lädt sofort, funktioniert ohne Internet und sieht
-      exakt so aus wie gewünscht — dezent, minimalistisch, zum Design passend.</p>
+      <h3>Warum Leaflet auch für die Übersichtskarte?</h3>
+      <p>Die Übersichtskarte (overview-map.tsx) zeigt alle Events als farbige Pins und reagiert live auf den Filter. Sie wurde bewusst mit Leaflet statt SVG umgesetzt: Die Karte muss auf Filterwechsel reagieren, die Pins dynamisch aktualisieren und automatisch auf die sichtbaren Punkte einzoomen (<code>fitBounds</code>). Ein statisches SVG könnte das nicht leisten. Außerdem sind jetzt 5 Events über 5 Länder verteilt (DE, SE, DK, IT, AT) — ein dynamischer Zoom ist hier klar überlegen. Tiles: CARTO Dark Matter (kein API-Key nötig, passt perfekt ins dunkle Theme).</p>
     </div>
     <div class="card">
       <h3>Warum echte GPS-Daten statt Bildern?</h3>
@@ -1156,7 +1146,7 @@
 
   <div class="separator"></div>
   <div style="text-align:center;color:var(--muted);font-size:0.8rem;padding:20px 0;">
-    <p>Technische Dokumentation · malletma.de · Stand: Februar 2026</p>
+    <p>Technische Dokumentation · malletma.de · Stand: März 2026</p>
     <p style="margin-top:6px;">Erstellt mit Claude Code — Anthropic</p>
   </div>
 
