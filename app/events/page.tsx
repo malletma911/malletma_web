@@ -159,14 +159,18 @@ export default async function EventsPage() {
             {upcoming.length} {upcoming.length === 1 ? 'Herausforderung' : 'Herausforderungen'}. Volle Attacke.
           </p>
           {/* Stats */}
-          <div className="flex gap-4 mt-3 text-sm text-muted-foreground flex-wrap">
-            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">{upcoming.length}</span> Events</span>
-            <span>·</span>
-            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">~{totalKm.toLocaleString('de-DE')}</span> km</span>
-            <span>·</span>
-            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">~{totalElevation.toLocaleString('de-DE')}</span> Hm</span>
-            <span>·</span>
-            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">{countries.length}</span> Länder</span>
+          <div className="flex flex-wrap gap-2 mt-5">
+            {[
+              { value: String(upcoming.length),                              label: 'Events'      },
+              { value: `~${totalKm.toLocaleString('de-DE')}`,               label: 'km'          },
+              { value: `~${totalElevation.toLocaleString('de-DE')}`,        label: 'Höhenmeter'  },
+              { value: String(countries.length),                             label: 'Länder'      },
+            ].map(s => (
+              <div key={s.label} className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
+                <p className="text-base font-bold tabular-nums leading-none text-foreground">{s.value}</p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{s.label}</p>
+              </div>
+            ))}
           </div>
         </div>
 
