@@ -9,10 +9,10 @@ import EventVisuals from './event-visuals'
 const OverviewMap = dynamic(() => import('./overview-map'), { ssr: false })
 
 const countryFlags: Record<string, string> = {
-  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹',
+  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹', AT: '🇦🇹',
 }
 const countryNames: Record<string, string> = {
-  DE: 'Deutschland', SE: 'Schweden', DK: 'Dänemark', IT: 'Italien',
+  DE: 'Deutschland', SE: 'Schweden', DK: 'Dänemark', IT: 'Italien', AT: 'Österreich',
 }
 const difficultyConfig: Record<string, { label: string; color: string; bars: number }> = {
   easy:    { label: 'Leicht',  color: 'bg-green-500',  bars: 1 },
@@ -214,9 +214,9 @@ export default function EventsFilterableContent({ events }: Props) {
                       {event.name}
                     </h2>
                     <p className="text-muted-foreground text-sm flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <span>📅 {date.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                      {event.startTime && <span>🕐 Start {event.startTime}</span>}
-                      {event.location && <span>📍 {event.location}</span>}
+                      <span>{date.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                      {event.startTime && <span>Start {event.startTime}</span>}
+                      {event.location && <span>{event.location}</span>}
                     </p>
                   </div>
 
@@ -256,33 +256,21 @@ export default function EventsFilterableContent({ events }: Props) {
                       Ø Wetter · {event.weather.label}
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">🌡️</span>
-                        <div>
-                          <p className="text-sm font-semibold">{event.weather.tempMin}° – {event.weather.tempMax}°C</p>
-                          <p className="text-[10px] text-muted-foreground">Temperatur</p>
-                        </div>
+                      <div>
+                        <p className="text-sm font-semibold">{event.weather.tempMin}° – {event.weather.tempMax}°C</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Temperatur</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">🌧️</span>
-                        <div>
-                          <p className="text-sm font-semibold">{event.weather.rainDays} Tage</p>
-                          <p className="text-[10px] text-muted-foreground">Regentage / Monat</p>
-                        </div>
+                      <div>
+                        <p className="text-sm font-semibold">{event.weather.rainDays} Tage</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Regentage / Monat</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">💨</span>
-                        <div>
-                          <p className="text-sm font-semibold">Ø {event.weather.windKmh} km/h</p>
-                          <p className="text-[10px] text-muted-foreground">Wind</p>
-                        </div>
+                      <div>
+                        <p className="text-sm font-semibold">Ø {event.weather.windKmh} km/h</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Wind</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">🌅</span>
-                        <div>
-                          <p className="text-sm font-semibold">{event.weather.sunrise} Uhr</p>
-                          <p className="text-[10px] text-muted-foreground">Sonnenaufgang</p>
-                        </div>
+                      <div>
+                        <p className="text-sm font-semibold">{event.weather.sunrise} Uhr</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Sonnenaufgang</p>
                       </div>
                     </div>
                   </div>
@@ -299,7 +287,7 @@ export default function EventsFilterableContent({ events }: Props) {
                   {/* Footer */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/5">
                     <p className="text-sm text-muted-foreground">
-                      Siehst du mich auf der Strecke? Sag Hallo! 👋
+                      Siehst du mich auf der Strecke? Sag Hallo!
                     </p>
                     {event.url && (
                       <a

@@ -519,3 +519,68 @@ export const STRADE_ELEVATION: { d: number; e: number }[] = [
   { d: 134.9, e: 278.1 },
   { d: 137.3, e: 330.8 },
 ]
+
+// ─── Kitzbüheler Radmarathon — Klassik (216 km / 4.600 Hm) ───────────────────
+// Route: Kitzbühel → Pass Thurn → Mittersill → Wald im Pinzgau → Gerlospass →
+//        Zell am Ziller → Kerschbaumer Sattel → Brixlegg → Breitenbach →
+//        Brixental → Oberndorf → Kitzbühel → Kitzbüheler Horn (Ziel)
+// Koordinaten approximiert anhand der offiziellen Streckenbeschreibung
+export const KITZ_ROUTE: [number, number][] = [
+  [47.4467, 12.3920],  // Kitzbühel, Vorderstadt (Start)
+  [47.4190, 12.4050],  // Südausfahrt
+  [47.3900, 12.4130],  // Aufstieg Pass Thurn
+  [47.3095, 12.4182],  // Pass Thurn (1.274 m)
+  [47.2900, 12.4610],  // Abstieg Richtung Mittersill
+  [47.2769, 12.4804],  // Mittersill
+  [47.2640, 12.3820],  // Richtung Neukirchen
+  [47.2535, 12.2795],  // Neukirchen am Großvenediger
+  [47.2574, 12.1072],  // Wald im Pinzgau
+  [47.2415, 12.0620],  // Gerlos Dorf
+  [47.2290, 12.0367],  // Gerlospass (1.507 m)
+  [47.2283, 11.8849],  // Zell am Ziller
+  [47.2761, 11.9030],  // Aschau im Zillertal
+  [47.3049, 11.9063],  // Bruck am Ziller
+  [47.3470, 11.8250],  // Kerschbaumer Sattel (1.063 m)
+  [47.4310, 11.8790],  // Brixlegg
+  [47.4528, 11.8818],  // Kramsach
+  [47.4837, 11.9532],  // Brandenberg
+  [47.4753, 12.0147],  // Breitenbach am Inn
+  [47.4478, 12.1547],  // Hopfgarten i. Brixental
+  [47.4520, 12.2847],  // Brixen im Thale
+  [47.4524, 12.3714],  // Oberndorf
+  [47.4467, 12.3920],  // Kitzbühel Vorderstadt (KRM Kitz Ziel)
+  [47.4623, 12.3893],  // Kitzbüheler Horn (Klassik Ziel, 1.670 m)
+]
+
+export const KITZ_ELEVATION: { d: number; e: number }[] = [
+  { d: 0.0,   e: 762  },  // Start Kitzbühel
+  { d: 5.0,   e: 860  },
+  { d: 10.0,  e: 1050 },
+  { d: 15.0,  e: 1274 },  // Pass Thurn
+  { d: 22.0,  e: 900  },
+  { d: 30.0,  e: 820  },  // Mittersill
+  { d: 38.0,  e: 845  },
+  { d: 44.0,  e: 838  },  // Neukirchen a. Großvenediger
+  { d: 48.0,  e: 829  },  // Wald im Pinzgau
+  { d: 53.0,  e: 910  },
+  { d: 58.0,  e: 1180 },
+  { d: 60.0,  e: 1390 },  // Gerlos Dorf
+  { d: 63.0,  e: 1507 },  // Gerlospass (Scheitelpunkt)
+  { d: 70.0,  e: 960  },
+  { d: 77.0,  e: 660  },
+  { d: 85.0,  e: 575  },  // Zell am Ziller
+  { d: 95.0,  e: 690  },
+  { d: 105.0, e: 880  },
+  { d: 116.0, e: 1063 },  // Kerschbaumer Sattel
+  { d: 123.0, e: 524  },  // Brixlegg (Inntal)
+  { d: 135.0, e: 610  },
+  { d: 145.0, e: 680  },
+  { d: 159.0, e: 575  },  // Breitenbach am Inn
+  { d: 170.0, e: 730  },
+  { d: 180.0, e: 789  },  // Brixental
+  { d: 195.0, e: 805  },
+  { d: 206.0, e: 660  },  // Oberndorf
+  { d: 209.0, e: 762  },  // Kitzbühel (KRM Kitz Ziel)
+  { d: 213.0, e: 1130 },  // Aufstieg Kitzbüheler Horn
+  { d: 216.0, e: 1670 },  // Kitzbüheler Horn (Klassik Ziel)
+]

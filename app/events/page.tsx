@@ -7,6 +7,7 @@ import {
   VATTERN_ROUTE, VATTERN_ELEVATION,
   LETAPE_ROUTE, LETAPE_ELEVATION,
   STRADE_ROUTE, STRADE_ELEVATION,
+  KITZ_ROUTE, KITZ_ELEVATION,
 } from '@/lib/event-data'
 
 interface EventRow {
@@ -32,7 +33,7 @@ async function getEvents(): Promise<EventRow[]> {
 }
 
 const countryFlags: Record<string, string> = {
-  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹',
+  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹', AT: '🇦🇹',
 }
 
 // Per-Event Metadaten (Karte, Farbe, Wetter, …)
@@ -105,6 +106,21 @@ const eventMeta: Record<string, {
     bikeType: 'gravel',
     participation: 'confirmed',
     weather: { tempMin: 10, tempMax: 19, rainDays: 10, windKmh: 13, sunrise: '06:20', label: 'Toskana, Mitte April' },
+  },
+  'Kitzbüheler Radmarathon': {
+    route: KITZ_ROUTE,
+    elevation: KITZ_ELEVATION,
+    color: '#f43f5e',
+    textClass: 'text-rose-500',
+    dotClass: 'bg-rose-500',
+    startTime: '06:30 Uhr',
+    gradient: 'from-rose-600/20 via-rose-900/10 to-transparent',
+    shortName: 'KRM Klassik',
+    city: 'Kitzbühel',
+    bikeType: 'road',
+    participation: 'planned',
+    // Klimadaten: Kitzbühel (762 m), September — Quelle: climate-data.org 1991–2020
+    weather: { tempMin: 6, tempMax: 16, rainDays: 12, windKmh: 12, sunrise: '06:32', label: 'Kitzbühel/Tirol, Anfang September' },
   },
 }
 
