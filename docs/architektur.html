@@ -10,7 +10,7 @@
     --bg2: #111111;
     --bg3: #1a1a1a;
     --border: #2a2a2a;
-    --primary: #FC4C02;
+    --primary: #a855f7;
     --blue: #60a5fa;
     --green: #4ade80;
     --yellow: #facc15;
@@ -292,7 +292,7 @@
   <div class="card-grid">
     <div class="card">
       <h3>🏁 Events</h3>
-      <p>Kalender mit bevorstehenden Rennen (MSR 300, Vätternrundan, L'Étape Denmark) inkl. Routenkarte, Höhenprofil, Countdown und Wetterdaten.</p>
+      <p>Kalender mit bevorstehenden Rennen (MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche) inkl. Routenkarte, Höhenprofil, Countdown, Wetterdaten und Badges (Wettbewerb/Training, Rennrad/Gravel).</p>
     </div>
     <div class="card">
       <h3>📊 Stats</h3>
@@ -356,7 +356,7 @@
       <div class="d-box" style="border-color:#4ade80;color:#4ade80;background:rgba(74,222,128,0.08);">
         🗄️ Supabase<br><small style="opacity:0.7">Datenbank (PostgreSQL)</small>
       </div>
-      <div class="d-box" style="border-color:#FC4C02;color:#FC4C02;background:rgba(252,76,2,0.08);">
+      <div class="d-box" style="border-color:#f97316;color:#f97316;background:rgba(249,115,22,0.08);">
         🚴 Strava API<br><small style="opacity:0.7">Aktivitätsdaten</small>
       </div>
     </div>
@@ -431,6 +431,11 @@
       <strong>Warum Tailwind?</strong> Geschwindigkeit. Kein Wechsel zwischen HTML- und CSS-Dateien,
       keine Namenserfindung für CSS-Klassen, keine Konflikte zwischen Styles. Das Design entsteht
       direkt dort, wo die Komponente gebaut wird.
+    </p>
+    <p>
+      <strong>Primärfarbe:</strong> Die Akzentfarbe der Website ist <strong style="color:#a855f7">Purple (#a855f7 / oklch(0.63 0.26 305))</strong> —
+      kräftig, leuchtstark, sportlich. Jede Farbänderung in <code>globals.css</code> wirkt sich
+      automatisch auf alle Buttons, Links, Badges und Highlights aus.
     </p>
   </div>
 
@@ -512,7 +517,7 @@
   <div class="card">
     <p>
       <strong>Leaflet</strong> ist eine Open-Source-Bibliothek für interaktive Landkarten. Die
-      Routenkarten der Events (MSR 300, Vätternrundan, L'Étape Denmark) werden damit gezeichnet —
+      Routenkarten der Events (MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche) werden damit gezeichnet —
       mit echten GPS-Daten direkt von Komoot und RideWithGPS.
     </p>
     <p>
@@ -525,8 +530,8 @@
   <div class="card">
     <p>
       Zusätzlich zu den detaillierten Routenkarten gibt es eine <strong>dezente Übersichtskarte
-      Nordeuropas</strong>, die auf einen Blick zeigt, wo die drei Events stattfinden —
-      Deutschland, Schweden, Dänemark. Diese Karte ist <strong>kein Leaflet</strong>, sondern
+      Europas</strong> (von Nordeuropa bis nach Italien), die auf einen Blick zeigt, wo die vier Events stattfinden —
+      Deutschland, Schweden, Dänemark, Italien. Diese Karte ist <strong>kein Leaflet</strong>, sondern
       reines <strong>SVG</strong> (Scalable Vector Graphics) — ein standardisiertes
       Bildformat, das direkt im Browser ohne Plugins funktioniert.
     </p>
@@ -629,13 +634,25 @@
       <tr><td><code>location</code></td><td>Text</td><td>z.B. "Neustrelitz"</td></tr>
       <tr><td><code>distance_km</code></td><td>Zahl</td><td>300</td></tr>
       <tr><td><code>elevation_m</code></td><td>Zahl</td><td>3200</td></tr>
-      <tr><td><code>country</code></td><td>Text</td><td>"DE", "SE", "DK"</td></tr>
+      <tr><td><code>country</code></td><td>Text</td><td>"DE", "SE", "DK", "IT"</td></tr>
       <tr><td><code>participants</code></td><td>Zahl</td><td>3900</td></tr>
       <tr><td><code>difficulty</code></td><td>Text</td><td>"hard", "extreme"</td></tr>
       <tr><td><code>type</code></td><td>Text</td><td>"race", "gran_fondo"</td></tr>
       <tr><td><code>url</code></td><td>Text</td><td>Link zur Event-Website</td></tr>
       <tr><td><code>notes</code></td><td>Text</td><td>Eigene Notizen</td></tr>
+      <tr><td><code>status</code></td><td>Text</td><td>"training" oder leer (= Wettbewerb)</td></tr>
     </table>
+    <p style="margin-top:12px;font-size:0.85rem;color:#999">
+      <strong>Aktuelle Events (Saison 2026):</strong> MSR 300 (DE, Rennrad, Wettbewerb) ·
+      Vätternrundan 315 (SE, Rennrad, Wettbewerb) ·
+      L'Étape Denmark (DK, Rennrad, Wettbewerb) ·
+      Strade Bianche (IT, Gravel, Training — 14.04.2026)
+    </p>
+    <p style="font-size:0.85rem;color:#999">
+      <strong>Badge-System (Events-Seite):</strong> Jede Event-Card zeigt automatisch zwei Badges:
+      (1) <em>Wettbewerb</em> (blau) oder <em>Training</em> (amber) — aus dem <code>status</code>-Feld;
+      (2) <em>Rennrad</em> oder <em>Gravel</em> — aus dem <code>bikeType</code>-Feld in <code>eventMeta</code> (code-seitig, kein DB-Feld nötig).
+    </p>
     <br>
     <h4>Tabelle: bikes (Garage)</h4>
     <table>

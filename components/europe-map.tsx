@@ -1,4 +1,4 @@
-// Decorative SVG map of Northern Europe — shows event start locations
+// Decorative SVG map of Northern/Central Europe — shows event start locations
 // Pure server component, no external dependencies
 
 interface EventPin {
@@ -9,9 +9,9 @@ interface EventPin {
   city: string
 }
 
-// Viewport: W×H px · lat 48–62 · lon 4–22
-const W = 500, H = 340
-const LAT_MAX = 62, LAT_MIN = 48, LON_MIN = 4, LON_MAX = 22
+// Viewport: W×H px · lat 42–62 · lon 4–22
+const W = 500, H = 480
+const LAT_MAX = 62, LAT_MIN = 42, LON_MIN = 4, LON_MAX = 22
 
 function px(lon: number) { return (lon - LON_MIN) / (LON_MAX - LON_MIN) * W }
 function py(lat: number) { return (LAT_MAX - lat) / (LAT_MAX - LAT_MIN) * H }
@@ -58,6 +58,24 @@ const SHAPES: Record<string, [number, number][]> = {
     [58.2, 12.0], [57.7, 11.9], [57.2, 11.7], [56.6, 12.4],
     [56.1, 12.6], [55.8, 12.7], [55.4, 12.8],
   ],
+  // Italy — simplified peninsula shape, clipped at lat 42 (southern viewport)
+  italy: [
+    [47.0, 10.5], [46.5, 13.0], [45.8, 13.8], [45.6, 13.6],
+    [44.5, 12.2], [43.8, 12.5], [42.8, 11.8], [42.0, 11.3],
+    [42.0, 12.5], [43.0, 13.5], [44.0, 14.2], [43.7, 15.8],
+    [42.0, 15.6], [42.0, 10.5],
+  ],
+  // Switzerland — small alpine block
+  switzerland: [
+    [47.0, 6.0], [47.7, 7.0], [47.8, 8.6], [47.5, 10.5],
+    [46.2, 10.3], [46.0, 8.8], [46.0, 7.0],
+  ],
+  // Austria — narrow alpine strip
+  austria: [
+    [48.3, 9.5], [47.8, 10.5], [47.0, 10.5], [47.5, 12.8],
+    [47.3, 15.0], [48.0, 17.0], [48.6, 16.9], [48.7, 15.8],
+    [48.5, 13.8], [48.8, 13.8], [48.8, 12.5], [48.3, 9.5],
+  ],
 }
 
 const LAND_FILL   = '#0e1420'
@@ -69,15 +87,16 @@ const COUNTRY_LABELS: [number, number, string][] = [
   [56.4, 9.1,  'DK'],
   [59.5, 15.8, 'SE'],
   [60.6, 7.2,  'NO'],
+  [44.5, 11.5, 'IT'],
 ]
 
 // Lat grid lines
-const LAT_GRID = [50, 55, 60]
+const LAT_GRID = [45, 50, 55, 60]
 const LON_GRID = [5, 10, 15, 20]
 
 export default function EuropeMap({ pins }: { pins: EventPin[] }) {
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#050a14]">
+    <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#050a14] h-full">
       {/* Label */}
       <p className="absolute top-3 left-4 text-[9px] font-semibold tracking-[0.25em] uppercase text-white/20 z-10 pointer-events-none select-none">
         Event-Standorte · Saison 2026
@@ -85,8 +104,9 @@ export default function EuropeMap({ pins }: { pins: EventPin[] }) {
 
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="block w-full"
-        aria-label="Karte Nordeuropas mit den drei Event-Startpunkten"
+        className="absolute inset-0 w-full h-full"
+        preserveAspectRatio="xMidYMid slice"
+        aria-label="Karte Europas mit den Event-Startpunkten"
         role="img"
       >
         {/* Sea background */}
@@ -110,7 +130,7 @@ export default function EuropeMap({ pins }: { pins: EventPin[] }) {
         ))}
 
         {/* Land masses — in z-order */}
-        {(['norway', 'germany', 'jutland', 'funen', 'zealand', 'sweden'] as const).map(k => (
+        {(['norway', 'germany', 'switzerland', 'austria', 'italy', 'jutland', 'funen', 'zealand', 'sweden'] as const).map(k => (
           <path
             key={k}
             d={mkPath(SHAPES[k])}
@@ -152,7 +172,7 @@ export default function EuropeMap({ pins }: { pins: EventPin[] }) {
           const cx = px(pin.lon)
           const cy = py(pin.lat)
           // Push label below pin if near top, above otherwise
-          const nearTop = cy < H * 0.28
+          const nearTop = cy < H * 0.22
           const labelY  = nearTop ? cy + 24 : cy - 20
           const cityY   = nearTop ? cy + 33 : cy - 11
 

@@ -4,7 +4,12 @@ import { getSupabase } from '@/lib/supabase'
 import EventCountdown from '@/components/event-countdown'
 import EventVisuals from '@/components/event-visuals'
 import EuropeMap from '@/components/europe-map'
-import { MSR_ROUTE, MSR_ELEVATION, VATTERN_ROUTE, VATTERN_ELEVATION, LETAPE_ROUTE, LETAPE_ELEVATION } from '@/lib/event-data'
+import {
+  MSR_ROUTE, MSR_ELEVATION,
+  VATTERN_ROUTE, VATTERN_ELEVATION,
+  LETAPE_ROUTE, LETAPE_ELEVATION,
+  STRADE_ROUTE, STRADE_ELEVATION,
+} from '@/lib/event-data'
 
 interface EventRow {
   id: string
@@ -29,10 +34,10 @@ async function getEvents(): Promise<EventRow[]> {
 }
 
 const countryFlags: Record<string, string> = {
-  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰',
+  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹',
 }
 const countryNames: Record<string, string> = {
-  DE: 'Deutschland', SE: 'Schweden', DK: 'Dänemark',
+  DE: 'Deutschland', SE: 'Schweden', DK: 'Dänemark', IT: 'Italien',
 }
 const difficultyConfig: Record<string, { label: string; color: string; bars: number }> = {
   easy:    { label: 'Leicht',  color: 'bg-green-500',  bars: 1 },
@@ -45,7 +50,7 @@ const typeConfig: Record<string, { label: string; color: string }> = {
   gran_fondo: { label: 'Gran Fondo', color: 'text-primary border-primary/30 bg-primary/10' },
 }
 
-// Pro Event: Karte + Elevation + Farbe + Startzeit + Wetter + Kartenpin
+// Pro Event: Karte + Elevation + Farbe + Startzeit + Wetter + Kartenpin + Fahrradtyp
 const eventMeta: Record<string, {
   route: [number,number][],
   elevation: {d:number,e:number}[],
@@ -56,6 +61,7 @@ const eventMeta: Record<string, {
   gradient: string,
   shortName: string,
   city: string,
+  bikeType: 'road' | 'gravel',
   weather: { tempMin: number; tempMax: number; rainDays: number; windKmh: number; sunrise: string; label: string }
 }> = {
   'Mecklenburger Seen Runde 300': {
@@ -68,6 +74,7 @@ const eventMeta: Record<string, {
     gradient: 'from-blue-600/20 via-blue-900/10 to-transparent',
     shortName: 'MSR 300',
     city: 'Neustrelitz',
+    bikeType: 'road',
     // Klimadaten: Neustrelitz, Mai — Quelle: DWD Klimanormen 1991–2020
     weather: { tempMin: 8, tempMax: 19, rainDays: 11, windKmh: 14, sunrise: '05:02', label: 'Mecklenburg, Ende Mai' },
   },
@@ -81,6 +88,7 @@ const eventMeta: Record<string, {
     gradient: 'from-yellow-500/20 via-yellow-900/10 to-transparent',
     shortName: 'Vätternrundan',
     city: 'Motala',
+    bikeType: 'road',
     // Klimadaten: Motala (58°N), Juni — Quelle: SMHI Klimatnormaler 1991–2020
     weather: { tempMin: 10, tempMax: 21, rainDays: 10, windKmh: 11, sunrise: '03:58', label: 'Mittelschweden, Mitte Juni' },
   },
@@ -94,8 +102,23 @@ const eventMeta: Record<string, {
     gradient: 'from-green-600/20 via-green-900/10 to-transparent',
     shortName: "L'Étape DK",
     city: 'Flensburg',
+    bikeType: 'road',
     // Klimadaten: Viborg/Jutland, Juni — Quelle: DMI Klimanormer 1991–2020
     weather: { tempMin: 10, tempMax: 20, rainDays: 12, windKmh: 19, sunrise: '04:28', label: 'Jütland, Ende Juni' },
+  },
+  'STRADE BIANCHE': {
+    route: STRADE_ROUTE,
+    elevation: STRADE_ELEVATION,
+    color: '#f97316',
+    textClass: 'text-orange-400',
+    dotClass: 'bg-orange-400',
+    startTime: '',
+    gradient: 'from-orange-600/20 via-orange-900/10 to-transparent',
+    shortName: 'Strade Bianche',
+    city: 'Siena',
+    bikeType: 'gravel',
+    // Klimadaten: Siena, Toskana, April — Quelle: climatestations.com 1991–2020
+    weather: { tempMin: 10, tempMax: 19, rainDays: 10, windKmh: 13, sunrise: '06:20', label: 'Toskana, Mitte April' },
   },
 }
 
@@ -104,7 +127,7 @@ export default async function EventsPage() {
   const upcoming = events.filter(e => new Date(e.date) >= new Date())
   const past = events.filter(e => new Date(e.date) < new Date())
 
-  const totalKm = upcoming.reduce((s, e) => s + (e.distance_km ?? 0), 0)
+  const totalKm = Math.round(upcoming.reduce((s, e) => s + (e.distance_km ?? 0), 0))
   const countries = [...new Set(upcoming.map(e => e.country).filter(Boolean))]
 
   const mapPins = upcoming
@@ -129,50 +152,39 @@ export default async function EventsPage() {
           <p className="text-primary text-xs font-semibold tracking-[0.3em] uppercase mb-3">Saison 2026</p>
           <h1 className="font-[family-name:var(--font-bebas)] text-5xl sm:text-7xl md:text-8xl tracking-wider mb-2">RACE CALENDAR</h1>
           <p className="text-muted-foreground">Drei Länder. Drei Herausforderungen. Volle Attacke.</p>
+          {/* Stats als Mini-Badges */}
+          <div className="flex gap-4 mt-3 text-sm text-muted-foreground">
+            <span className="text-foreground font-semibold">{upcoming.length}</span>
+            <span>Events</span>
+            <span>·</span>
+            <span className="text-foreground font-semibold">~{totalKm}</span>
+            <span>km</span>
+            <span>·</span>
+            <span className="text-foreground font-semibold">{countries.length}</span>
+            <span>Länder</span>
+          </div>
         </div>
 
-        {/* Saison-Stats + Europa-Karte */}
+        {/* Timeline + Europa-Karte (50/50, gleiche Höhe) */}
         {upcoming.length > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 items-stretch">
-            {/* Stats-Spalte */}
-            <div className="flex sm:flex-col gap-3 flex-shrink-0">
-              {[
-                { val: upcoming.length, label: 'Events' },
-                { val: totalKm, label: 'km gesamt' },
-                { val: countries.length, label: 'Länder' },
-              ].map(s => (
-                <div key={s.label} className="flex-1 sm:flex-none bg-card border border-border rounded-xl p-3 text-center sm:w-24">
-                  <p className="text-2xl font-bold text-primary">{s.val}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{s.label}</p>
-                </div>
-              ))}
-            </div>
-            {/* Europa-Karte */}
-            <div className="flex-1 min-w-0">
-              <EuropeMap pins={mapPins} />
-            </div>
-          </div>
-        )}
-
-        {/* Timeline */}
-        {upcoming.length > 0 && (
-          <div className="mb-12 bg-card border border-border rounded-2xl p-5 sm:p-8">
-            <p className="text-xs font-semibold tracking-[0.25em] uppercase text-muted-foreground mb-5">Rennsaison 2026</p>
-            <div className="relative">
-              <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border" />
-              <div className="space-y-0">
-                {upcoming.map((event, i) => {
-                  const date = new Date(event.date)
-                  const meta = eventMeta[event.name]
-                  const fallbackDots = ['bg-blue-400','bg-yellow-400','bg-green-400','bg-orange-400']
-                  const fallbackText = ['text-blue-400','text-yellow-400','text-green-400','text-orange-400']
-                  const dotClass = meta?.dotClass ?? fallbackDots[i % fallbackDots.length]
-                  const textClass = meta?.textClass ?? fallbackText[i % fallbackText.length]
-                  return (
-                    <div key={event.id} className={`flex items-start gap-4 ${i < upcoming.length - 1 ? 'pb-6' : ''}`}>
-                      <div className={`mt-1.5 w-3.5 h-3.5 rounded-full flex-shrink-0 ${dotClass} ring-2 ring-background z-10`} />
-                      <div className="flex-1 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4 min-w-0">
-                        <div>
+          <div className="flex flex-col lg:flex-row gap-4 mb-10 items-stretch">
+            {/* Rennsaison 2026 Timeline */}
+            <div className="flex-1 bg-card border border-border rounded-2xl p-5 sm:p-8">
+              <p className="text-xs font-semibold tracking-[0.25em] uppercase text-muted-foreground mb-5">Rennsaison 2026</p>
+              <div className="relative">
+                <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border" />
+                <div className="space-y-0">
+                  {upcoming.map((event, i) => {
+                    const date = new Date(event.date)
+                    const meta = eventMeta[event.name]
+                    const fallbackDots = ['bg-blue-400','bg-yellow-400','bg-green-400','bg-purple-400']
+                    const fallbackText = ['text-blue-400','text-yellow-400','text-green-400','text-purple-400']
+                    const dotClass = meta?.dotClass ?? fallbackDots[i % fallbackDots.length]
+                    const textClass = meta?.textClass ?? fallbackText[i % fallbackText.length]
+                    return (
+                      <div key={event.id} className={`flex items-start gap-4 ${i < upcoming.length - 1 ? 'pb-6' : ''}`}>
+                        <div className={`mt-1.5 w-3.5 h-3.5 rounded-full flex-shrink-0 ${dotClass} ring-2 ring-background z-10`} />
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className={`text-sm font-bold ${textClass}`}>
                               {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
@@ -181,19 +193,25 @@ export default async function EventsPage() {
                             <span className="font-bold text-foreground text-sm">{event.name}</span>
                           </div>
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            {[event.location, event.distance_km ? `${event.distance_km} km` : null, meta?.startTime || null].filter(Boolean).join(' · ')}
+                            {[
+                              event.location,
+                              event.distance_km
+                                ? `${event.distance_km} km${event.elevation_m ? ` / ~${event.elevation_m.toLocaleString('de-DE')} Hm` : ''}`
+                                : null,
+                              meta?.startTime || null,
+                            ].filter(Boolean).join(' · ')}
                           </p>
                         </div>
-                        {event.elevation_m && (
-                          <span className={`text-sm font-semibold flex-shrink-0 ${textClass}`}>
-                            ~{event.elevation_m.toLocaleString('de-DE')} Hm
-                          </span>
-                        )}
                       </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
+            </div>
+
+            {/* Europa-Karte — gleiche Höhe via items-stretch */}
+            <div className="lg:w-[45%] flex-shrink-0 min-h-[260px]">
+              <EuropeMap pins={mapPins} />
             </div>
           </div>
         )}
@@ -216,10 +234,10 @@ export default async function EventsPage() {
                 'from-blue-600/20 via-blue-900/10 to-transparent',
                 'from-yellow-500/20 via-yellow-900/10 to-transparent',
                 'from-green-600/20 via-green-900/10 to-transparent',
-                'from-orange-600/20 via-orange-900/10 to-transparent',
+                'from-purple-600/20 via-purple-900/10 to-transparent',
               ]
               const gradient = meta?.gradient ?? fallbackGradients[i % fallbackGradients.length]
-              const accentColor = meta?.color ?? '#FC4C02'
+              const accentColor = meta?.color ?? '#a855f7'
 
               return (
                 <div key={event.id} className={`relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br ${gradient} bg-card`}>
@@ -238,6 +256,17 @@ export default async function EventsPage() {
                         {event.type && (
                           <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${type.color}`}>
                             {type.label}
+                          </span>
+                        )}
+                        {/* Status-Badge: Training oder Wettbewerb */}
+                        {event.status === 'training'
+                          ? <span className="px-2.5 py-1 rounded-full text-xs font-semibold border text-amber-400 border-amber-400/30 bg-amber-400/10">Training</span>
+                          : <span className="px-2.5 py-1 rounded-full text-xs font-semibold border text-sky-400 border-sky-400/30 bg-sky-400/10">Wettbewerb</span>
+                        }
+                        {/* Bike-Type-Badge */}
+                        {meta?.bikeType && (
+                          <span className="px-2.5 py-1 rounded-full text-xs font-semibold border text-stone-400 border-stone-400/30 bg-stone-400/10">
+                            {meta.bikeType === 'gravel' ? 'Gravel' : 'Rennrad'}
                           </span>
                         )}
                         {event.country && (
