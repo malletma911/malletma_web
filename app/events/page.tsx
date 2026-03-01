@@ -162,8 +162,8 @@ export default async function EventsPage() {
           <div className="flex flex-wrap gap-2 mt-5">
             {[
               { value: String(upcoming.length),                              label: 'Events'      },
-              { value: `~${totalKm.toLocaleString('de-DE')}`,               label: 'km'          },
-              { value: `~${totalElevation.toLocaleString('de-DE')}`,        label: 'Höhenmeter'  },
+              { value: totalKm.toLocaleString('de-DE'),                       label: 'km'          },
+              { value: totalElevation.toLocaleString('de-DE'),               label: 'Höhenmeter'  },
               { value: String(countries.length),                             label: 'Länder'      },
             ].map(s => (
               <div key={s.label} className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
