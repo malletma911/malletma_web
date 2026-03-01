@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { getSupabase } from '@/lib/supabase'
 import EventCountdown from '@/components/event-countdown'
 import EventVisuals from '@/components/event-visuals'
+import EuropeMap from '@/components/europe-map'
 import { MSR_ROUTE, MSR_ELEVATION, VATTERN_ROUTE, VATTERN_ELEVATION, LETAPE_ROUTE, LETAPE_ELEVATION } from '@/lib/event-data'
 
 interface EventRow {
@@ -44,7 +45,7 @@ const typeConfig: Record<string, { label: string; color: string }> = {
   gran_fondo: { label: 'Gran Fondo', color: 'text-primary border-primary/30 bg-primary/10' },
 }
 
-// Pro Event: Karte + Elevation + Farbe + Startzeit + Wetter
+// Pro Event: Karte + Elevation + Farbe + Startzeit + Wetter + Kartenpin
 const eventMeta: Record<string, {
   route: [number,number][],
   elevation: {d:number,e:number}[],
@@ -53,6 +54,8 @@ const eventMeta: Record<string, {
   dotClass: string,
   startTime: string,
   gradient: string,
+  shortName: string,
+  city: string,
   weather: { tempMin: number; tempMax: number; rainDays: number; windKmh: number; sunrise: string; label: string }
 }> = {
   'Mecklenburger Seen Runde 300': {
@@ -63,6 +66,8 @@ const eventMeta: Record<string, {
     dotClass: 'bg-blue-400',
     startTime: '06:20 Uhr',
     gradient: 'from-blue-600/20 via-blue-900/10 to-transparent',
+    shortName: 'MSR 300',
+    city: 'Neustrelitz',
     // Klimadaten: Neustrelitz, Mai — Quelle: DWD Klimanormen 1991–2020
     weather: { tempMin: 8, tempMax: 19, rainDays: 11, windKmh: 14, sunrise: '05:02', label: 'Mecklenburg, Ende Mai' },
   },
@@ -74,6 +79,8 @@ const eventMeta: Record<string, {
     dotClass: 'bg-yellow-400',
     startTime: '04:56 Uhr',
     gradient: 'from-yellow-500/20 via-yellow-900/10 to-transparent',
+    shortName: 'Vätternrundan',
+    city: 'Motala',
     // Klimadaten: Motala (58°N), Juni — Quelle: SMHI Klimatnormaler 1991–2020
     weather: { tempMin: 10, tempMax: 21, rainDays: 10, windKmh: 11, sunrise: '03:58', label: 'Mittelschweden, Mitte Juni' },
   },
@@ -85,6 +92,8 @@ const eventMeta: Record<string, {
     dotClass: 'bg-green-400',
     startTime: '',
     gradient: 'from-green-600/20 via-green-900/10 to-transparent',
+    shortName: "L'Étape DK",
+    city: 'Flensburg',
     // Klimadaten: Viborg/Jutland, Juni — Quelle: DMI Klimanormer 1991–2020
     weather: { tempMin: 10, tempMax: 20, rainDays: 12, windKmh: 19, sunrise: '04:28', label: 'Jütland, Ende Juni' },
   },
@@ -98,6 +107,19 @@ export default async function EventsPage() {
   const totalKm = upcoming.reduce((s, e) => s + (e.distance_km ?? 0), 0)
   const countries = [...new Set(upcoming.map(e => e.country).filter(Boolean))]
 
+  const mapPins = upcoming
+    .filter(e => eventMeta[e.name])
+    .map(e => {
+      const meta = eventMeta[e.name]
+      return {
+        lat: meta.route[0][0],
+        lon: meta.route[0][1],
+        color: meta.color,
+        label: meta.shortName,
+        city: meta.city,
+      }
+    })
+
   return (
     <div className="min-h-screen pt-24 pb-24">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -109,19 +131,26 @@ export default async function EventsPage() {
           <p className="text-muted-foreground">Drei Länder. Drei Herausforderungen. Volle Attacke.</p>
         </div>
 
-        {/* Saison-Stats */}
+        {/* Saison-Stats + Europa-Karte */}
         {upcoming.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 mb-8 max-w-sm">
-            {[
-              { val: upcoming.length, label: 'Events' },
-              { val: totalKm, label: 'km gesamt' },
-              { val: countries.length, label: 'Länder' },
-            ].map(s => (
-              <div key={s.label} className="bg-card border border-border rounded-xl p-3 text-center">
-                <p className="text-2xl font-bold text-primary">{s.val}</p>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{s.label}</p>
-              </div>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 items-stretch">
+            {/* Stats-Spalte */}
+            <div className="flex sm:flex-col gap-3 flex-shrink-0">
+              {[
+                { val: upcoming.length, label: 'Events' },
+                { val: totalKm, label: 'km gesamt' },
+                { val: countries.length, label: 'Länder' },
+              ].map(s => (
+                <div key={s.label} className="flex-1 sm:flex-none bg-card border border-border rounded-xl p-3 text-center sm:w-24">
+                  <p className="text-2xl font-bold text-primary">{s.val}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            {/* Europa-Karte */}
+            <div className="flex-1 min-w-0">
+              <EuropeMap pins={mapPins} />
+            </div>
           </div>
         )}
 
