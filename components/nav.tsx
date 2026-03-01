@@ -15,16 +15,16 @@ export default function Nav() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-[family-name:var(--font-bebas)] text-2xl tracking-widest text-primary">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="font-[family-name:var(--font-bebas)] text-2xl tracking-widest text-primary shrink-0">
           MALLETMA
         </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1">
           {links.map(link => (
             <Link
               key={link.href}
               href={link.href}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm font-medium transition-colors ${
                 pathname === link.href
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
@@ -35,7 +35,7 @@ export default function Nav() {
           ))}
           <a
             href="/api/auth/logout"
-            className="ml-4 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+            className="ml-1 sm:ml-4 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
           >
             Logout
           </a>

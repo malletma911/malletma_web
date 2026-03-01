@@ -22,10 +22,10 @@ export default async function GaragePage() {
 
   return (
     <div className="min-h-screen pt-24 pb-16">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="mb-12">
           <p className="text-primary text-xs font-semibold tracking-[0.3em] uppercase mb-3">Meine Bikes</p>
-          <h1 className="font-[family-name:var(--font-bebas)] text-6xl md:text-8xl tracking-wider">GARAGE</h1>
+          <h1 className="font-[family-name:var(--font-bebas)] text-5xl sm:text-6xl md:text-8xl tracking-wider">GARAGE</h1>
         </div>
 
         {bikes.length === 0 ? (

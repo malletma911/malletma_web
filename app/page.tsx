@@ -67,7 +67,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
         <div className="relative z-20 text-center px-6 max-w-4xl mx-auto">
           <p className="text-primary text-sm font-semibold tracking-[0.3em] uppercase mb-4">Radsport &amp; Leidenschaft</p>
-          <h1 className="font-[family-name:var(--font-bebas)] text-8xl md:text-[10rem] leading-none tracking-wider mb-6">
+          <h1 className="font-[family-name:var(--font-bebas)] text-6xl sm:text-8xl md:text-[10rem] leading-none tracking-wider mb-6">
             MAIK<br />
             <span className="text-primary">MALLETSCHEK</span>
           </h1>
@@ -87,9 +87,9 @@ export default async function HomePage() {
 
       {/* Letzte Aktivität */}
       {latest && (
-        <section className="max-w-6xl mx-auto px-6 py-16">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
           <p className="text-primary text-xs font-semibold tracking-[0.3em] uppercase mb-4">Zuletzt auf dem Rad</p>
-          <div className="bg-card border border-border rounded-2xl p-8">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div>
                 <h2 className="text-2xl font-bold mb-1">{latest.name}</h2>
@@ -99,7 +99,7 @@ export default async function HomePage() {
                   })}
                 </p>
               </div>
-              <div className="flex gap-8">
+              <div className="flex gap-6 sm:gap-8">
                 <div className="text-center">
                   <p className="text-3xl font-bold text-primary">{(latest.distance / 1000).toFixed(1)}</p>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider">km</p>
@@ -129,14 +129,14 @@ export default async function HomePage() {
       )}
 
       {/* Quick Links */}
-      <section className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
           { href: '/garage', title: 'Garage', desc: 'Meine Fahrräder', icon: '🚲' },
           { href: '/stats', title: 'Stats', desc: 'Strava-Aktivitäten & Charts', icon: '📊' },
           { href: '/events', title: 'Events', desc: 'Bevorstehende Rennen', icon: '🏁' },
         ].map(card => (
           <Link key={card.href} href={card.href}
-            className="group bg-card border border-border rounded-2xl p-8 hover:border-primary/50 transition-all">
+            className="group bg-card border border-border rounded-2xl p-5 sm:p-8 hover:border-primary/50 transition-all">
             <div className="text-4xl mb-4">{card.icon}</div>
             <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{card.title}</h3>
             <p className="text-muted-foreground text-sm">{card.desc}</p>
