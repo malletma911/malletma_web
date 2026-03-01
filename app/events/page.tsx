@@ -160,17 +160,13 @@ export default async function EventsPage() {
           </p>
           {/* Stats */}
           <div className="flex gap-4 mt-3 text-sm text-muted-foreground flex-wrap">
-            <span className="text-foreground font-semibold">{upcoming.length}</span>
-            <span>Events</span>
+            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">{upcoming.length}</span> Events</span>
             <span>·</span>
-            <span className="text-foreground font-semibold">~{totalKm.toLocaleString('de-DE')}</span>
-            <span>km</span>
+            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">~{totalKm.toLocaleString('de-DE')}</span> km</span>
             <span>·</span>
-            <span className="text-foreground font-semibold">~{totalElevation.toLocaleString('de-DE')}</span>
-            <span>Hm</span>
+            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">~{totalElevation.toLocaleString('de-DE')}</span> Hm</span>
             <span>·</span>
-            <span className="text-foreground font-semibold">{countries.length}</span>
-            <span>Länder</span>
+            <span className="whitespace-nowrap"><span className="text-foreground font-semibold">{countries.length}</span> Länder</span>
           </div>
         </div>
 
