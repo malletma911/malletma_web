@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useState, useMemo } from 'react'
-import EventFilters, { FilterState, defaultFilters } from './event-filters'
+import EventFilters, { FilterState, FilterGroup, defaultFilters } from './event-filters'
 import EventCountdown from './event-countdown'
 import EventVisuals from './event-visuals'
 
@@ -20,7 +20,8 @@ const difficultyConfig: Record<string, { label: string; color: string; bars: num
   hard:    { label: 'Schwer',  color: 'bg-orange-500', bars: 3 },
   extreme: { label: 'Extrem',  color: 'bg-red-500',    bars: 4 },
 }
-const typeConfig: Record<string, { label: string; color: string }> = {
+const modusConfig: Record<string, { label: string; color: string }> = {
+  training:   { label: 'Training',   color: 'text-amber-400 border-amber-400/30 bg-amber-400/10' },
   race:       { label: 'Rennen',     color: 'text-red-400 border-red-400/30 bg-red-400/10' },
   gran_fondo: { label: 'Gran Fondo', color: 'text-primary border-primary/30 bg-primary/10' },
 }
@@ -64,16 +65,63 @@ export interface EnrichedEvent {
   }
 }
 
+type ModusValue = 'training' | 'race' | 'gran_fondo'
+
+function getEventModus(e: EnrichedEvent): ModusValue {
+  if (e.status === 'training') return 'training'
+  if (e.type === 'race') return 'race'
+  return 'gran_fondo'
+}
+
 function applyFilters(events: EnrichedEvent[], filters: FilterState): EnrichedEvent[] {
   return events.filter(e => {
     if (!filters.participation.has(e.participation)) return false
-    const comp = e.status === 'training' ? 'training' : 'wettbewerb'
-    if (!filters.competition.has(comp as 'training' | 'wettbewerb')) return false
+    if (!filters.modus.has(getEventModus(e))) return false
     if (!filters.bikeType.has(e.bikeType)) return false
-    const evType = e.type === 'race' ? 'race' : 'gran_fondo'
-    if (!filters.eventType.has(evType as 'race' | 'gran_fondo')) return false
     return true
   })
+}
+
+// Berechnet Filter-Gruppen mit Counts — blendet Dimensionen ohne Variation aus
+function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
+  const dims: { key: string; options: { value: string; label: string }[]; get: (e: EnrichedEvent) => string }[] = [
+    {
+      key: 'participation',
+      options: [
+        { value: 'confirmed', label: 'Dabei' },
+        { value: 'planned',   label: 'Geplant' },
+      ],
+      get: e => e.participation,
+    },
+    {
+      key: 'modus',
+      options: [
+        { value: 'gran_fondo', label: 'Gran Fondo' },
+        { value: 'race',       label: 'Rennen' },
+        { value: 'training',   label: 'Training' },
+      ],
+      get: getEventModus,
+    },
+    {
+      key: 'bikeType',
+      options: [
+        { value: 'road',   label: 'Rennrad' },
+        { value: 'gravel', label: 'Gravel' },
+      ],
+      get: e => e.bikeType,
+    },
+  ]
+
+  return dims
+    .map(dim => ({
+      key: dim.key,
+      options: dim.options.map(o => ({
+        ...o,
+        count: events.filter(e => dim.get(e) === o.value).length,
+      })),
+    }))
+    // Auto-hide: nur Dimensionen zeigen, bei denen > 1 Option einen Count > 0 hat
+    .filter(g => g.options.filter(o => o.count > 0).length > 1)
 }
 
 interface Props {
@@ -83,9 +131,9 @@ interface Props {
 export default function EventsFilterableContent({ events }: Props) {
   const [filters, setFilters] = useState<FilterState>(defaultFilters)
 
-  const filtered = useMemo(() => applyFilters(events, filters), [events, filters])
-
-  const pins = useMemo(
+  const filterGroups = useMemo(() => computeFilterGroups(events), [events])
+  const filtered     = useMemo(() => applyFilters(events, filters), [events, filters])
+  const pins         = useMemo(
     () => filtered.map(e => ({ lat: e.lat, lon: e.lon, color: e.color, label: e.shortName, city: e.city })),
     [filtered],
   )
@@ -94,6 +142,7 @@ export default function EventsFilterableContent({ events }: Props) {
     <>
       {/* Filter-Leiste */}
       <EventFilters
+        groups={filterGroups}
         filters={filters}
         onChange={setFilters}
         totalVisible={filtered.length}
@@ -161,8 +210,9 @@ export default function EventsFilterableContent({ events }: Props) {
           {filtered.map(event => {
             const date = new Date(event.date)
             const daysUntil = Math.ceil((date.getTime() - Date.now()) / 86400000)
-            const diff = difficultyConfig[event.difficulty ?? 'hard']
-            const type = typeConfig[event.type ?? 'gran_fondo']
+            const diff  = difficultyConfig[event.difficulty ?? 'hard']
+            const modus = getEventModus(event)
+            const mc    = modusConfig[modus]
 
             return (
               <div key={event.id} className={`relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br ${event.gradient} bg-card`}>
@@ -177,22 +227,16 @@ export default function EventsFilterableContent({ events }: Props) {
                     <div className="flex items-center gap-2 flex-wrap">
                       {event.participation === 'confirmed' ? (
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-primary text-primary-foreground">
-                          ✓ Ich bin dabei
+                          ✓ Dabei
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border border-muted-foreground/30 text-muted-foreground">
                           ⏳ Geplant
                         </span>
                       )}
-                      {event.type && (
-                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${type.color}`}>
-                          {type.label}
-                        </span>
-                      )}
-                      {event.status === 'training'
-                        ? <span className="px-2.5 py-1 rounded-full text-xs font-semibold border text-amber-400 border-amber-400/30 bg-amber-400/10">Training</span>
-                        : <span className="px-2.5 py-1 rounded-full text-xs font-semibold border text-sky-400 border-sky-400/30 bg-sky-400/10">Wettbewerb</span>
-                      }
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${mc.color}`}>
+                        {mc.label}
+                      </span>
                       <span className="px-2.5 py-1 rounded-full text-xs font-semibold border text-stone-400 border-stone-400/30 bg-stone-400/10">
                         {event.bikeType === 'gravel' ? 'Gravel' : 'Rennrad'}
                       </span>
