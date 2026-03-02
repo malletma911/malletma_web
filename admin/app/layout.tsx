@@ -6,6 +6,8 @@ import { getSession } from '@/lib/session'
 
 const geist = Geist({ subsets: ['latin'] })
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Malletma Admin',
   description: 'Radevent-Dashboard Admin',
@@ -16,7 +18,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getSession()
+  let session = null
+  try {
+    session = await getSession()
+  } catch {
+    // Session not available (e.g. during static generation)
+  }
 
   return (
     <html lang="de" className="dark">
