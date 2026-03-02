@@ -21,13 +21,21 @@ interface Event {
 }
 
 export default async function DashboardPage() {
-  const supabase = getSupabase()
-  const { data: events } = await supabase
-    .from('events')
-    .select('*')
-    .order('date', { ascending: true })
+  let items: Event[] = []
+  let dbError: string | null = null
 
-  const items = (events ?? []) as Event[]
+  try {
+    const supabase = getSupabase()
+    const { data: events, error } = await supabase
+      .from('events')
+      .select('*')
+      .order('date', { ascending: true })
+
+    if (error) dbError = error.message
+    items = (events ?? []) as Event[]
+  } catch (e) {
+    dbError = e instanceof Error ? e.message : String(e)
+  }
 
   return (
     <div>
@@ -43,6 +51,12 @@ export default async function DashboardPage() {
           + Neues Event
         </Link>
       </div>
+
+      {dbError && (
+        <div className="mb-6 p-4 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm font-mono">
+          DB Error: {dbError}
+        </div>
+      )}
 
       <div className="border border-zinc-800 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
