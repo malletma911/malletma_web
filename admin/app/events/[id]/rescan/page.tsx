@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
 interface DiffEntry {
@@ -11,18 +11,36 @@ interface DiffEntry {
 export default function RescanPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const [eventName, setEventName] = useState('')
   const [eventInfoUrl, setEventInfoUrl] = useState('')
   const [routeSourceUrl, setRouteSourceUrl] = useState('')
+  const [gpxFile, setGpxFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [diff, setDiff] = useState<Record<string, DiffEntry> | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [newFields, setNewFields] = useState<Record<string, unknown>>({})
 
+  useEffect(() => {
+    fetch(`/api/events/${id}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.name) setEventName(data.name)
+        if (data.event_info_url) setEventInfoUrl(data.event_info_url)
+        if (data.route_source_url) setRouteSourceUrl(data.route_source_url)
+      })
+      .catch(() => {})
+  }, [id])
+
   async function handleRescan() {
     setLoading(true)
     setError('')
     try {
+      let gpxContent: string | undefined
+      if (gpxFile) {
+        gpxContent = await gpxFile.text()
+      }
+
       const res = await fetch('/api/agent/rescan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,6 +48,7 @@ export default function RescanPage() {
           eventId: id,
           eventInfoUrl: eventInfoUrl || undefined,
           routeSourceUrl: routeSourceUrl || undefined,
+          gpxContent,
         }),
       })
       const data = await res.json()
@@ -83,8 +102,8 @@ export default function RescanPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-2">Rescan</h1>
-      <p className="text-zinc-500 mb-8">Event-ID: {id}</p>
+      <h1 className="text-3xl font-bold mb-2">{eventName ? `Rescan: ${eventName}` : 'Rescan'}</h1>
+      <p className="text-zinc-500 mb-8">ID: {id}</p>
 
       {error && <div className="mb-6 p-4 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">{error}</div>}
 
@@ -109,6 +128,16 @@ export default function RescanPage() {
               placeholder="Leer = gespeicherte URL verwenden"
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600 placeholder:text-zinc-700"
             />
+          </div>
+          <div>
+            <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">GPX-Datei (optional)</label>
+            <input
+              type="file"
+              accept=".gpx,application/gpx+xml"
+              onChange={e => setGpxFile(e.target.files?.[0] ?? null)}
+              className="w-full text-sm text-zinc-400 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border file:border-zinc-700 file:bg-zinc-800 file:text-zinc-300 file:text-sm file:cursor-pointer hover:file:bg-zinc-700 file:transition-colors"
+            />
+            {gpxFile && <p className="text-xs text-zinc-500 mt-1">{gpxFile.name}</p>}
           </div>
           <button
             onClick={handleRescan}

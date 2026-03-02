@@ -17,13 +17,24 @@ export async function GET(
   return NextResponse.json(data)
 }
 
-const NUMERIC_FIELDS = ['distance_km', 'elevation_m', 'participants', 'min_elevation_m', 'max_elevation_m']
+const EDITABLE_FIELDS = new Set([
+  'name', 'short_name', 'slug', 'date', 'status',
+  'location', 'city', 'country',
+  'distance_km', 'elevation_m', 'min_elevation_m', 'max_elevation_m',
+  'type', 'bike_type', 'difficulty', 'gradient_class',
+  'participation', 'participants', 'start_time',
+  'color', 'url', 'event_info_url', 'route_source_url',
+  'notes',
+])
+
+const NUMERIC_FIELDS = new Set(['distance_km', 'elevation_m', 'participants', 'min_elevation_m', 'max_elevation_m'])
 
 function cleanBody(body: Record<string, unknown>): Record<string, unknown> {
   const cleaned: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(body)) {
+    if (!EDITABLE_FIELDS.has(key)) continue
     if (value === '' || value === undefined) continue
-    if (NUMERIC_FIELDS.includes(key) && typeof value === 'string') {
+    if (NUMERIC_FIELDS.has(key) && typeof value === 'string') {
       const n = Number(value)
       if (!isNaN(n)) cleaned[key] = n
       continue

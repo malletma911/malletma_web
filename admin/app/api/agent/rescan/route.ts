@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { runEventAgent } from '@/lib/agents/events'
 import { extractRouteFromUrl } from '@/lib/parsers/route-extractor'
+import { parseGpx } from '@/lib/parsers/gpx'
 import { getSupabase } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
@@ -54,8 +55,16 @@ export async function POST(req: NextRequest) {
         fields.max_elevation_m = result.route.max_elevation_m
       }
     } else {
-      // No API key — try direct route extraction
-      if (routeUrl) {
+      // No API key — try direct route extraction or GPX parse
+      if (gpxContent) {
+        toolCalls = ['parse_gpx (direct)']
+        const route = parseGpx(gpxContent)
+        fields.route_polyline = route.polyline
+        fields.elevation_profile = route.elevation_profile
+        fields.distance_km = route.distance_km
+        fields.min_elevation_m = route.min_elevation_m
+        fields.max_elevation_m = route.max_elevation_m
+      } else if (routeUrl) {
         toolCalls = ['extract_route (direct)']
         const route = await extractRouteFromUrl(routeUrl)
         if (route) {
