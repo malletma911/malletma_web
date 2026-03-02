@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { runEventAgent } from '@/lib/agents/events'
+import { extractRouteFromUrl } from '@/lib/parsers/route-extractor'
 import { assignColor } from '@/lib/colors'
 import { getSupabase } from '@/lib/supabase'
 
@@ -20,55 +21,82 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await runEventAgent({ eventInfoUrl, routeSourceUrl, gpxContent })
+    const hasApiKey = Boolean(process.env.ANTHROPIC_API_KEY)
+    let fields: Record<string, unknown> = {}
+    let toolCalls: string[] = []
 
-    // Auto-assign color if not set
-    if (!result.fields.color) {
-      result.fields.color = await assignColor()
+    if (hasApiKey) {
+      // Full agent with Claude
+      const result = await runEventAgent({ eventInfoUrl, routeSourceUrl, gpxContent })
+      fields = result.fields
+      toolCalls = result.toolCalls
+
+      if (result.route) {
+        fields.route_polyline = result.route.polyline
+        fields.elevation_profile = result.route.elevation_profile
+        if (!fields.distance_km) fields.distance_km = result.route.distance_km
+        fields.min_elevation_m = result.route.min_elevation_m
+        fields.max_elevation_m = result.route.max_elevation_m
+      }
+    } else {
+      // No API key — direct extraction only
+      if (routeSourceUrl) {
+        toolCalls = ['extract_route (direct)']
+        const route = await extractRouteFromUrl(routeSourceUrl)
+        if (route) {
+          fields.route_polyline = route.polyline
+          fields.elevation_profile = route.elevation_profile
+          fields.distance_km = route.distance_km
+          fields.min_elevation_m = route.min_elevation_m
+          fields.max_elevation_m = route.max_elevation_m
+        }
+      }
+      if (Object.keys(fields).length === 0 && !gpxContent) {
+        return NextResponse.json(
+          { error: 'ANTHROPIC_API_KEY nicht konfiguriert. Nur direkte Routen-Extraktion (Komoot/RideWithGPS/GPX) verfügbar.' },
+          { status: 400 },
+        )
+      }
     }
 
-    // Merge route data into fields
-    if (result.route) {
-      result.fields.route_polyline = result.route.polyline
-      result.fields.elevation_profile = result.route.elevation_profile
-      if (!result.fields.distance_km) result.fields.distance_km = result.route.distance_km
-      result.fields.min_elevation_m = result.route.min_elevation_m
-      result.fields.max_elevation_m = result.route.max_elevation_m
+    // Auto-assign color if not set
+    if (!fields.color) {
+      fields.color = await assignColor()
     }
 
     // Store source URLs
-    if (eventInfoUrl) result.fields.event_info_url = eventInfoUrl
-    if (routeSourceUrl) result.fields.route_source_url = routeSourceUrl
+    if (eventInfoUrl) fields.event_info_url = eventInfoUrl
+    if (routeSourceUrl) fields.route_source_url = routeSourceUrl
 
     // Optionally save directly to DB
     if (saveToDb) {
       const supabase = getSupabase()
-      result.fields.last_scanned_at = new Date().toISOString()
-      result.fields.status = 'draft'
+      fields.last_scanned_at = new Date().toISOString()
+      fields.status = 'draft'
 
       const { data, error } = await supabase
         .from('events')
-        .insert(result.fields)
+        .insert(fields)
         .select()
         .single()
 
       if (error) {
-        return NextResponse.json({ error: error.message, fields: result.fields }, { status: 400 })
+        return NextResponse.json({ error: error.message, fields }, { status: 400 })
       }
 
-      // Log scan
       await supabase.from('agent_scan_log').insert({
         event_id: data.id,
         scan_type: 'initial',
-        input_urls: { eventInfoUrl, routeSourceUrl, hasGpx: !!gpxContent },
-        result: result.fields,
+        input_urls: { eventInfoUrl, routeSourceUrl, hasGpx: Boolean(gpxContent) },
+        result: fields,
       })
 
-      return NextResponse.json({ event: data, toolCalls: result.toolCalls })
+      return NextResponse.json({ event: data, toolCalls })
     }
 
-    return NextResponse.json({ fields: result.fields, toolCalls: result.toolCalls })
+    return NextResponse.json({ fields, toolCalls })
   } catch (e) {
+    console.error('Agent error:', e)
     return NextResponse.json(
       { error: e instanceof Error ? e.message : 'Agent failed' },
       { status: 500 },

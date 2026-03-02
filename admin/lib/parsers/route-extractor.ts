@@ -20,23 +20,31 @@ export async function extractRouteFromUrl(url: string): Promise<ParsedRoute | nu
 }
 
 async function extractFromKomoot(url: string): Promise<ParsedRoute | null> {
-  const res = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MalletmaBot/1.0)' },
-  })
-  if (!res.ok) return null
-  const html = await res.text()
-  const $ = cheerio.load(html)
-
-  const scriptTag = $('#__NEXT_DATA__').html()
-  if (!scriptTag) return null
+  // Extract tour ID from URL
+  const tourIdMatch = url.match(/tour\/(\d+)/)
+  if (!tourIdMatch) return null
+  const tourId = tourIdMatch[1]
 
   try {
-    const data = JSON.parse(scriptTag)
-    const tour = data?.props?.pageProps?.tour
-    if (!tour?.coordinates) return null
+    // Use Komoot public API
+    const apiUrl = `https://api.komoot.de/v007/tours/${tourId}?_embedded=coordinates`
+    const res = await fetch(apiUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; MalletmaBot/1.0)',
+        'Accept': 'application/hal+json',
+      },
+    })
+    if (!res.ok) return null
 
-    const coords = tour.coordinates as { lat: number; lng: number; alt: number }[]
-    const points = coords.map(c => ({ lat: c.lat, lng: c.lng, ele: c.alt }))
+    const data = await res.json()
+    const items = data?._embedded?.coordinates?.items
+    if (!items?.length) return null
+
+    const points = items.map((c: { lat: number; lng: number; alt: number }) => ({
+      lat: c.lat,
+      lng: c.lng,
+      ele: c.alt,
+    }))
 
     const { simplifyPolyline, buildElevationProfile } = await import('./utils')
     const simplified = simplifyPolyline(points, 0.0001)
