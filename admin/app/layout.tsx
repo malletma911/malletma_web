@@ -2,9 +2,13 @@ import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
-import { getSession } from '@/lib/session'
+import { cookies } from 'next/headers'
+import { jwtVerify } from 'jose'
 
-const geist = Geist({ subsets: ['latin'] })
+const geist = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+})
 
 export const dynamic = 'force-dynamic'
 
@@ -13,22 +17,30 @@ export const metadata: Metadata = {
   description: 'Radevent-Dashboard Admin',
 }
 
+async function getSessionSafe() {
+  try {
+    const cookieStore = await cookies()
+    const token = cookieStore.get('session')?.value
+    if (!token) return null
+    const secret = new TextEncoder().encode(process.env.AUTH0_SECRET)
+    const { payload } = await jwtVerify(token, secret)
+    return payload as { email: string; name: string }
+  } catch {
+    return null
+  }
+}
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  let session = null
-  try {
-    session = await getSession()
-  } catch {
-    // Session not available (e.g. during static generation)
-  }
+  const session = await getSessionSafe()
 
   return (
     <html lang="de" className="dark">
-      <body className={`${geist.className} antialiased bg-zinc-950 text-zinc-100 min-h-screen`}>
-        {session && (
+      <body className={`${geist.variable} font-sans antialiased bg-zinc-950 text-zinc-100 min-h-screen`}>
+        {session ? (
           <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
               <div className="flex items-center gap-6">
@@ -52,7 +64,7 @@ export default async function RootLayout({
               </div>
             </div>
           </nav>
-        )}
+        ) : null}
         <main className="max-w-7xl mx-auto px-6 py-8">
           {children}
         </main>
