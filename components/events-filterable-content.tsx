@@ -40,7 +40,6 @@ export interface EnrichedEvent {
   country: string | null
   participants: number | null
   difficulty: string | null
-  status: string | null
   // From DB columns (migrated from hardcoded eventMeta)
   lat: number
   lon: number
@@ -66,7 +65,7 @@ export interface EnrichedEvent {
 type ModusValue = 'training' | 'race' | 'gran_fondo'
 
 function getEventModus(e: EnrichedEvent): ModusValue {
-  if (e.status === 'training') return 'training'
+  if (e.type === 'training') return 'training'
   if (e.type === 'race') return 'race'
   return 'gran_fondo'
 }

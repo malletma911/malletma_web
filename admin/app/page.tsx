@@ -68,7 +68,8 @@ export default async function DashboardPage() {
               <th className="text-right px-4 py-3 font-medium text-zinc-400">km</th>
               <th className="text-right px-4 py-3 font-medium text-zinc-400">Hm</th>
               <th className="text-center px-4 py-3 font-medium text-zinc-400">Route</th>
-              <th className="text-center px-4 py-3 font-medium text-zinc-400">Status</th>
+              <th className="text-center px-4 py-3 font-medium text-zinc-400">Teilnahme</th>
+              <th className="text-center px-4 py-3 font-medium text-zinc-400">Sichtbar</th>
               <th className="text-right px-4 py-3 font-medium text-zinc-400">Aktionen</th>
             </tr>
           </thead>
@@ -99,7 +100,10 @@ export default async function DashboardPage() {
                   )}
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <StatusBadge status={event.status} />
+                  <ParticipationBadge participation={event.participation} />
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <PublishBadge status={event.status} />
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-2">
@@ -118,7 +122,7 @@ export default async function DashboardPage() {
             ))}
             {items.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-12 text-center text-zinc-500">
+                <td colSpan={9} className="px-4 py-12 text-center text-zinc-500">
                   Noch keine Events vorhanden.
                 </td>
               </tr>
@@ -130,22 +134,34 @@ export default async function DashboardPage() {
   )
 }
 
-function StatusBadge({ status }: { status: string }) {
-  // Normalize legacy values
-  const normalized = status === 'active' ? 'published' : status
+function ParticipationBadge({ participation }: { participation: string | null }) {
   const styles: Record<string, string> = {
-    published: 'bg-green-900/30 text-green-400 border-green-800/50',
-    draft: 'bg-yellow-900/30 text-yellow-400 border-yellow-800/50',
-    archived: 'bg-zinc-800 text-zinc-500 border-zinc-700',
+    registered: 'bg-primary/20 text-primary border-primary/40',
+    completed: 'bg-green-900/30 text-green-400 border-green-800/50',
+    planned: 'bg-zinc-800/50 text-zinc-400 border-zinc-700',
+    dnf: 'bg-red-900/20 text-red-400 border-red-800/50',
+    dns: 'bg-red-900/20 text-red-400 border-red-800/50',
   }
   const labels: Record<string, string> = {
-    published: 'Live',
-    draft: 'Entwurf',
-    archived: 'Archiv',
+    registered: 'Dabei',
+    completed: 'Absolviert',
+    planned: 'Geplant',
+    dnf: 'DNF',
+    dns: 'DNS',
   }
+  const p = participation ?? 'planned'
   return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-xs border ${styles[normalized] ?? styles.draft}`}>
-      {labels[normalized] ?? normalized}
+    <span className={`inline-block px-2 py-0.5 rounded-full text-xs border ${styles[p] ?? styles.planned}`}>
+      {labels[p] ?? p}
+    </span>
+  )
+}
+
+function PublishBadge({ status }: { status: string }) {
+  const isLive = status === 'published' || status === 'active'
+  return (
+    <span className={`inline-block px-2 py-0.5 rounded-full text-xs border ${isLive ? 'bg-green-900/30 text-green-400 border-green-800/50' : 'bg-zinc-800/50 text-zinc-500 border-zinc-700'}`}>
+      {isLive ? 'Live' : 'Entwurf'}
     </span>
   )
 }
