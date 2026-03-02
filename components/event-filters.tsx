@@ -6,14 +6,14 @@ export interface FilterGroup {
 }
 
 export interface FilterState {
-  participation: Set<'confirmed' | 'planned'>
-  modus:         Set<'training' | 'race' | 'gran_fondo'>
-  bikeType:      Set<'road' | 'gravel'>
+  participation: Set<string>
+  modus:         Set<string>
+  bikeType:      Set<string>
 }
 
 export function defaultFilters(): FilterState {
   return {
-    participation: new Set(['confirmed', 'planned']),
+    participation: new Set(['registered', 'planned']),
     modus:         new Set(['training', 'race', 'gran_fondo']),
     bikeType:      new Set(['road', 'gravel']),
   }

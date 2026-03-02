@@ -63,8 +63,9 @@ export default function CreateEventPage() {
       })
 
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
+      if (!res.ok) throw new Error(data.error || 'Unbekannter Fehler')
 
+      router.refresh()
       router.push('/')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Speichern fehlgeschlagen')

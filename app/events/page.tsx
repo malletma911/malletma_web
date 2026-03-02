@@ -2,13 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { getSupabase } from '@/lib/supabase'
 import EventsFilterableContent, { EnrichedEvent } from '@/components/events-filterable-content'
-import {
-  MSR_ROUTE, MSR_ELEVATION,
-  VATTERN_ROUTE, VATTERN_ELEVATION,
-  LETAPE_ROUTE, LETAPE_ELEVATION,
-  STRADE_ROUTE, STRADE_ELEVATION,
-  KITZ_ROUTE, KITZ_ELEVATION,
-} from '@/lib/event-data'
 
 interface EventRow {
   id: string
@@ -24,6 +17,16 @@ interface EventRow {
   participants: number | null
   difficulty: string | null
   status: string | null
+  slug: string | null
+  route_polyline: [number, number][] | null
+  elevation_profile: { d: number; e: number }[] | null
+  color: string | null
+  short_name: string | null
+  city: string | null
+  bike_type: string | null
+  participation: string | null
+  start_time: string | null
+  gradient_class: string | null
 }
 
 async function getEvents(): Promise<EventRow[]> {
@@ -36,109 +39,56 @@ const countryFlags: Record<string, string> = {
   DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹', AT: '🇦🇹',
 }
 
-// Per-Event Metadaten (Karte, Farbe, Wetter, …)
-const eventMeta: Record<string, {
-  route: [number, number][]
-  elevation: { d: number; e: number }[]
-  color: string
-  textClass: string
-  dotClass: string
-  startTime: string
-  gradient: string
-  shortName: string
-  city: string
-  bikeType: 'road' | 'gravel'
-  participation: 'confirmed' | 'planned'
-  weather: { tempMin: number; tempMax: number; rainDays: number; windKmh: number; sunrise: string; label: string }
+// Wetterdaten bleiben vorerst hardcoded (keyed by slug)
+const weatherBySlug: Record<string, {
+  tempMin: number; tempMax: number; rainDays: number; windKmh: number; sunrise: string; label: string
 }> = {
-  'Mecklenburger Seen Runde 300': {
-    route: MSR_ROUTE,
-    elevation: MSR_ELEVATION,
-    color: '#60a5fa',
-    textClass: 'text-blue-400',
-    dotClass: 'bg-blue-400',
-    startTime: '06:20 Uhr',
-    gradient: 'from-blue-600/20 via-blue-900/10 to-transparent',
-    shortName: 'MSR 300',
-    city: 'Neustrelitz',
-    bikeType: 'road',
-    participation: 'confirmed',
-    weather: { tempMin: 8, tempMax: 19, rainDays: 11, windKmh: 14, sunrise: '05:02', label: 'Mecklenburg, Ende Mai' },
-  },
-  'Vätternrundan 315': {
-    route: VATTERN_ROUTE,
-    elevation: VATTERN_ELEVATION,
-    color: '#facc15',
-    textClass: 'text-yellow-400',
-    dotClass: 'bg-yellow-400',
-    startTime: '04:56 Uhr',
-    gradient: 'from-yellow-500/20 via-yellow-900/10 to-transparent',
-    shortName: 'Vätternrundan',
-    city: 'Motala',
-    bikeType: 'road',
-    participation: 'confirmed',
-    weather: { tempMin: 10, tempMax: 21, rainDays: 10, windKmh: 11, sunrise: '03:58', label: 'Mittelschweden, Mitte Juni' },
-  },
-  "L'Étape Denmark — Hærvejsløbet": {
-    route: LETAPE_ROUTE,
-    elevation: LETAPE_ELEVATION,
-    color: '#4ade80',
-    textClass: 'text-green-400',
-    dotClass: 'bg-green-400',
-    startTime: '',
-    gradient: 'from-green-600/20 via-green-900/10 to-transparent',
-    shortName: "L'Étape DK",
-    city: 'Flensburg',
-    bikeType: 'road',
-    participation: 'confirmed',
-    weather: { tempMin: 10, tempMax: 20, rainDays: 12, windKmh: 19, sunrise: '04:28', label: 'Jütland, Ende Juni' },
-  },
-  'STRADE BIANCHE': {
-    route: STRADE_ROUTE,
-    elevation: STRADE_ELEVATION,
-    color: '#f97316',
-    textClass: 'text-orange-400',
-    dotClass: 'bg-orange-400',
-    startTime: '',
-    gradient: 'from-orange-600/20 via-orange-900/10 to-transparent',
-    shortName: 'Strade Bianche',
-    city: 'Siena',
-    bikeType: 'gravel',
-    participation: 'confirmed',
-    weather: { tempMin: 10, tempMax: 19, rainDays: 10, windKmh: 13, sunrise: '06:20', label: 'Toskana, Mitte April' },
-  },
-  'Kitzbüheler Radmarathon': {
-    route: KITZ_ROUTE,
-    elevation: KITZ_ELEVATION,
-    color: '#f43f5e',
-    textClass: 'text-rose-500',
-    dotClass: 'bg-rose-500',
-    startTime: '06:30 Uhr',
-    gradient: 'from-rose-600/20 via-rose-900/10 to-transparent',
-    shortName: 'KRM Klassik',
-    city: 'Kitzbühel',
-    bikeType: 'road',
-    participation: 'planned',
-    // Klimadaten: Kitzbühel (762 m), September — Quelle: climate-data.org 1991–2020
-    weather: { tempMin: 6, tempMax: 16, rainDays: 12, windKmh: 12, sunrise: '06:32', label: 'Kitzbühel/Tirol, Anfang September' },
-  },
+  'msr-300': { tempMin: 8, tempMax: 19, rainDays: 11, windKmh: 14, sunrise: '05:02', label: 'Mecklenburg, Ende Mai' },
+  'vatternrundan-315': { tempMin: 10, tempMax: 21, rainDays: 10, windKmh: 11, sunrise: '03:58', label: 'Mittelschweden, Mitte Juni' },
+  'letape-denmark': { tempMin: 10, tempMax: 20, rainDays: 12, windKmh: 19, sunrise: '04:28', label: 'Jütland, Ende Juni' },
+  'strade-bianche': { tempMin: 10, tempMax: 19, rainDays: 10, windKmh: 13, sunrise: '06:20', label: 'Toskana, Mitte April' },
+  'kitzbueheler-radmarathon': { tempMin: 6, tempMax: 16, rainDays: 12, windKmh: 12, sunrise: '06:32', label: 'Kitzbühel/Tirol, Anfang September' },
 }
+
+const DEFAULT_COLOR = '#a1a1aa'
 
 export default async function EventsPage() {
   const events = await getEvents()
   const upcoming = events.filter(e => new Date(e.date) >= new Date())
   const past     = events.filter(e => new Date(e.date) < new Date())
 
-  // Merge DB rows with eventMeta → EnrichedEvent[]
+  // Enrich DB rows → EnrichedEvent[] (nur Events mit Route werden als Cards gezeigt)
   const enriched: EnrichedEvent[] = upcoming
-    .filter(e => eventMeta[e.name])
+    .filter(e => e.route_polyline && Array.isArray(e.route_polyline) && e.route_polyline.length > 0)
     .map(e => {
-      const meta = eventMeta[e.name]
+      const route = e.route_polyline as [number, number][]
+      const color = e.color ?? DEFAULT_COLOR
       return {
-        ...e,
-        ...meta,
-        lat: meta.route[0][0],
-        lon: meta.route[0][1],
+        id: e.id,
+        name: e.name,
+        date: e.date,
+        location: e.location,
+        distance_km: e.distance_km,
+        elevation_m: e.elevation_m,
+        type: e.type,
+        url: e.url,
+        notes: e.notes,
+        country: e.country,
+        participants: e.participants,
+        difficulty: e.difficulty,
+        status: e.status,
+        slug: e.slug,
+        lat: route[0][0],
+        lon: route[0][1],
+        route,
+        elevation: (e.elevation_profile as { d: number; e: number }[]) ?? [],
+        color,
+        startTime: e.start_time ?? '',
+        shortName: e.short_name ?? e.name,
+        city: e.city ?? e.location ?? '',
+        bikeType: e.bike_type ?? 'road',
+        participation: e.participation ?? 'planned',
+        weather: e.slug ? weatherBySlug[e.slug] : undefined,
       }
     })
 

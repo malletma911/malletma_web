@@ -41,21 +41,19 @@ export interface EnrichedEvent {
   participants: number | null
   difficulty: string | null
   status: string | null
-  // Enriched from eventMeta
+  // From DB columns (migrated from hardcoded eventMeta)
   lat: number
   lon: number
   route: [number, number][]
   elevation: { d: number; e: number }[]
   color: string
-  textClass: string
-  dotClass: string
   startTime: string
-  gradient: string
   shortName: string
   city: string
-  bikeType: 'road' | 'gravel'
-  participation: 'confirmed' | 'planned'
-  weather: {
+  bikeType: string
+  participation: string
+  slug: string | null
+  weather?: {
     tempMin: number
     tempMax: number
     rainDays: number
@@ -88,10 +86,10 @@ function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
     {
       key: 'participation',
       options: [
-        { value: 'confirmed', label: 'Dabei' },
-        { value: 'planned',   label: 'Geplant' },
+        { value: 'registered', label: 'Dabei' },
+        { value: 'planned',    label: 'Geplant' },
       ],
-      get: e => e.participation,
+      get: e => e.participation === 'completed' || e.participation === 'registered' ? 'registered' : 'planned',
     },
     {
       key: 'modus',
@@ -166,10 +164,10 @@ export default function EventsFilterableContent({ events }: Props) {
                       key={event.id}
                       className={`flex items-start gap-4 ${i < events.length - 1 ? 'pb-6' : ''} transition-opacity duration-200 ${isVisible ? 'opacity-100' : 'opacity-25'}`}
                     >
-                      <div className={`mt-1.5 w-3.5 h-3.5 rounded-full flex-shrink-0 ${event.dotClass} ring-2 ring-background z-10`} />
+                      <div className="mt-1.5 w-3.5 h-3.5 rounded-full flex-shrink-0 ring-2 ring-background z-10" style={{ backgroundColor: event.color }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-sm font-bold ${event.textClass}`}>
+                          <span className="text-sm font-bold" style={{ color: event.color }}>
                             {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
                           </span>
                           {event.country && <span className="text-sm">{countryFlags[event.country]}</span>}
@@ -215,7 +213,7 @@ export default function EventsFilterableContent({ events }: Props) {
             const mc    = modusConfig[modus]
 
             return (
-              <div key={event.id} className={`relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br ${event.gradient} bg-card`}>
+              <div key={event.id} className="relative overflow-hidden rounded-3xl border border-border bg-card" style={{ backgroundImage: `linear-gradient(to bottom right, ${event.color}20, ${event.color}08, transparent)` }}>
                 {/* Hintergrund-KM-Zahl */}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 font-[family-name:var(--font-bebas)] text-[120px] sm:text-[180px] md:text-[220px] leading-none text-white/[0.03] select-none pointer-events-none">
                   {event.distance_km}
@@ -225,7 +223,7 @@ export default function EventsFilterableContent({ events }: Props) {
                   {/* Top Row */}
                   <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
                     <div className="flex items-center gap-2 flex-wrap">
-                      {event.participation === 'confirmed' ? (
+                      {(event.participation === 'registered' || event.participation === 'completed') ? (
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-primary text-primary-foreground">
                           ✓ Dabei
                         </span>
@@ -295,29 +293,31 @@ export default function EventsFilterableContent({ events }: Props) {
                   </div>
 
                   {/* Historische Wetterdaten */}
-                  <div className="mb-6 bg-black/20 backdrop-blur rounded-2xl p-4">
-                    <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
-                      Ø Wetter · {event.weather.label}
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <div>
-                        <p className="text-sm font-semibold">{event.weather.tempMin}° – {event.weather.tempMax}°C</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">Temperatur</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">{event.weather.rainDays} Tage</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">Regentage / Monat</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">Ø {event.weather.windKmh} km/h</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">Wind</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">{event.weather.sunrise} Uhr</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">Sonnenaufgang</p>
+                  {event.weather ? (
+                    <div className="mb-6 bg-black/20 backdrop-blur rounded-2xl p-4">
+                      <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
+                        Ø Wetter · {event.weather.label}
+                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                          <p className="text-sm font-semibold">{event.weather.tempMin}° – {event.weather.tempMax}°C</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Temperatur</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">{event.weather.rainDays} Tage</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Regentage / Monat</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">Ø {event.weather.windKmh} km/h</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Wind</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">{event.weather.sunrise} Uhr</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Sonnenaufgang</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : null}
 
                   {/* Karte + Höhenprofil */}
                   <EventVisuals
