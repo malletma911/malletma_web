@@ -17,22 +17,44 @@ export async function GET(
   return NextResponse.json(data)
 }
 
+const NUMERIC_FIELDS = ['distance_km', 'elevation_m', 'participants', 'min_elevation_m', 'max_elevation_m']
+
+function cleanBody(body: Record<string, unknown>): Record<string, unknown> {
+  const cleaned: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(body)) {
+    if (value === '' || value === undefined) continue
+    if (NUMERIC_FIELDS.includes(key) && typeof value === 'string') {
+      const n = Number(value)
+      if (!isNaN(n)) cleaned[key] = n
+      continue
+    }
+    cleaned[key] = value
+  }
+  return cleaned
+}
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params
   const body = await req.json()
+  const cleaned = cleanBody(body)
   const supabase = getSupabase()
+
+  console.log('PUT /api/events/' + id, JSON.stringify(cleaned))
 
   const { data, error } = await supabase
     .from('events')
-    .update(body)
+    .update(cleaned)
     .eq('id', id)
     .select()
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+  if (error) {
+    console.error('PUT /api/events/' + id + ' — error:', error)
+    return NextResponse.json({ error: error.message }, { status: 400 })
+  }
   return NextResponse.json(data)
 }
 
