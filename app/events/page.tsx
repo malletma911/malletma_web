@@ -18,8 +18,8 @@ interface EventRow {
   difficulty: string | null
   status: string | null
   slug: string | null
-  route_polyline: [number, number][] | null
-  elevation_profile: { d: number; e: number }[] | null
+  route_polyline: unknown
+  elevation_profile: unknown
   color: string | null
   short_name: string | null
   city: string | null
@@ -52,6 +52,39 @@ const weatherBySlug: Record<string, {
 
 const DEFAULT_COLOR = '#a1a1aa'
 
+/** Normalize route_polyline: handles both [lat,lng][] tuples and {lat,lng}[] objects */
+function normalizePolyline(raw: unknown): [number, number][] {
+  if (!Array.isArray(raw) || raw.length === 0) return []
+  const first = raw[0]
+  // Already [lat, lng] tuple
+  if (Array.isArray(first) && typeof first[0] === 'number') {
+    return raw as [number, number][]
+  }
+  // {lat, lng} object format
+  if (typeof first === 'object' && first !== null && 'lat' in first && 'lng' in first) {
+    return raw.map((p: { lat: number; lng: number }) => [p.lat, p.lng] as [number, number])
+  }
+  return []
+}
+
+/** Normalize elevation_profile: handles both {d,e}[] and {distance_km, elevation_m}[] */
+function normalizeElevation(raw: unknown): { d: number; e: number }[] {
+  if (!Array.isArray(raw) || raw.length === 0) return []
+  const first = raw[0]
+  // Already {d, e} format
+  if (typeof first === 'object' && first !== null && 'd' in first && 'e' in first) {
+    return raw as { d: number; e: number }[]
+  }
+  // {distance_km, elevation_m} format
+  if (typeof first === 'object' && first !== null && 'distance_km' in first) {
+    return raw.map((p: { distance_km: number; elevation_m: number }) => ({
+      d: Math.round(p.distance_km * 10) / 10,
+      e: Math.round(p.elevation_m),
+    }))
+  }
+  return []
+}
+
 export default async function EventsPage() {
   const events = await getEvents()
   const upcoming = events.filter(e => new Date(e.date) >= new Date())
@@ -59,9 +92,8 @@ export default async function EventsPage() {
 
   // Enrich DB rows → EnrichedEvent[] (alle zukünftigen Events)
   const enriched: EnrichedEvent[] = upcoming.map(e => {
-    const route = (Array.isArray(e.route_polyline) && e.route_polyline.length > 0)
-      ? e.route_polyline as [number, number][]
-      : []
+    const route = normalizePolyline(e.route_polyline)
+    const elevation = normalizeElevation(e.elevation_profile)
     const color = e.color ?? DEFAULT_COLOR
     return {
       id: e.id,
@@ -81,7 +113,7 @@ export default async function EventsPage() {
       lat: route.length > 0 ? route[0][0] : 0,
       lon: route.length > 0 ? route[0][1] : 0,
       route,
-      elevation: (e.elevation_profile as { d: number; e: number }[]) ?? [],
+      elevation,
       color,
       startTime: e.start_time ?? '',
       shortName: e.short_name ?? e.name,

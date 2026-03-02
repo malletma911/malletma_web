@@ -6,8 +6,10 @@ interface GpxPoint extends LatLng {
 }
 
 export interface ParsedRoute {
-  polyline: LatLng[]
-  elevation_profile: { distance_km: number; elevation_m: number }[]
+  /** [lat, lng] tuples for Leaflet */
+  polyline: [number, number][]
+  /** {d: km, e: elevation_m} for Recharts */
+  elevation_profile: { d: number; e: number }[]
   distance_km: number
   min_elevation_m: number
   max_elevation_m: number
@@ -41,8 +43,10 @@ export function parseGpx(gpxXml: string): ParsedRoute {
   const { profile, min, max, totalDistance } = buildElevationProfile(points)
 
   return {
-    polyline: simplified,
-    elevation_profile: profile,
+    // Convert to [lat, lng] tuples for Leaflet
+    polyline: simplified.map(p => [p.lat, p.lng] as [number, number]),
+    // Convert to short keys {d, e} for Recharts
+    elevation_profile: profile.map(p => ({ d: Math.round(p.distance_km * 10) / 10, e: Math.round(p.elevation_m) })),
     distance_km: Math.round(totalDistance * 10) / 10,
     min_elevation_m: Math.round(min),
     max_elevation_m: Math.round(max),
