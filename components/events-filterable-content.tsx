@@ -71,11 +71,19 @@ function getEventModus(e: EnrichedEvent): ModusValue {
   return 'gran_fondo'
 }
 
+function normalizeParticipation(p: string): string {
+  return (p === 'completed' || p === 'registered') ? 'registered' : 'planned'
+}
+
+function normalizeBikeType(b: string): string {
+  return (b === 'road' || b === 'gravel') ? b : 'road'
+}
+
 function applyFilters(events: EnrichedEvent[], filters: FilterState): EnrichedEvent[] {
   return events.filter(e => {
-    if (!filters.participation.has(e.participation)) return false
+    if (!filters.participation.has(normalizeParticipation(e.participation))) return false
     if (!filters.modus.has(getEventModus(e))) return false
-    if (!filters.bikeType.has(e.bikeType)) return false
+    if (!filters.bikeType.has(normalizeBikeType(e.bikeType))) return false
     return true
   })
 }
@@ -89,7 +97,7 @@ function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
         { value: 'registered', label: 'Dabei' },
         { value: 'planned',    label: 'Geplant' },
       ],
-      get: e => e.participation === 'completed' || e.participation === 'registered' ? 'registered' : 'planned',
+      get: e => normalizeParticipation(e.participation),
     },
     {
       key: 'modus',
@@ -106,7 +114,7 @@ function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
         { value: 'road',   label: 'Rennrad' },
         { value: 'gravel', label: 'Gravel' },
       ],
-      get: e => e.bikeType,
+      get: e => normalizeBikeType(e.bikeType),
     },
   ]
 

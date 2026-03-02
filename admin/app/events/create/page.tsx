@@ -65,8 +65,7 @@ export default function CreateEventPage() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Unbekannter Fehler')
 
-      router.refresh()
-      router.push('/')
+      window.location.href = '/'
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Speichern fehlgeschlagen')
     } finally {
