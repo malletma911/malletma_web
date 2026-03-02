@@ -131,6 +131,8 @@ export default async function DashboardPage() {
 }
 
 function StatusBadge({ status }: { status: string }) {
+  // Normalize legacy values
+  const normalized = status === 'active' ? 'published' : status
   const styles: Record<string, string> = {
     published: 'bg-green-900/30 text-green-400 border-green-800/50',
     draft: 'bg-yellow-900/30 text-yellow-400 border-yellow-800/50',
@@ -142,8 +144,8 @@ function StatusBadge({ status }: { status: string }) {
     archived: 'Archiv',
   }
   return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-xs border ${styles[status] ?? styles.draft}`}>
-      {labels[status] ?? status}
+    <span className={`inline-block px-2 py-0.5 rounded-full text-xs border ${styles[normalized] ?? styles.draft}`}>
+      {labels[normalized] ?? normalized}
     </span>
   )
 }

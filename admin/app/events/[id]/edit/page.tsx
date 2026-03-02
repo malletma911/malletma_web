@@ -16,7 +16,11 @@ export default function EditEventPage() {
       .then(r => r.json())
       .then(data => {
         if (data.error) setError(data.error)
-        else setFields(data)
+        else {
+          // Normalize legacy status values
+          if (data.status === 'active') data.status = 'published'
+          setFields(data)
+        }
       })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
@@ -42,11 +46,16 @@ export default function EditEventPage() {
     }
   }
 
+  const isPublished = fields.status === 'published'
+
   async function handlePublish() {
-    const endpoint = fields.status === 'published' ? 'unpublish' : 'publish'
+    const endpoint = isPublished ? 'unpublish' : 'publish'
     const res = await fetch(`/api/events/${id}/${endpoint}`, { method: 'POST' })
     const data = await res.json()
-    if (res.ok) setFields(data)
+    if (res.ok) {
+      // Only update status locally, don't overwrite other unsaved edits
+      updateField('status', data.status)
+    }
   }
 
   async function handleDelete() {
@@ -70,8 +79,8 @@ export default function EditEventPage() {
           <p className="text-zinc-500 mt-1">ID: {id}</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={handlePublish} className="px-4 py-2 border border-zinc-700 rounded-lg text-sm hover:bg-zinc-800 transition-colors">
-            {fields.status === 'published' ? 'Unpublish' : 'Publish'}
+          <button onClick={handlePublish} className={`px-4 py-2 border rounded-lg text-sm transition-colors ${isPublished ? 'border-green-800 text-green-400 hover:bg-green-900/20' : 'border-zinc-700 hover:bg-zinc-800'}`}>
+            {isPublished ? 'Unpublish' : 'Publish'}
           </button>
           <button onClick={handleDelete} className="px-4 py-2 border border-red-800 text-red-400 rounded-lg text-sm hover:bg-red-900/20 transition-colors">
             Löschen
@@ -172,7 +181,6 @@ const EDITABLE_FIELDS: { key: string; label: string; type: string }[] = [
   { key: 'short_name', label: 'Kurzname', type: 'text' },
   { key: 'slug', label: 'Slug', type: 'text' },
   { key: 'date', label: 'Datum', type: 'date' },
-  { key: 'status', label: 'Status', type: 'select' },
   // Ort
   { key: 'location', label: 'Ort / Start', type: 'text' },
   { key: 'city', label: 'Stadt', type: 'text' },
@@ -203,7 +211,6 @@ const EDITABLE_FIELDS: { key: string; label: string; type: string }[] = [
 
 function getOptions(key: string): string[] {
   switch (key) {
-    case 'status': return ['draft', 'published', 'archived']
     case 'type': return ['race', 'granfondo', 'gravel', 'charity']
     case 'bike_type': return ['road', 'gravel', 'mtb', 'tt']
     case 'difficulty': return ['easy', 'medium', 'hard', 'extreme']
