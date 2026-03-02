@@ -35,8 +35,9 @@ async function getEvents(): Promise<EventRow[]> {
   return data ?? []
 }
 
-const countryFlags: Record<string, string> = {
-  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹', AT: '🇦🇹',
+/** Convert any ISO 3166-1 alpha-2 code → flag emoji (e.g. "DE" → 🇩🇪) */
+function countryFlag(code: string): string {
+  return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('')
 }
 
 // Wetterdaten bleiben vorerst hardcoded (keyed by slug)
@@ -160,7 +161,7 @@ export default async function EventsPage() {
             <div className="space-y-3">
               {past.map(event => (
                 <div key={event.id} className="flex items-center gap-4 bg-card border border-border rounded-xl px-5 py-3 opacity-60">
-                  <span className="text-xl">{countryFlags[event.country ?? ''] ?? '🏁'}</span>
+                  <span className="text-xl">{event.country ? countryFlag(event.country) : '🏁'}</span>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold line-through truncate">{event.name}</p>
                     <p className="text-xs text-muted-foreground">{new Date(event.date).toLocaleDateString('de-DE')}</p>

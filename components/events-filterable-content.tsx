@@ -8,11 +8,15 @@ import EventVisuals from './event-visuals'
 
 const OverviewMap = dynamic(() => import('./overview-map'), { ssr: false })
 
-const countryFlags: Record<string, string> = {
-  DE: '🇩🇪', SE: '🇸🇪', DK: '🇩🇰', IT: '🇮🇹', AT: '🇦🇹',
+/** Convert any ISO 3166-1 alpha-2 code → flag emoji (e.g. "DE" → 🇩🇪) */
+function countryFlag(code: string): string {
+  return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('')
 }
 const countryNames: Record<string, string> = {
   DE: 'Deutschland', SE: 'Schweden', DK: 'Dänemark', IT: 'Italien', AT: 'Österreich',
+  FR: 'Frankreich', ES: 'Spanien', NL: 'Niederlande', CH: 'Schweiz', BE: 'Belgien',
+  PL: 'Polen', CZ: 'Tschechien', GB: 'Großbritannien', NO: 'Norwegen', FI: 'Finnland',
+  PT: 'Portugal', HR: 'Kroatien', SI: 'Slowenien', HU: 'Ungarn', GR: 'Griechenland',
 }
 const difficultyConfig: Record<string, { label: string; color: string; bars: number }> = {
   easy:    { label: 'Leicht',  color: 'bg-green-500',  bars: 1 },
@@ -179,7 +183,7 @@ export default function EventsFilterableContent({ events }: Props) {
                           <span className="text-sm font-bold" style={{ color: event.color }}>
                             {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
                           </span>
-                          {event.country && <span className="text-sm">{countryFlags[event.country]}</span>}
+                          {event.country && <span className="text-sm">{countryFlag(event.country)}</span>}
                           <span className="font-bold text-foreground text-sm">{event.name}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -248,7 +252,7 @@ export default function EventsFilterableContent({ events }: Props) {
                         {event.bikeType === 'gravel' ? 'Gravel' : 'Rennrad'}
                       </span>
                       {event.country && (
-                        <span className="text-sm">{countryFlags[event.country]} {countryNames[event.country]}</span>
+                        <span className="text-sm">{countryFlag(event.country)} {countryNames[event.country] ?? event.country}</span>
                       )}
                     </div>
                     <div className="text-right">

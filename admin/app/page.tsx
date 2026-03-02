@@ -3,6 +3,10 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
+function countryFlag(code: string): string {
+  return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('')
+}
+
 interface Event {
   id: string
   name: string
@@ -88,6 +92,7 @@ export default async function DashboardPage() {
                   {event.date ? new Date(event.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '–'}
                 </td>
                 <td className="px-4 py-3 text-zinc-400">
+                  {event.country && <span className="mr-1">{countryFlag(event.country)}</span>}
                   {event.location}{event.country ? ` (${event.country})` : ''}
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums">{event.distance_km ?? '–'}</td>
