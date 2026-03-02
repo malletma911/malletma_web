@@ -140,7 +140,9 @@ export default function EventsFilterableContent({ events }: Props) {
   const filterGroups = useMemo(() => computeFilterGroups(events), [events])
   const filtered     = useMemo(() => applyFilters(events, filters), [events, filters])
   const pins         = useMemo(
-    () => filtered.map(e => ({ lat: e.lat, lon: e.lon, color: e.color, label: e.shortName, city: e.city })),
+    () => filtered
+      .filter(e => e.route.length > 0)
+      .map(e => ({ lat: e.lat, lon: e.lon, color: e.color, label: e.shortName, city: e.city })),
     [filtered],
   )
 
@@ -328,13 +330,15 @@ export default function EventsFilterableContent({ events }: Props) {
                   ) : null}
 
                   {/* Karte + Höhenprofil */}
-                  <EventVisuals
-                    route={event.route}
-                    elevation={event.elevation}
-                    color={event.color}
-                    notes={event.notes}
-                    distance_km={event.distance_km ?? 300}
-                  />
+                  {event.route.length > 0 ? (
+                    <EventVisuals
+                      route={event.route}
+                      elevation={event.elevation}
+                      color={event.color}
+                      notes={event.notes}
+                      distance_km={event.distance_km ?? 300}
+                    />
+                  ) : null}
 
                   {/* Footer */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/5">

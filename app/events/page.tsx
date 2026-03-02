@@ -57,40 +57,40 @@ export default async function EventsPage() {
   const upcoming = events.filter(e => new Date(e.date) >= new Date())
   const past     = events.filter(e => new Date(e.date) < new Date())
 
-  // Enrich DB rows → EnrichedEvent[] (nur Events mit Route werden als Cards gezeigt)
-  const enriched: EnrichedEvent[] = upcoming
-    .filter(e => e.route_polyline && Array.isArray(e.route_polyline) && e.route_polyline.length > 0)
-    .map(e => {
-      const route = e.route_polyline as [number, number][]
-      const color = e.color ?? DEFAULT_COLOR
-      return {
-        id: e.id,
-        name: e.name,
-        date: e.date,
-        location: e.location,
-        distance_km: e.distance_km,
-        elevation_m: e.elevation_m,
-        type: e.type,
-        url: e.url,
-        notes: e.notes,
-        country: e.country,
-        participants: e.participants,
-        difficulty: e.difficulty,
-        status: e.status,
-        slug: e.slug,
-        lat: route[0][0],
-        lon: route[0][1],
-        route,
-        elevation: (e.elevation_profile as { d: number; e: number }[]) ?? [],
-        color,
-        startTime: e.start_time ?? '',
-        shortName: e.short_name ?? e.name,
-        city: e.city ?? e.location ?? '',
-        bikeType: e.bike_type ?? 'road',
-        participation: e.participation ?? 'planned',
-        weather: e.slug ? weatherBySlug[e.slug] : undefined,
-      }
-    })
+  // Enrich DB rows → EnrichedEvent[] (alle zukünftigen Events)
+  const enriched: EnrichedEvent[] = upcoming.map(e => {
+    const route = (Array.isArray(e.route_polyline) && e.route_polyline.length > 0)
+      ? e.route_polyline as [number, number][]
+      : []
+    const color = e.color ?? DEFAULT_COLOR
+    return {
+      id: e.id,
+      name: e.name,
+      date: e.date,
+      location: e.location,
+      distance_km: e.distance_km,
+      elevation_m: e.elevation_m,
+      type: e.type,
+      url: e.url,
+      notes: e.notes,
+      country: e.country,
+      participants: e.participants,
+      difficulty: e.difficulty,
+      status: e.status,
+      slug: e.slug,
+      lat: route.length > 0 ? route[0][0] : 0,
+      lon: route.length > 0 ? route[0][1] : 0,
+      route,
+      elevation: (e.elevation_profile as { d: number; e: number }[]) ?? [],
+      color,
+      startTime: e.start_time ?? '',
+      shortName: e.short_name ?? e.name,
+      city: e.city ?? e.location ?? '',
+      bikeType: e.bike_type ?? 'road',
+      participation: e.participation ?? 'planned',
+      weather: e.slug ? weatherBySlug[e.slug] : undefined,
+    }
+  })
 
   const totalKm       = Math.round(upcoming.reduce((s, e) => s + (e.distance_km ?? 0), 0))
   const totalElevation = Math.round(upcoming.reduce((s, e) => s + (e.elevation_m ?? 0), 0))
