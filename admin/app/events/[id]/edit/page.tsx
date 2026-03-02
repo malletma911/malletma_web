@@ -104,9 +104,25 @@ export default function EditEventPage() {
                 <option value="">–</option>
                 {getOptions(key).map(o => <option key={o} value={o}>{o}</option>)}
               </select>
+            ) : type === 'color' ? (
+              <div className="flex items-center gap-3">
+                <input
+                  type="color"
+                  value={String(fields[key] ?? '#a1a1aa')}
+                  onChange={e => updateField(key, e.target.value)}
+                  className="w-10 h-10 rounded cursor-pointer bg-transparent border-0"
+                />
+                <input
+                  type="text"
+                  value={String(fields[key] ?? '')}
+                  onChange={e => updateField(key, e.target.value)}
+                  placeholder="#60a5fa"
+                  className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600 font-mono"
+                />
+              </div>
             ) : (
               <input
-                type={type}
+                type={type === 'number' ? 'number' : type}
                 value={String(fields[key] ?? '')}
                 onChange={e => updateField(key, type === 'number' ? Number(e.target.value) : e.target.value)}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
@@ -116,49 +132,78 @@ export default function EditEventPage() {
         ))}
       </div>
 
-      {fields.route_polyline ? (
-        <div className="mt-6 p-4 bg-green-900/10 border border-green-800/30 rounded-lg">
-          <p className="text-green-400 text-sm font-medium">
-            Route vorhanden: {Array.isArray(fields.route_polyline) ? (fields.route_polyline as unknown[]).length : '?'} Punkte
+      {/* Route & Metadaten */}
+      <div className="mt-8 space-y-3">
+        <h3 className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Routendaten</h3>
+        {fields.route_polyline ? (
+          <div className="p-4 bg-green-900/10 border border-green-800/30 rounded-lg">
+            <p className="text-green-400 text-sm font-medium">
+              Route vorhanden: {Array.isArray(fields.route_polyline) ? (fields.route_polyline as unknown[]).length : '?'} GPS-Punkte
+            </p>
+            {fields.elevation_profile ? (
+              <p className="text-green-400/60 text-xs mt-1">
+                Höhenprofil: {Array.isArray(fields.elevation_profile) ? (fields.elevation_profile as unknown[]).length : '?'} Datenpunkte
+              </p>
+            ) : null}
+          </div>
+        ) : (
+          <div className="p-4 bg-zinc-800/30 border border-zinc-800 rounded-lg">
+            <p className="text-zinc-500 text-sm">Keine Route vorhanden. Nutze Rescan mit einer Komoot/RideWithGPS URL.</p>
+          </div>
+        )}
+        {fields.last_scanned_at ? (
+          <p className="text-xs text-zinc-600">
+            Letzter Scan: {new Date(String(fields.last_scanned_at)).toLocaleString('de-DE')}
           </p>
-        </div>
-      ) : null}
-
-      {fields.last_scanned_at ? (
-        <p className="mt-4 text-xs text-zinc-600">
-          Letzter Scan: {new Date(String(fields.last_scanned_at)).toLocaleString('de-DE')}
-        </p>
-      ) : null}
+        ) : null}
+        {fields.updated_at ? (
+          <p className="text-xs text-zinc-600">
+            Letzte Änderung: {new Date(String(fields.updated_at)).toLocaleString('de-DE')}
+          </p>
+        ) : null}
+      </div>
     </div>
   )
 }
 
 const EDITABLE_FIELDS: { key: string; label: string; type: string }[] = [
+  // Basis
   { key: 'name', label: 'Name', type: 'text' },
   { key: 'short_name', label: 'Kurzname', type: 'text' },
   { key: 'slug', label: 'Slug', type: 'text' },
   { key: 'date', label: 'Datum', type: 'date' },
-  { key: 'location', label: 'Ort', type: 'text' },
+  { key: 'status', label: 'Status', type: 'select' },
+  // Ort
+  { key: 'location', label: 'Ort / Start', type: 'text' },
   { key: 'city', label: 'Stadt', type: 'text' },
-  { key: 'country', label: 'Land', type: 'text' },
+  { key: 'country', label: 'Land (Kürzel)', type: 'text' },
+  // Strecke
   { key: 'distance_km', label: 'Distanz (km)', type: 'number' },
-  { key: 'elevation_m', label: 'Höhenmeter', type: 'number' },
+  { key: 'elevation_m', label: 'Höhenmeter gesamt', type: 'number' },
+  { key: 'min_elevation_m', label: 'Min. Höhe (m)', type: 'number' },
+  { key: 'max_elevation_m', label: 'Max. Höhe (m)', type: 'number' },
+  // Kategorien
   { key: 'type', label: 'Typ', type: 'select' },
   { key: 'bike_type', label: 'Rad-Typ', type: 'select' },
   { key: 'difficulty', label: 'Schwierigkeit', type: 'select' },
   { key: 'gradient_class', label: 'Profil', type: 'select' },
+  // Teilnahme
   { key: 'participation', label: 'Teilnahme', type: 'select' },
-  { key: 'participants', label: 'Teilnehmer', type: 'number' },
+  { key: 'participants', label: 'Teilnehmer (Anzahl)', type: 'number' },
   { key: 'start_time', label: 'Startzeit', type: 'text' },
-  { key: 'color', label: 'Farbe (Hex)', type: 'text' },
+  // Darstellung
+  { key: 'color', label: 'Farbe (Hex)', type: 'color' },
+  // URLs
   { key: 'url', label: 'Website', type: 'url' },
   { key: 'event_info_url', label: 'Event-Info URL', type: 'url' },
   { key: 'route_source_url', label: 'Routen-URL', type: 'url' },
+  // Freitext
   { key: 'notes', label: 'Notizen', type: 'textarea' },
 ]
 
 function getOptions(key: string): string[] {
   switch (key) {
+    case 'status': return ['draft', 'published', 'archived']
     case 'type': return ['race', 'granfondo', 'gravel', 'charity']
     case 'bike_type': return ['road', 'gravel', 'mtb', 'tt']
     case 'difficulty': return ['easy', 'medium', 'hard', 'extreme']

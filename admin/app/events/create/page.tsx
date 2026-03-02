@@ -77,6 +77,54 @@ export default function CreateEventPage() {
     setFields(f => ({ ...f, [key]: value }))
   }
 
+  function renderField(key: string, label: string, type: string) {
+    return (
+      <div key={key} className={type === 'textarea' ? 'lg:col-span-2' : ''}>
+        <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">{label}</label>
+        {type === 'textarea' ? (
+          <textarea
+            value={String(fields[key] ?? '')}
+            onChange={e => updateField(key, e.target.value)}
+            rows={3}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
+          />
+        ) : type === 'select' ? (
+          <select
+            value={String(fields[key] ?? '')}
+            onChange={e => updateField(key, e.target.value)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
+          >
+            <option value="">–</option>
+            {getOptions(key).map(o => <option key={o} value={o}>{o}</option>)}
+          </select>
+        ) : type === 'color' ? (
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={String(fields[key] ?? '#a1a1aa')}
+              onChange={e => updateField(key, e.target.value)}
+              className="w-10 h-10 rounded cursor-pointer bg-transparent border-0"
+            />
+            <input
+              type="text"
+              value={String(fields[key] ?? '')}
+              onChange={e => updateField(key, e.target.value)}
+              placeholder="#60a5fa"
+              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600 font-mono"
+            />
+          </div>
+        ) : (
+          <input
+            type={type === 'number' ? 'number' : type}
+            value={String(fields[key] ?? '')}
+            onChange={e => updateField(key, type === 'number' ? Number(e.target.value) : e.target.value)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
+          />
+        )}
+      </div>
+    )
+  }
+
   if (step === 'review') {
     return (
       <div>
@@ -100,35 +148,7 @@ export default function CreateEventPage() {
         {error && <div className="mb-6 p-4 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">{error}</div>}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {EDITABLE_FIELDS.map(({ key, label, type }) => (
-            <div key={key} className={type === 'textarea' ? 'lg:col-span-2' : ''}>
-              <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">{label}</label>
-              {type === 'textarea' ? (
-                <textarea
-                  value={String(fields[key] ?? '')}
-                  onChange={e => updateField(key, e.target.value)}
-                  rows={3}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
-                />
-              ) : type === 'select' ? (
-                <select
-                  value={String(fields[key] ?? '')}
-                  onChange={e => updateField(key, e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
-                >
-                  <option value="">–</option>
-                  {getOptions(key).map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              ) : (
-                <input
-                  type={type}
-                  value={String(fields[key] ?? '')}
-                  onChange={e => updateField(key, type === 'number' ? Number(e.target.value) : e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
-                />
-              )}
-            </div>
-          ))}
+          {EDITABLE_FIELDS.map(({ key, label, type }) => renderField(key, label, type))}
         </div>
 
         {fields.route_polyline ? (
@@ -257,23 +277,36 @@ export default function CreateEventPage() {
 }
 
 const EDITABLE_FIELDS: { key: string; label: string; type: string }[] = [
+  // Basis
   { key: 'name', label: 'Name', type: 'text' },
   { key: 'short_name', label: 'Kurzname', type: 'text' },
   { key: 'slug', label: 'Slug', type: 'text' },
   { key: 'date', label: 'Datum', type: 'date' },
-  { key: 'location', label: 'Ort', type: 'text' },
+  // Ort
+  { key: 'location', label: 'Ort / Start', type: 'text' },
   { key: 'city', label: 'Stadt', type: 'text' },
-  { key: 'country', label: 'Land', type: 'text' },
+  { key: 'country', label: 'Land (Kürzel)', type: 'text' },
+  // Strecke
   { key: 'distance_km', label: 'Distanz (km)', type: 'number' },
-  { key: 'elevation_m', label: 'Höhenmeter', type: 'number' },
+  { key: 'elevation_m', label: 'Höhenmeter gesamt', type: 'number' },
+  { key: 'min_elevation_m', label: 'Min. Höhe (m)', type: 'number' },
+  { key: 'max_elevation_m', label: 'Max. Höhe (m)', type: 'number' },
+  // Kategorien
   { key: 'type', label: 'Typ', type: 'select' },
   { key: 'bike_type', label: 'Rad-Typ', type: 'select' },
   { key: 'difficulty', label: 'Schwierigkeit', type: 'select' },
   { key: 'gradient_class', label: 'Profil', type: 'select' },
+  // Teilnahme
   { key: 'participation', label: 'Teilnahme', type: 'select' },
-  { key: 'participants', label: 'Teilnehmer', type: 'number' },
+  { key: 'participants', label: 'Teilnehmer (Anzahl)', type: 'number' },
   { key: 'start_time', label: 'Startzeit', type: 'text' },
+  // Darstellung
+  { key: 'color', label: 'Farbe (Hex)', type: 'color' },
+  // URLs
   { key: 'url', label: 'Website', type: 'url' },
+  { key: 'event_info_url', label: 'Event-Info URL', type: 'url' },
+  { key: 'route_source_url', label: 'Routen-URL', type: 'url' },
+  // Freitext
   { key: 'notes', label: 'Notizen', type: 'textarea' },
 ]
 
