@@ -18,8 +18,8 @@ interface EventRow {
   difficulty: string | null
   status: string | null
   slug: string | null
-  route_polyline: unknown
-  elevation_profile: unknown
+  route_polyline: [number, number][] | null
+  elevation_profile: { d: number; e: number }[] | null
   color: string | null
   short_name: string | null
   city: string | null
@@ -52,31 +52,6 @@ const weatherBySlug: Record<string, {
 
 const DEFAULT_COLOR = '#a1a1aa'
 
-/** Normalize route_polyline: handles both [lat,lng][] tuples and {lat,lng}[] objects */
-function normalizePolyline(raw: unknown): [number, number][] {
-  if (!Array.isArray(raw) || raw.length === 0) return []
-  const first = raw[0]
-  if (Array.isArray(first) && typeof first[0] === 'number') return raw as [number, number][]
-  if (typeof first === 'object' && first !== null && 'lat' in first && 'lng' in first) {
-    return raw.map((p: { lat: number; lng: number }) => [p.lat, p.lng] as [number, number])
-  }
-  return []
-}
-
-/** Normalize elevation_profile: handles both {d,e}[] and {distance_km, elevation_m}[] */
-function normalizeElevation(raw: unknown): { d: number; e: number }[] {
-  if (!Array.isArray(raw) || raw.length === 0) return []
-  const first = raw[0]
-  if (typeof first === 'object' && first !== null && 'd' in first && 'e' in first) return raw as { d: number; e: number }[]
-  if (typeof first === 'object' && first !== null && 'distance_km' in first) {
-    return raw.map((p: { distance_km: number; elevation_m: number }) => ({
-      d: Math.round(p.distance_km * 10) / 10,
-      e: Math.round(p.elevation_m),
-    }))
-  }
-  return []
-}
-
 export default async function EventsPage() {
   const events = await getEvents()
   const isPublished = (e: EventRow) => e.status === 'published' || e.status === 'active'
@@ -85,8 +60,8 @@ export default async function EventsPage() {
 
   // Enrich DB rows → EnrichedEvent[] (nur published Events)
   const enriched: EnrichedEvent[] = upcoming.map(e => {
-    const route = normalizePolyline(e.route_polyline)
-    const elevation = normalizeElevation(e.elevation_profile)
+    const route = e.route_polyline ?? []
+    const elevation = e.elevation_profile ?? []
     const color = e.color ?? DEFAULT_COLOR
     return {
       id: e.id,
