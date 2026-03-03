@@ -27,7 +27,7 @@ Extrahiere folgende Felder (alle optional):
 - gradient_class: "flat" | "hilly" | "mountainous"
 - url: Offizielle Website-URL
 - slug: URL-freundlicher Name (lowercase, dashes)
-- notes: Kurze Beschreibung des Events (1-2 Sätze auf Deutsch). Beschreibe Strecke, Besonderheiten und Charakter.
+- notes: Beschreibung des Events (max. 350 Zeichen, auf Deutsch). Beschreibe Strecke, Besonderheiten und Charakter des Events. Nutze die Event-Website als Quelle. IMMER ausfüllen!
 
 Antworte IMMER mit einem JSON-Objekt. Felder die du nicht ermitteln kannst, lasse weg.
 Nutze die Tools um Informationen zu sammeln. Sei gründlich aber effizient.`

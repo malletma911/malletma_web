@@ -103,7 +103,7 @@ function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
         count: events.filter(e => dim.get(e) === o.value).length,
       })),
     }))
-    .filter(g => g.options.filter(o => o.count > 0).length > 1)
+    .filter(g => g.options.filter(o => o.count > 0).length > 0)
 }
 
 interface Props {
@@ -159,7 +159,7 @@ export default function EventsFilterableContent({ events }: Props) {
                           <span className="text-sm font-bold" style={{ color: event.color }}>
                             {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
                           </span>
-                          {event.country && <span className="text-sm">{countryFlag(event.country)}</span>}
+                          {event.country && <span className="text-sm">{countryFlag(event.country)} {countryName(event.country)}</span>}
                           <span className="font-bold text-foreground text-sm">{event.name}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -247,7 +247,7 @@ export default function EventsFilterableContent({ events }: Props) {
                     <p className="text-muted-foreground text-sm flex flex-wrap items-center gap-x-3 gap-y-1">
                       <span>{date.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
                       {event.startTime && <span>Start {event.startTime}</span>}
-                      {event.location && <span>{event.location}</span>}
+                      {event.location && <span>{event.location}{event.country ? `, ${countryName(event.country)}` : ''}</span>}
                     </p>
                   </div>
 

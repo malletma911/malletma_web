@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase'
 import { countryFlag } from '@/lib/country'
 import Link from 'next/link'
+import GenerateNotesButton from './components/generate-notes-button'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,12 +46,15 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-bold">Events</h1>
           <p className="text-zinc-500 mt-1">{items.length} Events in der Datenbank</p>
         </div>
-        <Link
-          href="/events/create"
-          className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors"
-        >
-          + Neues Event
-        </Link>
+        <div className="flex items-center gap-3">
+          <GenerateNotesButton />
+          <Link
+            href="/events/create"
+            className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors"
+          >
+            + Neues Event
+          </Link>
+        </div>
       </div>
 
       {dbError && (
