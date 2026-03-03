@@ -57,11 +57,12 @@ function perpendicularDist(p: LatLng, a: LatLng, b: LatLng): number {
 /** Build elevation profile from points with elevation */
 export function buildElevationProfile(
   points: (LatLng & { ele?: number })[],
-): { profile: ElevationPoint[]; min: number; max: number; totalDistance: number } {
+): { profile: ElevationPoint[]; min: number; max: number; totalDistance: number; elevationGain: number } {
   const profile: ElevationPoint[] = []
   let cumDist = 0
   let min = Infinity
   let max = -Infinity
+  let elevationGain = 0
 
   for (let i = 0; i < points.length; i++) {
     if (i > 0) {
@@ -70,6 +71,10 @@ export function buildElevationProfile(
     const ele = points[i].ele ?? 0
     if (ele < min) min = ele
     if (ele > max) max = ele
+    if (i > 0) {
+      const delta = ele - (points[i - 1].ele ?? 0)
+      if (delta > 0) elevationGain += delta
+    }
     profile.push({ distance_km: cumDist / 1000, elevation_m: ele })
   }
 
@@ -83,8 +88,8 @@ export function buildElevationProfile(
     if (simplified[simplified.length - 1] !== profile[profile.length - 1]) {
       simplified.push(profile[profile.length - 1])
     }
-    return { profile: simplified, min, max, totalDistance: cumDist / 1000 }
+    return { profile: simplified, min, max, totalDistance: cumDist / 1000, elevationGain: Math.round(elevationGain) }
   }
 
-  return { profile, min, max, totalDistance: cumDist / 1000 }
+  return { profile, min, max, totalDistance: cumDist / 1000, elevationGain: Math.round(elevationGain) }
 }

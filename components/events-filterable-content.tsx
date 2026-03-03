@@ -5,19 +5,10 @@ import { useState, useMemo } from 'react'
 import EventFilters, { FilterState, FilterGroup, defaultFilters } from './event-filters'
 import EventCountdown from './event-countdown'
 import EventVisuals from './event-visuals'
+import { countryFlag, countryName } from '@/lib/country'
 
 const OverviewMap = dynamic(() => import('./overview-map'), { ssr: false })
 
-/** Convert any ISO 3166-1 alpha-2 code → flag emoji (e.g. "DE" → 🇩🇪) */
-function countryFlag(code: string): string {
-  return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('')
-}
-const countryNames: Record<string, string> = {
-  DE: 'Deutschland', SE: 'Schweden', DK: 'Dänemark', IT: 'Italien', AT: 'Österreich',
-  FR: 'Frankreich', ES: 'Spanien', NL: 'Niederlande', CH: 'Schweiz', BE: 'Belgien',
-  PL: 'Polen', CZ: 'Tschechien', GB: 'Großbritannien', NO: 'Norwegen', FI: 'Finnland',
-  PT: 'Portugal', HR: 'Kroatien', SI: 'Slowenien', HU: 'Ungarn', GR: 'Griechenland',
-}
 const difficultyConfig: Record<string, { label: string; color: string; bars: number }> = {
   easy:    { label: 'Leicht',  color: 'bg-green-500',  bars: 1 },
   medium:  { label: 'Mittel',  color: 'bg-yellow-500', bars: 2 },
@@ -28,10 +19,13 @@ const modusConfig: Record<string, { label: string; color: string }> = {
   training:   { label: 'Training',   color: 'text-amber-400 border-amber-400/30 bg-amber-400/10' },
   race:       { label: 'Rennen',     color: 'text-red-400 border-red-400/30 bg-red-400/10' },
   gran_fondo: { label: 'Gran Fondo', color: 'text-primary border-primary/30 bg-primary/10' },
+  charity:    { label: 'Charity',    color: 'text-blue-400 border-blue-400/30 bg-blue-400/10' },
+}
+const bikeTypeLabels: Record<string, string> = {
+  road: 'Rennrad', gravel: 'Gravel', mtb: 'MTB',
 }
 
 export interface EnrichedEvent {
-  // DB fields
   id: string
   name: string
   date: string
@@ -44,7 +38,6 @@ export interface EnrichedEvent {
   country: string | null
   participants: number | null
   difficulty: string | null
-  // From DB columns (migrated from hardcoded eventMeta)
   lat: number
   lon: number
   route: [number, number][]
@@ -56,68 +49,49 @@ export interface EnrichedEvent {
   bikeType: string
   participation: string
   slug: string | null
-  weather?: {
-    tempMin: number
-    tempMax: number
-    rainDays: number
-    windKmh: number
-    sunrise: string
-    label: string
-  }
 }
 
-type ModusValue = 'training' | 'race' | 'gran_fondo'
+type ModusValue = 'training' | 'race' | 'gran_fondo' | 'charity'
 
 function getEventModus(e: EnrichedEvent): ModusValue {
   if (e.type === 'training') return 'training'
   if (e.type === 'race') return 'race'
+  if (e.type === 'charity') return 'charity'
   return 'gran_fondo'
 }
 
-function normalizeParticipation(p: string): string {
-  return (p === 'completed' || p === 'registered') ? 'registered' : 'planned'
-}
-
 function normalizeBikeType(b: string): string {
-  return (b === 'road' || b === 'gravel') ? b : 'road'
+  return (b === 'road' || b === 'gravel' || b === 'mtb') ? b : 'road'
 }
 
 function applyFilters(events: EnrichedEvent[], filters: FilterState): EnrichedEvent[] {
   return events.filter(e => {
-    if (!filters.participation.has(normalizeParticipation(e.participation))) return false
-    if (!filters.modus.has(getEventModus(e))) return false
     if (!filters.bikeType.has(normalizeBikeType(e.bikeType))) return false
+    if (filters.country.size > 0 && !filters.country.has(e.country ?? '')) return false
     return true
   })
 }
 
-// Berechnet Filter-Gruppen mit Counts — blendet Dimensionen ohne Variation aus
 function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
+  const countries = [...new Set(events.map(e => e.country).filter(Boolean))] as string[]
+
   const dims: { key: string; options: { value: string; label: string }[]; get: (e: EnrichedEvent) => string }[] = [
-    {
-      key: 'participation',
-      options: [
-        { value: 'registered', label: 'Dabei' },
-        { value: 'planned',    label: 'Geplant' },
-      ],
-      get: e => normalizeParticipation(e.participation),
-    },
-    {
-      key: 'modus',
-      options: [
-        { value: 'gran_fondo', label: 'Gran Fondo' },
-        { value: 'race',       label: 'Rennen' },
-        { value: 'training',   label: 'Training' },
-      ],
-      get: getEventModus,
-    },
     {
       key: 'bikeType',
       options: [
         { value: 'road',   label: 'Rennrad' },
         { value: 'gravel', label: 'Gravel' },
+        { value: 'mtb',    label: 'MTB' },
       ],
       get: e => normalizeBikeType(e.bikeType),
+    },
+    {
+      key: 'country',
+      options: countries.sort().map(code => ({
+        value: code,
+        label: `${countryFlag(code)} ${countryName(code)}`,
+      })),
+      get: e => e.country ?? '',
     },
   ]
 
@@ -129,7 +103,6 @@ function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
         count: events.filter(e => dim.get(e) === o.value).length,
       })),
     }))
-    // Auto-hide: nur Dimensionen zeigen, bei denen > 1 Option einen Count > 0 hat
     .filter(g => g.options.filter(o => o.count > 0).length > 1)
 }
 
@@ -138,7 +111,10 @@ interface Props {
 }
 
 export default function EventsFilterableContent({ events }: Props) {
-  const [filters, setFilters] = useState<FilterState>(defaultFilters)
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const countries = [...new Set(events.map(e => e.country).filter(Boolean))] as string[]
+    return defaultFilters(countries)
+  })
 
   const filterGroups = useMemo(() => computeFilterGroups(events), [events])
   const filtered     = useMemo(() => applyFilters(events, filters), [events, filters])
@@ -163,7 +139,7 @@ export default function EventsFilterableContent({ events }: Props) {
       {/* Timeline + Karte */}
       {events.length > 0 && (
         <div className="flex flex-col lg:flex-row gap-4 mb-10 items-stretch">
-          {/* Rennsaison-Timeline — zeigt alle Events, dimmt gefilterte */}
+          {/* Rennsaison-Timeline */}
           <div className="flex-1 bg-card border border-border rounded-2xl p-5 sm:p-8">
             <p className="text-xs font-semibold tracking-[0.25em] uppercase text-muted-foreground mb-5">Rennsaison 2026</p>
             <div className="relative">
@@ -203,7 +179,7 @@ export default function EventsFilterableContent({ events }: Props) {
             </div>
           </div>
 
-          {/* Leaflet-Karte — zeigt nur gefilterte Pins */}
+          {/* Leaflet-Karte */}
           <div className="lg:w-[45%] flex-shrink-0 h-[300px] lg:h-auto">
             <OverviewMap pins={pins} />
           </div>
@@ -223,7 +199,7 @@ export default function EventsFilterableContent({ events }: Props) {
             const daysUntil = Math.ceil((date.getTime() - Date.now()) / 86400000)
             const diff  = difficultyConfig[event.difficulty ?? 'hard']
             const modus = getEventModus(event)
-            const mc    = modusConfig[modus]
+            const mc    = modusConfig[modus] ?? modusConfig.gran_fondo
 
             return (
               <div key={event.id} className="relative overflow-hidden rounded-3xl border border-border bg-card" style={{ backgroundImage: `linear-gradient(to bottom right, ${event.color}20, ${event.color}08, transparent)` }}>
@@ -249,15 +225,15 @@ export default function EventsFilterableContent({ events }: Props) {
                         {mc.label}
                       </span>
                       <span className="px-2.5 py-1 rounded-full text-xs font-semibold border text-stone-400 border-stone-400/30 bg-stone-400/10">
-                        {event.bikeType === 'gravel' ? 'Gravel' : 'Rennrad'}
+                        {bikeTypeLabels[event.bikeType] ?? 'Rennrad'}
                       </span>
                       {event.country && (
-                        <span className="text-sm">{countryFlag(event.country)} {countryNames[event.country] ?? event.country}</span>
+                        <span className="text-sm">{countryFlag(event.country)} {countryName(event.country)}</span>
                       )}
                     </div>
                     <div className="text-right">
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
-                        {daysUntil > 0 ? `in ${daysUntil} Tagen` : 'Heute!'}
+                        {daysUntil > 0 ? 'Countdown' : 'Heute!'}
                       </p>
                       <EventCountdown date={event.date} />
                     </div>
@@ -305,32 +281,12 @@ export default function EventsFilterableContent({ events }: Props) {
                     )}
                   </div>
 
-                  {/* Historische Wetterdaten */}
-                  {event.weather ? (
-                    <div className="mb-6 bg-black/20 backdrop-blur rounded-2xl p-4">
-                      <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
-                        Ø Wetter · {event.weather.label}
-                      </p>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div>
-                          <p className="text-sm font-semibold">{event.weather.tempMin}° – {event.weather.tempMax}°C</p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">Temperatur</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold">{event.weather.rainDays} Tage</p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">Regentage / Monat</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold">Ø {event.weather.windKmh} km/h</p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">Wind</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold">{event.weather.sunrise} Uhr</p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">Sonnenaufgang</p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : null}
+                  {/* Beschreibung */}
+                  {event.notes && (
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-6 line-clamp-3">
+                      {event.notes}
+                    </p>
+                  )}
 
                   {/* Karte + Höhenprofil */}
                   {event.route.length > 0 ? (
@@ -338,7 +294,6 @@ export default function EventsFilterableContent({ events }: Props) {
                       route={event.route}
                       elevation={event.elevation}
                       color={event.color}
-                      notes={event.notes}
                       distance_km={event.distance_km ?? 300}
                     />
                   ) : null}

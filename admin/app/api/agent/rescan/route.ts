@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { runEventAgent } from '@/lib/agents/events'
 import { extractRouteFromUrl } from '@/lib/parsers/route-extractor'
 import { parseGpx } from '@/lib/parsers/gpx'
+import { computeDifficulty } from '@/lib/difficulty'
 import { getSupabase } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
         fields.route_polyline = result.route.polyline
         fields.elevation_profile = result.route.elevation_profile
         if (!fields.distance_km) fields.distance_km = result.route.distance_km
+        if (!fields.elevation_m) fields.elevation_m = result.route.elevation_m
         fields.min_elevation_m = result.route.min_elevation_m
         fields.max_elevation_m = result.route.max_elevation_m
       }
@@ -62,6 +64,7 @@ export async function POST(req: NextRequest) {
         fields.route_polyline = route.polyline
         fields.elevation_profile = route.elevation_profile
         fields.distance_km = route.distance_km
+        fields.elevation_m = route.elevation_m
         fields.min_elevation_m = route.min_elevation_m
         fields.max_elevation_m = route.max_elevation_m
       } else if (routeUrl) {
@@ -71,6 +74,7 @@ export async function POST(req: NextRequest) {
           fields.route_polyline = route.polyline
           fields.elevation_profile = route.elevation_profile
           fields.distance_km = route.distance_km
+          fields.elevation_m = route.elevation_m
           fields.min_elevation_m = route.min_elevation_m
           fields.max_elevation_m = route.max_elevation_m
           fields.route_source_url = routeUrl
@@ -82,6 +86,11 @@ export async function POST(req: NextRequest) {
           { status: 400 },
         )
       }
+    }
+
+    // Auto-compute difficulty if not set
+    if (!fields.difficulty && fields.distance_km && fields.elevation_m) {
+      fields.difficulty = computeDifficulty(Number(fields.distance_km), Number(fields.elevation_m))
     }
 
     // Compute diff

@@ -9,11 +9,10 @@ interface Props {
   route: [number, number][]
   elevation: { d: number; e: number }[]
   color: string
-  notes?: string | null
   distance_km: number
 }
 
-export default function EventVisuals({ route, elevation, color, notes, distance_km }: Props) {
+export default function EventVisuals({ route, elevation, color, distance_km }: Props) {
   const center: [number, number] = route[Math.floor(route.length / 2)]
 
   return (
@@ -25,11 +24,6 @@ export default function EventVisuals({ route, elevation, color, notes, distance_
       {/* Höhenprofil */}
       <div className="bg-black/20 rounded-2xl p-4 flex flex-col justify-center" style={{ height: 240 }}>
         <ElevationChart data={elevation} color={color} totalKm={distance_km} />
-        {notes && (
-          <p className="text-muted-foreground text-xs mt-4 leading-relaxed line-clamp-3">
-            {notes}
-          </p>
-        )}
       </div>
     </div>
   )

@@ -1,11 +1,8 @@
 import { getSupabase } from '@/lib/supabase'
+import { countryFlag } from '@/lib/country'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
-
-function countryFlag(code: string): string {
-  return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('')
-}
 
 interface Event {
   id: string

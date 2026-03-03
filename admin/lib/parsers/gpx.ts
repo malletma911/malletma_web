@@ -11,6 +11,7 @@ export interface ParsedRoute {
   /** {d: km, e: elevation_m} for Recharts */
   elevation_profile: { d: number; e: number }[]
   distance_km: number
+  elevation_m: number
   min_elevation_m: number
   max_elevation_m: number
 }
@@ -40,14 +41,13 @@ export function parseGpx(gpxXml: string): ParsedRoute {
   // Simplify polyline to ~500 points (epsilon in degrees ≈ 0.0001 ~ 11m)
   const simplified = simplifyPolyline(points, 0.0001)
 
-  const { profile, min, max, totalDistance } = buildElevationProfile(points)
+  const { profile, min, max, totalDistance, elevationGain } = buildElevationProfile(points)
 
   return {
-    // Convert to [lat, lng] tuples for Leaflet
     polyline: simplified.map(p => [p.lat, p.lng] as [number, number]),
-    // Convert to short keys {d, e} for Recharts
     elevation_profile: profile.map(p => ({ d: Math.round(p.distance_km * 10) / 10, e: Math.round(p.elevation_m) })),
     distance_km: Math.round(totalDistance * 10) / 10,
+    elevation_m: elevationGain,
     min_elevation_m: Math.round(min),
     max_elevation_m: Math.round(max),
   }

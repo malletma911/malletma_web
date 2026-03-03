@@ -6,16 +6,14 @@ export interface FilterGroup {
 }
 
 export interface FilterState {
-  participation: Set<string>
-  modus:         Set<string>
-  bikeType:      Set<string>
+  bikeType: Set<string>
+  country:  Set<string>
 }
 
-export function defaultFilters(): FilterState {
+export function defaultFilters(countries: string[] = []): FilterState {
   return {
-    participation: new Set(['registered', 'planned']),
-    modus:         new Set(['training', 'race', 'gran_fondo']),
-    bikeType:      new Set(['road', 'gravel']),
+    bikeType: new Set(['road', 'gravel', 'mtb']),
+    country:  new Set(countries),
   }
 }
 
@@ -33,7 +31,6 @@ export default function EventFilters({ groups, filters, onChange, totalVisible, 
     const next = new Set(current)
     if (next.has(value)) {
       next.delete(value)
-      // Prevent empty set — re-activate all in group
       if (next.size === 0) allValues.forEach(v => next.add(v))
     } else {
       next.add(value)
@@ -46,7 +43,6 @@ export default function EventFilters({ groups, filters, onChange, totalVisible, 
 
   const isFiltering = totalVisible < totalAll
 
-  // Only render groups where more than one option has count > 0
   const visibleGroups = groups.filter(g => g.options.filter(o => o.count > 0).length > 1)
 
   if (visibleGroups.length === 0) return null

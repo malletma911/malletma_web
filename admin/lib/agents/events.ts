@@ -20,14 +20,14 @@ Extrahiere folgende Felder (alle optional):
 - country: Länderkürzel (DE, AT, IT, SE, FR, etc.)
 - distance_km: Distanz in km
 - elevation_m: Gesamthöhenmeter
-- type: "race" | "granfondo" | "gravel" | "charity"
-- bike_type: "road" | "gravel" | "mtb" | "tt"
-- difficulty: "easy" | "medium" | "hard" | "extreme"
+- type: "race" | "granfondo" | "charity" | "training"
+- bike_type: "road" | "gravel" | "mtb"
 - participants: Teilnehmerzahl (geschätzt)
 - start_time: Startzeit (z.B. "07:00")
 - gradient_class: "flat" | "hilly" | "mountainous"
 - url: Offizielle Website-URL
 - slug: URL-freundlicher Name (lowercase, dashes)
+- notes: Kurze Beschreibung des Events (1-2 Sätze auf Deutsch). Beschreibe Strecke, Besonderheiten und Charakter.
 
 Antworte IMMER mit einem JSON-Objekt. Felder die du nicht ermitteln kannst, lasse weg.
 Nutze die Tools um Informationen zu sammeln. Sei gründlich aber effizient.`
@@ -152,6 +152,7 @@ export async function runEventAgent(opts: {
               route = parsed
               result = JSON.stringify({
                 distance_km: parsed.distance_km,
+                elevation_m: parsed.elevation_m,
                 min_elevation_m: parsed.min_elevation_m,
                 max_elevation_m: parsed.max_elevation_m,
                 point_count: parsed.polyline.length,
@@ -165,6 +166,7 @@ export async function runEventAgent(opts: {
             route = parsed
             result = JSON.stringify({
               distance_km: parsed.distance_km,
+              elevation_m: parsed.elevation_m,
               min_elevation_m: parsed.min_elevation_m,
               max_elevation_m: parsed.max_elevation_m,
               point_count: parsed.polyline.length,

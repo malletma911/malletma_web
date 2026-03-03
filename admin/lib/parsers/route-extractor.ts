@@ -48,12 +48,13 @@ async function extractFromKomoot(url: string): Promise<ParsedRoute | null> {
 
     const { simplifyPolyline, buildElevationProfile } = await import('./utils')
     const simplified = simplifyPolyline(points, 0.0001)
-    const { profile, min, max, totalDistance } = buildElevationProfile(points)
+    const { profile, min, max, totalDistance, elevationGain } = buildElevationProfile(points)
 
     return {
       polyline: simplified.map(p => [p.lat, p.lng] as [number, number]),
       elevation_profile: profile.map(p => ({ d: Math.round(p.distance_km * 10) / 10, e: Math.round(p.elevation_m) })),
       distance_km: Math.round(totalDistance * 10) / 10,
+      elevation_m: elevationGain,
       min_elevation_m: Math.round(min),
       max_elevation_m: Math.round(max),
     }
@@ -78,6 +79,9 @@ async function extractFromRideWithGPS(url: string): Promise<ParsedRoute | null> 
     const trackPoints = data.track_points ?? data.route?.track_points
     if (!trackPoints?.length) return null
 
+    // Try to get elevation gain from metadata (more accurate than computing from points)
+    const metadataGain = data.elevation_gain ?? data.route?.elevation_gain
+
     const points = trackPoints.map((p: { x: number; y: number; e: number }) => ({
       lat: p.y,
       lng: p.x,
@@ -86,12 +90,13 @@ async function extractFromRideWithGPS(url: string): Promise<ParsedRoute | null> 
 
     const { simplifyPolyline, buildElevationProfile } = await import('./utils')
     const simplified = simplifyPolyline(points, 0.0001)
-    const { profile, min, max, totalDistance } = buildElevationProfile(points)
+    const { profile, min, max, totalDistance, elevationGain } = buildElevationProfile(points)
 
     return {
       polyline: simplified.map(p => [p.lat, p.lng] as [number, number]),
       elevation_profile: profile.map(p => ({ d: Math.round(p.distance_km * 10) / 10, e: Math.round(p.elevation_m) })),
       distance_km: Math.round(totalDistance * 10) / 10,
+      elevation_m: metadataGain != null ? Math.round(metadataGain) : elevationGain,
       min_elevation_m: Math.round(min),
       max_elevation_m: Math.round(max),
     }

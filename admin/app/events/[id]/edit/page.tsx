@@ -111,7 +111,7 @@ export default function EditEventPage() {
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-600"
               >
                 <option value="">–</option>
-                {getOptions(key).map(o => <option key={o} value={o}>{o}</option>)}
+                {getOptions(key).map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             ) : type === 'color' ? (
               <div className="flex items-center gap-3">
@@ -209,13 +209,37 @@ const EDITABLE_FIELDS: { key: string; label: string; type: string }[] = [
   { key: 'notes', label: 'Notizen', type: 'textarea' },
 ]
 
-function getOptions(key: string): string[] {
+function getOptions(key: string): { value: string; label: string }[] {
   switch (key) {
-    case 'type': return ['race', 'granfondo', 'gravel', 'charity']
-    case 'bike_type': return ['road', 'gravel', 'mtb', 'tt']
-    case 'difficulty': return ['easy', 'medium', 'hard', 'extreme']
-    case 'gradient_class': return ['flat', 'hilly', 'mountainous']
-    case 'participation': return ['planned', 'registered', 'completed', 'dnf', 'dns']
+    case 'type': return [
+      { value: 'race', label: 'Rennen' },
+      { value: 'granfondo', label: 'Gran Fondo' },
+      { value: 'charity', label: 'Charity' },
+      { value: 'training', label: 'Training' },
+    ]
+    case 'bike_type': return [
+      { value: 'road', label: 'Rennrad' },
+      { value: 'gravel', label: 'Gravel' },
+      { value: 'mtb', label: 'MTB' },
+    ]
+    case 'difficulty': return [
+      { value: 'easy', label: 'Leicht' },
+      { value: 'medium', label: 'Mittel' },
+      { value: 'hard', label: 'Schwer' },
+      { value: 'extreme', label: 'Extrem' },
+    ]
+    case 'gradient_class': return [
+      { value: 'flat', label: 'Flach' },
+      { value: 'hilly', label: 'Hügelig' },
+      { value: 'mountainous', label: 'Bergig' },
+    ]
+    case 'participation': return [
+      { value: 'planned', label: 'Geplant' },
+      { value: 'registered', label: 'Angemeldet' },
+      { value: 'completed', label: 'Absolviert' },
+      { value: 'dnf', label: 'DNF' },
+      { value: 'canceled', label: 'Abgesagt' },
+    ]
     default: return []
   }
 }

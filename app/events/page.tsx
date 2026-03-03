@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { getSupabase } from '@/lib/supabase'
+import { countryFlag, countryName } from '@/lib/country'
 import EventsFilterableContent, { EnrichedEvent } from '@/components/events-filterable-content'
 
 interface EventRow {
@@ -35,22 +36,6 @@ async function getEvents(): Promise<EventRow[]> {
   return data ?? []
 }
 
-/** Convert any ISO 3166-1 alpha-2 code → flag emoji (e.g. "DE" → 🇩🇪) */
-function countryFlag(code: string): string {
-  return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('')
-}
-
-// Wetterdaten bleiben vorerst hardcoded (keyed by slug)
-const weatherBySlug: Record<string, {
-  tempMin: number; tempMax: number; rainDays: number; windKmh: number; sunrise: string; label: string
-}> = {
-  'msr-300': { tempMin: 8, tempMax: 19, rainDays: 11, windKmh: 14, sunrise: '05:02', label: 'Mecklenburg, Ende Mai' },
-  'vatternrundan-315': { tempMin: 10, tempMax: 21, rainDays: 10, windKmh: 11, sunrise: '03:58', label: 'Mittelschweden, Mitte Juni' },
-  'letape-denmark': { tempMin: 10, tempMax: 20, rainDays: 12, windKmh: 19, sunrise: '04:28', label: 'Jütland, Ende Juni' },
-  'strade-bianche': { tempMin: 10, tempMax: 19, rainDays: 10, windKmh: 13, sunrise: '06:20', label: 'Toskana, Mitte April' },
-  'kitzbueheler-radmarathon': { tempMin: 6, tempMax: 16, rainDays: 12, windKmh: 12, sunrise: '06:32', label: 'Kitzbühel/Tirol, Anfang September' },
-}
-
 const DEFAULT_COLOR = '#a1a1aa'
 
 export default async function EventsPage() {
@@ -59,7 +44,6 @@ export default async function EventsPage() {
   const upcoming = events.filter(e => new Date(e.date) >= new Date() && isPublished(e))
   const past     = events.filter(e => new Date(e.date) < new Date() && isPublished(e))
 
-  // Enrich DB rows → EnrichedEvent[] (nur published Events)
   const enriched: EnrichedEvent[] = upcoming.map(e => {
     const route = e.route_polyline ?? []
     const elevation = e.elevation_profile ?? []
@@ -88,7 +72,6 @@ export default async function EventsPage() {
       city: e.city ?? e.location ?? '',
       bikeType: e.bike_type ?? 'road',
       participation: e.participation ?? 'planned',
-      weather: e.slug ? weatherBySlug[e.slug] : undefined,
     }
   })
 
@@ -124,7 +107,7 @@ export default async function EventsPage() {
           </div>
         </div>
 
-        {/* Filter + Timeline + Karte + Event Cards — alles Client-seitig */}
+        {/* Filter + Timeline + Karte + Event Cards */}
         {upcoming.length > 0 ? (
           <EventsFilterableContent events={enriched} />
         ) : (
@@ -164,9 +147,16 @@ export default async function EventsPage() {
                   <span className="text-xl">{event.country ? countryFlag(event.country) : '🏁'}</span>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold line-through truncate">{event.name}</p>
-                    <p className="text-xs text-muted-foreground">{new Date(event.date).toLocaleDateString('de-DE')}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(event.date).toLocaleDateString('de-DE')}
+                      {event.country && ` · ${countryName(event.country)}`}
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground flex-shrink-0">{event.distance_km} km ✓</p>
+                  <p className="text-sm text-muted-foreground flex-shrink-0">
+                    {event.distance_km} km
+                    {event.elevation_m ? ` · ${event.elevation_m.toLocaleString('de-DE')} Hm` : ''}
+                    {' '}✓
+                  </p>
                 </div>
               ))}
             </div>
