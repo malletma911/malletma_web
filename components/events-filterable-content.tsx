@@ -103,7 +103,7 @@ function computeFilterGroups(events: EnrichedEvent[]): FilterGroup[] {
         count: events.filter(e => dim.get(e) === o.value).length,
       })),
     }))
-    .filter(g => g.options.filter(o => o.count > 0).length > 0)
+    .filter(g => g.options.filter(o => o.count > 0).length > 1)
 }
 
 interface Props {
@@ -159,12 +159,14 @@ export default function EventsFilterableContent({ events }: Props) {
                           <span className="text-sm font-bold" style={{ color: event.color }}>
                             {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
                           </span>
-                          {event.country && <span className="text-sm">{countryFlag(event.country)} {countryName(event.country)}</span>}
+                          {event.country && <span className="text-sm">{countryFlag(event.country)}</span>}
                           <span className="font-bold text-foreground text-sm">{event.name}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           {[
-                            event.location,
+                            event.location
+                              ? `${event.location}${event.country ? `, ${countryName(event.country)}` : ''}`
+                              : null,
                             event.distance_km
                               ? `${event.distance_km} km${event.elevation_m ? ` / ~${event.elevation_m.toLocaleString('de-DE')} Hm` : ''}`
                               : null,
@@ -228,7 +230,7 @@ export default function EventsFilterableContent({ events }: Props) {
                         {bikeTypeLabels[event.bikeType] ?? 'Rennrad'}
                       </span>
                       {event.country && (
-                        <span className="text-sm">{countryFlag(event.country)} {countryName(event.country)}</span>
+                        <span className="text-sm">{countryFlag(event.country)}</span>
                       )}
                     </div>
                     <div className="text-right">

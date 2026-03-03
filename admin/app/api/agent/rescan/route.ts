@@ -88,6 +88,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Always persist the URLs used for this scan
+    if (infoUrl) fields.event_info_url = infoUrl
+    if (routeUrl) fields.route_source_url = routeUrl
+
     // Auto-compute difficulty if not set
     if (!fields.difficulty && fields.distance_km && fields.elevation_m) {
       fields.difficulty = computeDifficulty(Number(fields.distance_km), Number(fields.elevation_m))
