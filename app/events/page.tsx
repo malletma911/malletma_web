@@ -30,9 +30,15 @@ interface EventRow {
   gradient_class: string | null
 }
 
+const EVENT_COLUMNS = 'id,name,date,location,distance_km,elevation_m,type,url,notes,country,participants,difficulty,status,slug,route_polyline,elevation_profile,color,short_name,city,bike_type,participation,start_time,gradient_class'
+
 async function getEvents(): Promise<EventRow[]> {
   const supabase = getSupabase()
-  const { data } = await supabase.from('events').select('*').order('date', { ascending: true })
+  const { data } = await supabase
+    .from('events')
+    .select(EVENT_COLUMNS)
+    .or('status.eq.published,status.eq.active')
+    .order('date', { ascending: true })
   return data ?? []
 }
 
@@ -40,9 +46,9 @@ const DEFAULT_COLOR = '#a1a1aa'
 
 export default async function EventsPage() {
   const events = await getEvents()
-  const isPublished = (e: EventRow) => e.status === 'published' || e.status === 'active'
-  const upcoming = events.filter(e => new Date(e.date) >= new Date() && isPublished(e))
-  const past     = events.filter(e => new Date(e.date) < new Date() && isPublished(e))
+  const now = new Date()
+  const upcoming = events.filter(e => new Date(e.date) >= now)
+  const past     = events.filter(e => new Date(e.date) < now)
 
   const enriched: EnrichedEvent[] = upcoming.map(e => {
     const route = e.route_polyline ?? []

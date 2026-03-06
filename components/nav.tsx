@@ -37,12 +37,6 @@ export default function Nav() {
               {link.label}
             </Link>
           ))}
-          <a
-            href="/api/auth/logout"
-            className="ml-4 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-          >
-            Logout
-          </a>
         </div>
 
         {/* Mobile: Hamburger */}
@@ -74,12 +68,6 @@ export default function Nav() {
               {link.label}
             </Link>
           ))}
-          <a
-            href="/api/auth/logout"
-            className="px-4 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-          >
-            Logout
-          </a>
         </div>
       )}
     </nav>

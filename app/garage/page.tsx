@@ -6,7 +6,10 @@ import Image from 'next/image'
 
 async function getBikes(): Promise<Bike[]> {
   const supabase = getSupabase()
-  const { data } = await supabase.from('bikes').select('*').order('created_at', { ascending: false })
+  const { data } = await supabase
+    .from('bikes')
+    .select('id,name,brand,type,description,photo_url,weight_kg,year,created_at')
+    .order('created_at', { ascending: false })
   return data ?? []
 }
 

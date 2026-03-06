@@ -43,7 +43,7 @@ export default function EventFilters({ groups, filters, onChange, totalVisible, 
 
   const isFiltering = totalVisible < totalAll
 
-  const visibleGroups = groups.filter(g => g.options.filter(o => o.count > 0).length > 0)
+  const visibleGroups = groups.filter(g => g.options.filter(o => o.count > 0).length > 1)
 
   if (visibleGroups.length === 0) return null
 

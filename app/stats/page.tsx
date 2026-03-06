@@ -1,58 +1,10 @@
 export const dynamic = 'force-dynamic'
 
-import { getSession } from '@/lib/session'
-import { getSupabase } from '@/lib/supabase'
-import { StravaActivity } from '@/types'
+import { getStravaActivities } from '@/lib/strava'
 import ActivityFeed from '@/components/activity-feed'
 
-async function getActivities(email: string): Promise<StravaActivity[]> {
-  const supabase = getSupabase()
-  const { data: tokenRow } = await supabase
-    .from('oauth_tokens')
-    .select('access_token, expires_at, refresh_token')
-    .eq('user_email', email)
-    .eq('provider', 'strava')
-    .single()
-
-  if (!tokenRow) return []
-
-  let accessToken = tokenRow.access_token
-  if (new Date(tokenRow.expires_at) < new Date()) {
-    const refreshRes = await fetch('https://www.strava.com/oauth/token', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        client_id: Number(process.env.STRAVA_CLIENT_ID),
-        client_secret: process.env.STRAVA_CLIENT_SECRET,
-        grant_type: 'refresh_token',
-        refresh_token: tokenRow.refresh_token,
-      }),
-    })
-    if (!refreshRes.ok) return []
-    const refreshed = await refreshRes.json()
-    accessToken = refreshed.access_token
-    await supabase.from('oauth_tokens').upsert({
-      user_email: email,
-      provider: 'strava',
-      access_token: refreshed.access_token,
-      refresh_token: refreshed.refresh_token,
-      expires_at: new Date(refreshed.expires_at * 1000).toISOString(),
-    }, { onConflict: 'user_email,provider' })
-  }
-
-  const res = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=30', {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    next: { revalidate: 300 },
-  })
-  if (!res.ok) return []
-  return res.json()
-}
-
 export default async function StatsPage() {
-  const session = await getSession()
-  if (!session) return null
-
-  const activities = await getActivities(session.email)
+  const activities = await getStravaActivities(process.env.STRAVA_OWNER_EMAIL ?? '', 30)
 
   const totalKm = activities.reduce((sum, a) => sum + a.distance, 0) / 1000
   const totalTime = activities.reduce((sum, a) => sum + a.moving_time, 0)
@@ -68,10 +20,7 @@ export default async function StatsPage() {
 
         {activities.length === 0 ? (
           <div className="text-center py-32 text-muted-foreground">
-            <p className="text-xl mb-4">Keine Strava-Aktivitäten gefunden.</p>
-            <a href="/api/strava/connect" className="px-6 py-3 bg-primary text-primary-foreground rounded-full font-semibold hover:bg-primary/90 transition-colors inline-block">
-              Strava verbinden
-            </a>
+            <p className="text-xl">Keine Strava-Aktivitäten gefunden.</p>
           </div>
         ) : (
           <>

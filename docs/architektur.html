@@ -27,7 +27,6 @@
     line-height: 1.7;
     font-size: 15px;
   }
-  /* Layout */
   .page { max-width: 1100px; margin: 0 auto; padding: 48px 24px 96px; }
   h1 { font-size: 3rem; font-weight: 900; letter-spacing: 0.05em; color: var(--primary); margin-bottom: 8px; }
   h2 { font-size: 1.6rem; font-weight: 700; margin: 56px 0 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
@@ -43,8 +42,6 @@
     padding: 2px 7px; border-radius: 4px;
     font-family: 'Courier New', monospace; font-size: 0.85em;
   }
-
-  /* Hero */
   .hero {
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -59,8 +56,6 @@
     padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
     border: 1px solid var(--border); background: var(--bg3);
   }
-
-  /* Cards */
   .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -69,8 +64,6 @@
     margin-bottom: 16px;
   }
   .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px; }
-
-  /* Badges */
   .badge {
     display: inline-block;
     padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;
@@ -81,8 +74,6 @@
   .badge-green { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
   .badge-yellow { background: rgba(250,204,21,0.15); color: var(--yellow); border: 1px solid rgba(250,204,21,0.3); }
   .badge-purple { background: rgba(192,132,252,0.15); color: var(--purple); border: 1px solid rgba(192,132,252,0.3); }
-
-  /* Architecture Diagram */
   .arch-diagram {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -91,33 +82,6 @@
     margin: 24px 0;
     overflow-x: auto;
   }
-  .arch-row { display: flex; align-items: center; justify-content: center; gap: 0; margin: 8px 0; flex-wrap: wrap; }
-  .arch-box {
-    border: 2px solid;
-    border-radius: 10px;
-    padding: 12px 20px;
-    text-align: center;
-    min-width: 140px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    position: relative;
-  }
-  .arch-box .sub-label { font-size: 0.65rem; font-weight: 400; opacity: 0.7; display: block; margin-top: 2px; }
-  .arch-box.user { border-color: #555; background: #1a1a1a; color: #ccc; }
-  .arch-box.vercel { border-color: var(--blue); background: rgba(96,165,250,0.08); color: var(--blue); }
-  .arch-box.auth0 { border-color: #ec4899; background: rgba(236,72,153,0.08); color: #ec4899; }
-  .arch-box.supabase { border-color: var(--green); background: rgba(74,222,128,0.08); color: var(--green); }
-  .arch-box.strava { border-color: var(--primary); background: rgba(252,76,2,0.08); color: var(--primary); }
-  .arch-box.browser { border-color: var(--purple); background: rgba(192,132,252,0.08); color: var(--purple); }
-  .arch-arrow {
-    font-size: 1.4rem; color: var(--muted);
-    padding: 0 8px;
-    display: flex; align-items: center;
-  }
-  .arch-arrow.down { transform: rotate(90deg); }
-  .arch-arrow-label { font-size: 0.65rem; color: var(--muted); text-align: center; display: block; }
-
-  /* Flow diagram */
   .flow { margin: 24px 0; }
   .flow-step {
     display: flex; align-items: flex-start; gap: 16px;
@@ -142,15 +106,11 @@
   .flow-content { padding: 6px 0 20px; }
   .flow-content strong { display: block; margin-bottom: 4px; }
   .flow-content p { margin: 0; font-size: 0.9rem; }
-
-  /* Table */
   table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
   th { text-align: left; padding: 10px 14px; background: var(--bg3); color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
   td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: #ccc; vertical-align: top; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(255,255,255,0.02); }
-
-  /* Folder tree */
   .tree {
     font-family: 'Courier New', monospace;
     font-size: 0.85rem;
@@ -165,8 +125,6 @@
   .tree .file { color: #aaa; }
   .tree .comment { color: #555; }
   .tree .highlight { color: var(--green); }
-
-  /* Security box */
   .security-item {
     display: flex; gap: 16px; align-items: flex-start;
     background: var(--card); border: 1px solid var(--border);
@@ -175,8 +133,6 @@
   .security-icon { font-size: 1.5rem; flex-shrink: 0; }
   .security-content strong { display: block; margin-bottom: 4px; }
   .security-content p { margin: 0; font-size: 0.9rem; color: #999; }
-
-  /* Highlight box */
   .info-box {
     border-left: 3px solid var(--primary);
     background: rgba(252,76,2,0.05);
@@ -186,8 +142,7 @@
   }
   .info-box.blue { border-color: var(--blue); background: rgba(96,165,250,0.05); }
   .info-box.green { border-color: var(--green); background: rgba(74,222,128,0.05); }
-
-  /* Full-width diagram */
+  .info-box.yellow { border-color: var(--yellow); background: rgba(250,204,21,0.05); }
   .big-diagram {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -196,959 +151,742 @@
     margin: 24px 0;
     text-align: center;
   }
-  .diagram-layer {
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    gap: 12px;
-    margin: 12px 0;
-    flex-wrap: wrap;
-  }
-  .diagram-layer-label {
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 8px;
-  }
-  .d-box {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    min-width: 110px;
-    text-align: center;
-  }
+  .diagram-layer { display: flex; justify-content: center; align-items: stretch; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+  .diagram-layer-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .d-box { border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; font-size: 0.8rem; font-weight: 600; min-width: 110px; text-align: center; }
   .d-arrows { color: var(--muted); font-size: 1.2rem; margin: 4px 0; }
-  .separator { height: 1px; background: var(--border); margin: 20px 0; }
-
-  /* TOC */
-  .toc {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 24px; margin: 32px 0;
-  }
+  .toc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 32px 0; }
   .toc h4 { color: var(--primary); margin-bottom: 12px; }
   .toc ol { color: #aaa; padding-left: 20px; }
   .toc ol li { margin-bottom: 6px; }
   .toc a { color: #aaa; } .toc a:hover { color: var(--primary); }
-
   @media (max-width: 600px) {
     h1 { font-size: 2rem; }
-    .arch-row { flex-direction: column; align-items: center; }
-    .arch-arrow { transform: rotate(90deg); }
   }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- HERO -->
   <div class="hero">
-    <p class="sub">Technische Dokumentation · Version 1.0 · 2026</p>
+    <p class="sub">Technische Dokumentation · Version 2.0 · März 2026</p>
     <h1>malletma.de</h1>
     <p class="desc">
       Persönliche Radsport-Website von Maik Malletschek. Diese Dokumentation erklärt verständlich
-      — auch ohne technisches Vorwissen — wie die Website aufgebaut ist, welche Technologien
-      genutzt werden und warum diese Entscheidungen getroffen wurden.
+      — auch ohne tiefes technisches Vorwissen — wie die Website und das Admin-Backend aufgebaut sind,
+      welche Technologien genutzt werden und warum diese Entscheidungen getroffen wurden.
     </p>
     <div class="meta-row">
-      <span class="meta-chip">🏗️ Next.js 16</span>
-      <span class="meta-chip">🗄️ Supabase</span>
+      <span class="meta-chip">🏗️ Next.js (App Router)</span>
+      <span class="meta-chip">🗄️ Supabase PostgreSQL</span>
       <span class="meta-chip">🔐 Auth0</span>
       <span class="meta-chip">🚴 Strava API</span>
+      <span class="meta-chip">🤖 Claude AI (Anthropic)</span>
       <span class="meta-chip">☁️ Vercel</span>
       <span class="meta-chip">📝 TypeScript</span>
     </div>
   </div>
 
-  <!-- TOC -->
   <div class="toc">
     <h4>📋 Inhaltsverzeichnis</h4>
     <ol>
-      <li><a href="#s1">Was ist diese Website? — Überblick in einfacher Sprache</a></li>
-      <li><a href="#s2">Die Architektur — Wie ist alles aufgebaut?</a></li>
-      <li><a href="#s3">Der Tech-Stack — Was wird womit gebaut?</a></li>
-      <li><a href="#s4">Datenspeicherung — Wo liegen welche Daten?</a></li>
-      <li><a href="#s5">Login & Sicherheit — Wer darf was sehen?</a></li>
-      <li><a href="#s6">Datenflüsse — Wie läuft was ab?</a></li>
-      <li><a href="#s7">Projektstruktur — Welche Datei macht was?</a></li>
-      <li><a href="#s8">Deployment — Wie kommt die Website ins Internet?</a></li>
-      <li><a href="#s9">Warum diese Entscheidungen? — Begründungen</a></li>
-      <li><a href="#s10">Glossar — Fachbegriffe erklärt</a></li>
+      <li><a href="#s1">Überblick — Was ist dieses System?</a></li>
+      <li><a href="#s2">Architektur — Zwei Apps, eine Datenbank</a></li>
+      <li><a href="#s3">Frontend (malletma.de) — Seiten und Komponenten</a></li>
+      <li><a href="#s4">Admin-Backend — Event-Verwaltung</a></li>
+      <li><a href="#s5">KI-Agent — Automatische Datenbeschaffung</a></li>
+      <li><a href="#s6">Datenbankschema — Events-Tabelle im Detail</a></li>
+      <li><a href="#s7">Datenflüsse — Wie laufen die Kernprozesse ab?</a></li>
+      <li><a href="#s8">Filter-System — Dynamische Pill-Filter</a></li>
+      <li><a href="#s9">GPX &amp; Routendaten — Verarbeitungspipeline</a></li>
+      <li><a href="#s10">Login &amp; Sicherheit</a></li>
+      <li><a href="#s11">Projektstruktur — Welche Datei macht was?</a></li>
+      <li><a href="#s12">Deployment — GitHub → Vercel</a></li>
+      <li><a href="#s13">Dropdown-Werte — Standardisierte Felder</a></li>
+      <li><a href="#s14">Glossar</a></li>
     </ol>
   </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s1">1. Was ist diese Website? — Überblick</h2>
+  <h2 id="s1">1. Überblick — Was ist dieses System?</h2>
 
   <p>
-    <strong>malletma.de</strong> ist eine persönliche Website über Maiks Radsport-Leidenschaft. Sie richtet sich an
-    die Cycling-Community und zeigt Informationen zu bevorstehenden Rennen, Strava-Aktivitäten,
-    Fahrräder aus der Garage und Statistiken.
+    <strong>malletma.de</strong> ist eine persönliche Radsport-Website mit einem zugehörigen
+    Admin-Backend. Es gibt zwei separate Next.js-Anwendungen, die dieselbe Supabase-Datenbank teilen:
   </p>
 
   <div class="card-grid">
     <div class="card">
-      <h3>🏁 Events</h3>
-      <p>Kalender mit bevorstehenden Rennen (MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche, Kitzbüheler Radmarathon) inkl. Routenkarte, Höhenprofil, Countdown, Wetterdaten und Badges (Modus: Gran Fondo / Rennen / Training, Rennrad/Gravel). Filterbarer Client-Layer mit Auto-Hide-Logik.</p>
+      <h3>🌐 Frontend — malletma.de</h3>
+      <p>Öffentliche (aktuell per Auth0 geschützte) Website für die Cycling-Community.
+      Zeigt den Race Calendar mit interaktiver Karte, Höhenprofilen, Countdowns und Filterbars.
+      Außerdem: Strava-Live-Aktivitäten, Garage (Fahrräder) und Stats.</p>
     </div>
     <div class="card">
-      <h3>📊 Stats</h3>
-      <p>Live-Daten aus Strava: letzte Aktivitäten, Gesamtkilometer, Höhenmeter, Trainingsübersicht — automatisch synchronisiert.</p>
-    </div>
-    <div class="card">
-      <h3>🚲 Garage</h3>
-      <p>Virtuelle Fahrradsammlung mit Fotos, Gewicht, Baujahr und Beschreibung — verwaltet in einer Datenbank.</p>
-    </div>
-    <div class="card">
-      <h3>🏠 Home</h3>
-      <p>Einstiegsseite mit Kurzvorstellung und der letzten Strava-Aktivität — immer aktuell.</p>
+      <h3>🛠️ Admin — malletma-admin.vercel.app</h3>
+      <p>Internes Verwaltungs-Backend für Events. KI-gestütztes Erstellen und Aktualisieren
+      von Racekalender-Einträgen: Agent scraped die Event-Website, extrahiert GPS-Route
+      aus Komoot/RideWithGPS/GPX, berechnet Höhenmeter und generiert eine deutsche Beschreibung.</p>
     </div>
   </div>
 
-  <div class="info-box">
-    <strong>Wichtig zu wissen:</strong> Die Website wird in Deutschland entwickelt, auf amerikanischen
-    Servern (Vercel/USA, Supabase/EU-Frankfurt) betrieben und ist aktuell noch passwortgeschützt
-    — für die spätere öffentliche Version ist nur eine einzige Code-Zeile zu ändern.
+  <div class="info-box blue">
+    <strong>Kernprinzip:</strong> Alle Event-Daten (Name, Datum, Distanz, Route, Beschreibung, Land, …)
+    leben ausschließlich in Supabase. Der Code enthält <em>keine</em> hardcodierten Event-Listen mehr.
+    Alles ist dynamisch und via Admin pflegbar.
   </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s2">2. Die Architektur — Wie ist alles aufgebaut?</h2>
-
-  <p>
-    Die Website besteht aus mehreren <strong>Bausteinen</strong>, die zusammenarbeiten wie Abteilungen in einem Unternehmen:
-    jeder hat eine klare Aufgabe, und sie kommunizieren miteinander über definierte Schnittstellen.
-  </p>
+  <h2 id="s2">2. Architektur — Zwei Apps, eine Datenbank</h2>
 
   <div class="big-diagram">
-    <div class="diagram-layer-label">NUTZER / BROWSER</div>
+    <div class="diagram-layer-label">NUTZER</div>
     <div class="diagram-layer">
       <div class="d-box" style="border-color:#c084fc;color:#c084fc;background:rgba(192,132,252,0.08);">
-        🌐 Browser<br><small style="opacity:0.7">Chrome, Safari, Firefox</small>
+        🌐 Besucher<br><small style="opacity:0.7">malletma.de</small>
+      </div>
+      <div class="d-box" style="border-color:#f97316;color:#f97316;background:rgba(249,115,22,0.08);">
+        🛠️ Maik (Admin)<br><small style="opacity:0.7">malletma-admin.vercel.app</small>
       </div>
     </div>
 
-    <div class="d-arrows">⬇ HTTPS-Anfrage ⬆ HTML-Antwort</div>
+    <div style="color:var(--muted);font-size:1.2rem;margin:8px 0;">⬇ HTTPS ⬆</div>
 
-    <div class="diagram-layer-label">FRONTEND & BACKEND — EINE EINHEIT (Next.js auf Vercel)</div>
+    <div class="diagram-layer-label">ZWEI NEXT.JS APPS AUF VERCEL</div>
     <div class="diagram-layer">
       <div class="d-box" style="border-color:#60a5fa;color:#60a5fa;background:rgba(96,165,250,0.08);">
-        📄 Seiten<br><small style="opacity:0.7">/ /events /stats /garage</small>
+        📄 Frontend<br><small style="opacity:0.7">/events /stats /garage</small>
       </div>
-      <div class="d-box" style="border-color:#60a5fa;color:#60a5fa;background:rgba(96,165,250,0.08);">
-        🔌 API Routes<br><small style="opacity:0.7">/api/auth /api/strava</small>
-      </div>
-      <div class="d-box" style="border-color:#60a5fa;color:#60a5fa;background:rgba(96,165,250,0.08);">
-        🧩 Komponenten<br><small style="opacity:0.7">Nav, Map, Chart, Cards</small>
+      <div class="d-box" style="border-color:#f97316;color:#f97316;background:rgba(249,115,22,0.08);">
+        ⚙️ Admin<br><small style="opacity:0.7">Create · Edit · Rescan</small>
       </div>
     </div>
 
-    <div class="d-arrows">⬇ Anfragen an externe Dienste ⬆ Antworten</div>
+    <div style="color:var(--muted);font-size:1.2rem;margin:8px 0;">⬇ Lesen / Schreiben ⬆</div>
 
-    <div class="diagram-layer-label">EXTERNE DIENSTE (Cloud-APIs)</div>
+    <div class="diagram-layer-label">EXTERNE DIENSTE</div>
     <div class="diagram-layer">
-      <div class="d-box" style="border-color:#ec4899;color:#ec4899;background:rgba(236,72,153,0.08);">
-        🔐 Auth0<br><small style="opacity:0.7">Login / Authentifizierung</small>
-      </div>
       <div class="d-box" style="border-color:#4ade80;color:#4ade80;background:rgba(74,222,128,0.08);">
-        🗄️ Supabase<br><small style="opacity:0.7">Datenbank (PostgreSQL)</small>
+        🗄️ Supabase<br><small style="opacity:0.7">PostgreSQL · EU Frankfurt</small>
+      </div>
+      <div class="d-box" style="border-color:#ec4899;color:#ec4899;background:rgba(236,72,153,0.08);">
+        🔐 Auth0<br><small style="opacity:0.7">Login (beide Apps)</small>
       </div>
       <div class="d-box" style="border-color:#f97316;color:#f97316;background:rgba(249,115,22,0.08);">
         🚴 Strava API<br><small style="opacity:0.7">Aktivitätsdaten</small>
       </div>
+      <div class="d-box" style="border-color:#a855f7;color:#a855f7;background:rgba(168,85,247,0.08);">
+        🤖 Anthropic API<br><small style="opacity:0.7">Claude Sonnet (Agent)</small>
+      </div>
     </div>
   </div>
 
-  <h3>Was bedeutet das im Alltag?</h3>
   <p>
-    Wenn jemand die Website aufruft, passiert Folgendes in Millisekunden:
+    <strong>Shared Database:</strong> Beide Apps lesen und schreiben in dieselbe Supabase-Datenbank.
+    Das Admin schreibt Events, das Frontend liest sie. Kein Datei-Sync, keine doppelte Datenhaltung.
   </p>
-  <ol style="margin:10px 0 14px 20px;color:#ccc;">
-    <li style="margin-bottom:8px;">Der Browser schickt eine Anfrage an Vercel (den Webserver in der Cloud)</li>
-    <li style="margin-bottom:8px;">Vercel führt den Next.js-Code aus — holt Daten aus Supabase und Strava</li>
-    <li style="margin-bottom:8px;">Next.js baut die fertige HTML-Seite zusammen</li>
-    <li style="margin-bottom:8px;">Die fertige Seite wird an den Browser geschickt und angezeigt</li>
-  </ol>
-
-  <div class="info-box blue">
-    <strong>Analogie:</strong> Vercel ist das Restaurant, Next.js ist der Koch, Supabase ist der Kühlschrank
-    (Daten), Strava ist der Lieferant (frische Aktivitätsdaten), und Auth0 ist der Türsteher (Login).
-  </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s3">3. Der Tech-Stack — Was wird womit gebaut?</h2>
+  <h2 id="s3">3. Frontend — Seiten und Komponenten</h2>
 
-  <p>
-    Ein "Tech-Stack" ist die Sammlung aller Werkzeuge, Sprachen und Plattformen, die zusammen
-    die Website ergeben. Hier eine Erklärung jedes Bausteins in einfacher Sprache:
-  </p>
-
-  <h3>🖼️ Next.js 16 — Das Herzstück</h3>
-  <div class="card">
-    <p>
-      <strong>Was ist das?</strong> Next.js ist ein Framework (ein vorgefertigtes Grundgerüst) für
-      Websites, das auf React basiert. Es übernimmt die schwere Arbeit: Routing (welche Seite bei
-      welcher URL erscheint), Performance-Optimierung und das Rendern von Seiten auf dem Server.
-    </p>
-    <p>
-      <strong>Warum Next.js?</strong> Weil es Frontend (was der Nutzer sieht) und Backend (Logik
-      auf dem Server) in <em>einer einzigen Codebasis</em> vereint. Keine separate Server-App nötig.
-      Außerdem ist es der Standard für moderne React-Apps und funktioniert perfekt mit Vercel.
-    </p>
-    <p>
-      <strong>App Router:</strong> Next.js 16 nutzt den "App Router" — jede Datei im Ordner
-      <code>/app</code> wird automatisch zur Webseite. <code>/app/events/page.tsx</code> →
-      <code>malletma.de/events</code>. Kein manuelles Konfigurieren nötig.
-    </p>
-  </div>
-
-  <h3>📝 TypeScript — Die Programmiersprache</h3>
-  <div class="card">
-    <p>
-      <strong>Was ist das?</strong> TypeScript ist eine Erweiterung von JavaScript (der Standard-
-      Programmiersprache des Webs) mit einem Typsystem. Das bedeutet: Man definiert vorab genau,
-      welche Form Daten haben sollen — und der Computer warnt, wenn etwas nicht passt.
-    </p>
-    <p>
-      <strong>Warum TypeScript?</strong> Fehlervermeidung. Wenn Strava z.B. eine Aktivität ohne
-      Datum liefert, erkennt TypeScript das sofort beim Schreiben des Codes — nicht erst, wenn die
-      Seite abstürzt. Spart enorm viel Debugging-Zeit.
-    </p>
-  </div>
-
-  <h3>🎨 Tailwind CSS — Das Design-System</h3>
-  <div class="card">
-    <p>
-      <strong>Was ist das?</strong> Tailwind CSS ist ein Styling-Framework. Statt separate CSS-Dateien
-      zu schreiben, werden Design-Klassen direkt im HTML verwendet: <code>text-blue-400</code> macht
-      Text blau, <code>rounded-xl</code> rundet Ecken ab, <code>p-4</code> fügt Innenabstand hinzu.
-    </p>
-    <p>
-      <strong>Warum Tailwind?</strong> Geschwindigkeit. Kein Wechsel zwischen HTML- und CSS-Dateien,
-      keine Namenserfindung für CSS-Klassen, keine Konflikte zwischen Styles. Das Design entsteht
-      direkt dort, wo die Komponente gebaut wird.
-    </p>
-    <p>
-      <strong>Primärfarbe:</strong> Die Akzentfarbe der Website ist <strong style="color:#a855f7">Purple (#a855f7 / oklch(0.63 0.26 305))</strong> —
-      kräftig, leuchtstark, sportlich. Jede Farbänderung in <code>globals.css</code> wirkt sich
-      automatisch auf alle Buttons, Links, Badges und Highlights aus.
-    </p>
-  </div>
-
-  <h3>🗄️ Supabase — Die Datenbank</h3>
-  <div class="card">
-    <p>
-      <strong>Was ist das?</strong> Supabase ist ein Datenbankdienst in der Cloud. Im Hintergrund
-      läuft eine <strong>PostgreSQL-Datenbank</strong> — das ist eine bewährte, professionelle
-      relationale Datenbank (wie Excel, nur viel mächtiger und sicherer).
-    </p>
-    <p>
-      <strong>Wo sind die Server?</strong> Supabase läuft in <strong>Frankfurt/Europa</strong> —
-      damit sind alle DSGVO-Anforderungen erfüllt.
-    </p>
-    <p>
-      <strong>Was wird dort gespeichert?</strong> Events (Rennen), Fahrräder (Garage), Strava-Tokens
-      (verschlüsselt), User-Daten. Keine sensiblen Zahlungsdaten oder Passwörter.
-    </p>
-    <p>
-      <strong>Warum Supabase?</strong> Weil es kostenlos startet, einfach zu bedienen ist,
-      automatische Backups hat, und man mit einer einfachen Oberfläche Daten direkt bearbeiten kann
-      — ohne Programmierkenntnisse.
-    </p>
-  </div>
-
-  <h3>🔐 Auth0 — Das Login-System</h3>
-  <div class="card">
-    <p>
-      <strong>Was ist das?</strong> Auth0 ist ein spezialisierter Dienst für Login und
-      Authentifizierung. Statt selbst ein Login-System zu programmieren (was fehleranfällig ist),
-      übernimmt Auth0 das komplett.
-    </p>
-    <p>
-      <strong>Warum Auth0?</strong> Sicherheit durch Spezialisierung. Auth0 wird von Tausenden
-      Unternehmen weltweit genutzt und ist ständig auf dem neuesten Sicherheitsstand. Selbst
-      gebaute Login-Systeme haben oft Sicherheitslücken.
-    </p>
-    <p>
-      <strong>Wie funktioniert's?</strong> Maik gibt E-Mail + Passwort bei Auth0 ein. Auth0 prüft
-      es und schickt einen "Ausweis" (JWT-Token) zurück. Dieser Ausweis berechtigt den Zugriff
-      auf alle Seiten.
-    </p>
-  </div>
-
-  <h3>🚴 Strava API — Die Aktivitätsdaten</h3>
-  <div class="card">
-    <p>
-      <strong>Was ist das?</strong> Strava (die Fitness-App) bietet eine offizielle Schnittstelle
-      (API), über die Programme mit Erlaubnis des Nutzers Aktivitätsdaten lesen können.
-    </p>
-    <p>
-      <strong>Wie funktioniert's?</strong> Einmalig verbindet Maik sein Strava-Konto über einen
-      "Autorisierungsknopf". Strava gibt dann einen Token (einen Schlüssel) zurück, mit dem die
-      Website Aktivitäten abrufen darf — ohne je das Strava-Passwort zu kennen.
-    </p>
-    <p>
-      <strong>Datenschutz:</strong> Die Website liest nur öffentlich freigegebene Aktivitäten.
-      Strava kann den Zugriff jederzeit widerrufen. Der Token wird verschlüsselt in Supabase gespeichert.
-    </p>
-  </div>
-
-  <h3>☁️ Vercel — Der Webserver</h3>
-  <div class="card">
-    <p>
-      <strong>Was ist das?</strong> Vercel ist eine Hosting-Plattform speziell für Next.js-Apps.
-      Hier "lebt" die Website und ist 24/7 erreichbar.
-    </p>
-    <p>
-      <strong>Wie funktioniert Deployment?</strong> Code wird zu GitHub gepusht → Vercel erkennt
-      das automatisch → baut die Website neu → macht sie live. Alles automatisch, in unter 2 Minuten.
-    </p>
-    <p>
-      <strong>Warum Vercel?</strong> Weil Next.js von Vercel entwickelt wird — perfekte Integration,
-      globales CDN (schnell überall), automatische HTTPS-Verschlüsselung, kostenloser Start.
-    </p>
-  </div>
-
-  <h3>🗺️ Leaflet + Recharts — Karten & Diagramme</h3>
-  <div class="card">
-    <p>
-      <strong>Leaflet</strong> ist eine Open-Source-Bibliothek für interaktive Landkarten. Es kommt
-      auf der Events-Seite zweifach zum Einsatz:
-    </p>
-    <ul style="color:#ccc;margin:8px 0 12px 20px">
-      <li style="margin-bottom:6px"><strong>Detaillierte Routenkarten</strong> (route-map.tsx) — jedes Event zeigt die GPS-Route mit echten Koordinaten von Komoot und RideWithGPS. Alle 5 Events: MSR 300, Vätternrundan, L'Étape Denmark, Strade Bianche, Kitzbüheler Radmarathon.</li>
-      <li><strong>Übersichtskarte</strong> (overview-map.tsx) — zeigt alle gefilterten Events als farbige Pins auf einer Karte. Reagiert live auf den Filter: wird ein Event ausgeblendet, verschwindet auch sein Pin. Die Karte zoomt automatisch mit <code>fitBounds</code> auf die sichtbaren Pins ein. Tiles: CARTO Dark Matter (ohne API-Key). <strong>Wichtig:</strong> Leaflet benötigt einen Container mit expliziter Pixelhöhe — der umschließende <code>div</code> nutzt daher <code>h-[300px] lg:h-auto</code>: auf Mobile feste 300 px, auf Desktop wird die Höhe über Flexbox-Stretch (<code>items-stretch</code>) automatisch vom Timeline-Panel übernommen.</li>
-    </ul>
-    <p>
-      <strong>Recharts</strong> ist eine Diagramm-Bibliothek für React. Die Höhenprofile (Elevation
-      Charts) der Events werden damit als interaktive Kurvendiagramme dargestellt.
-    </p>
-  </div>
-
-  <h3>🎛️ Event-Filter — Flat Pills mit Auto-Hide</h3>
-  <div class="card">
-    <p>
-      Die Events-Seite hat ein clientseitiges Filtersystem mit drei Dimensionen:
-    </p>
-    <table>
-      <tr><th>Dimension</th><th>Werte</th><th>Quelle</th></tr>
-      <tr><td><strong>Teilnahme</strong></td><td>Dabei · Geplant</td><td>code-seitig in <code>eventMeta</code></td></tr>
-      <tr><td><strong>Modus</strong></td><td>Gran Fondo · Rennen · Training</td><td>DB: <code>status</code> + <code>type</code></td></tr>
-      <tr><td><strong>Rad</strong></td><td>Rennrad · Gravel</td><td>code-seitig in <code>eventMeta</code></td></tr>
-    </table>
-    <p style="margin-top:10px">
-      <strong>Modus-Mapping:</strong> <code>status = 'training'</code> → Training; <code>type = 'race'</code> → Rennen; sonst → Gran Fondo.
-    </p>
-    <p>
-      <strong>Auto-Hide:</strong> Dimensionen, bei denen nur eine Option einen Count &gt; 0 hat (keine sinnvolle Variation), werden automatisch ausgeblendet. Gibt es z.B. nur Rennrad-Events, erscheint der Rad-Filter gar nicht.
-    </p>
-    <p>
-      <strong>Empty-Prevention:</strong> Deaktiviert man die letzte aktive Pill einer Dimension, werden alle Optionen dieser Dimension wieder aktiviert — die Ergebnisliste bleibt nie leer.
-    </p>
-    <p>
-      <strong>Styling — aktiv/inaktiv:</strong>
-      Aktiv: <code>bg-white/8 border-white/12</code> | Inaktiv: <code>text-white/25 border-transparent</code>.
-      Dot-Separator <code>·</code> trennt die Dimensionen optisch.
-    </p>
-  </div>
-
-
-  <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s4">4. Datenspeicherung — Wo liegen welche Daten?</h2>
-
-  <p>
-    Es gibt verschiedene Arten von Daten in diesem System — und jede hat ihren optimalen Speicherort:
-  </p>
-
+  <h3>Seiten (<code>app/</code>)</h3>
   <table>
-    <tr>
-      <th>Datenart</th>
-      <th>Wo gespeichert?</th>
-      <th>Warum dort?</th>
-    </tr>
-    <tr>
-      <td><strong>Events (Rennen)</strong><br><small>Name, Datum, Distanz, Ort, Schwierigkeit</small></td>
-      <td><span class="badge badge-green">Supabase DB</span></td>
-      <td>Kann über die Supabase-Oberfläche einfach bearbeitet werden, ohne Code anzufassen</td>
-    </tr>
-    <tr>
-      <td><strong>Fahrräder (Garage)</strong><br><small>Name, Marke, Typ, Gewicht, Baujahr, Foto</small></td>
-      <td><span class="badge badge-green">Supabase DB</span></td>
-      <td>Fotos in Supabase Storage, Metadaten in der Datenbank</td>
-    </tr>
-    <tr>
-      <td><strong>Strava-Tokens</strong><br><small>Access Token, Refresh Token, Ablaufzeit</small></td>
-      <td><span class="badge badge-green">Supabase DB</span> (verschlüsselt)</td>
-      <td>Sicher server-seitig — nie im Browser sichtbar</td>
-    </tr>
-    <tr>
-      <td><strong>Session-Cookie</strong><br><small>JWT mit E-Mail, läuft nach 8h ab</small></td>
-      <td><span class="badge badge-purple">Browser-Cookie</span> (HttpOnly)</td>
-      <td>Kein JavaScript-Zugriff möglich (Sicherheit), automatisch mit jeder Anfrage mitgeschickt</td>
-    </tr>
-    <tr>
-      <td><strong>GPS-Routendaten</strong><br><small>60 Koordinatenpunkte pro Event</small></td>
-      <td><span class="badge badge-blue">Im Code</span> (lib/event-data.ts)</td>
-      <td>Statisch, ändert sich nie — kein Datenbankzugriff nötig, super schnell</td>
-    </tr>
-    <tr>
-      <td><strong>Strava-Aktivitäten</strong><br><small>Letzte Fahrten, km, Zeit</small></td>
-      <td><span class="badge badge-orange">Strava API</span> (live)</td>
-      <td>Immer aktuell, kein eigener Speicher nötig — Strava hat schon alles</td>
-    </tr>
-    <tr>
-      <td><strong>Historische Wetterdaten</strong><br><small>Temp, Wind, Regen, Sonnenaufgang</small></td>
-      <td><span class="badge badge-blue">Im Code</span> (events/page.tsx)</td>
-      <td>Klimadurchschnitte ändern sich nicht — statisch eingebettet</td>
-    </tr>
-    <tr>
-      <td><strong>Umgebungsvariablen</strong><br><small>API-Schlüssel, Passwörter</small></td>
-      <td><span class="badge badge-yellow">Vercel Dashboard</span></td>
-      <td>Nie im Code gespeichert, nie auf GitHub — nur in der sicheren Vercel-Umgebung</td>
-    </tr>
+    <tr><th>Route</th><th>Datei</th><th>Funktion</th></tr>
+    <tr><td><code>/</code></td><td><code>app/page.tsx</code></td><td>Startseite, letzte Strava-Aktivität</td></tr>
+    <tr><td><code>/events</code></td><td><code>app/events/page.tsx</code></td><td>Race Calendar — lädt alle Events aus Supabase, filtert upcoming/past, berechnet Stats</td></tr>
+    <tr><td><code>/stats</code></td><td><code>app/stats/page.tsx</code></td><td>Strava-Statistiken live</td></tr>
+    <tr><td><code>/garage</code></td><td><code>app/garage/page.tsx</code></td><td>Fahrräder aus DB</td></tr>
   </table>
 
-  <h3>Die Supabase-Datenbankstruktur</h3>
+  <h3>Komponenten (<code>components/</code>)</h3>
+  <table>
+    <tr><th>Datei</th><th>Aufgabe</th></tr>
+    <tr><td><code>events-filterable-content.tsx</code></td><td>Client-Component: Filter-Logik, Timeline, Übersichtskarte, Event-Cards. Enthält <code>EnrichedEvent</code> Interface und alle Rendering-Entscheidungen.</td></tr>
+    <tr><td><code>event-filters.tsx</code></td><td>Pill-Filter-Leiste. Rendert FilterGroups, Toggle-Logik, Auto-Hide wenn &lt;2 Optionen mit Count &gt; 0.</td></tr>
+    <tr><td><code>event-visuals.tsx</code></td><td>Lazy-geladen (SSR: false): Routenkarte + Höhenprofil nebeneinander pro Event-Card.</td></tr>
+    <tr><td><code>overview-map.tsx</code></td><td>Leaflet-Karte mit farbigen Pins aller gefilterten Events. <code>fitBounds</code> bei Filter-Änderung.</td></tr>
+    <tr><td><code>route-map.tsx</code></td><td>Leaflet-Karte einer einzelnen GPS-Route (Polyline).</td></tr>
+    <tr><td><code>elevation-chart.tsx</code></td><td>Recharts Area-Chart für Höhenprofil.</td></tr>
+    <tr><td><code>event-countdown.tsx</code></td><td>Client-Component: Live-Countdown bis Event-Datum.</td></tr>
+    <tr><td><code>nav.tsx</code></td><td>Navigation mit Auth-Status.</td></tr>
+    <tr><td><code>activity-feed.tsx</code></td><td>Strava-Aktivitäten-Feed.</td></tr>
+  </table>
+
+  <h3>Shared Utilities (<code>lib/</code>)</h3>
+  <table>
+    <tr><th>Datei</th><th>Inhalt</th></tr>
+    <tr><td><code>lib/country.ts</code></td><td><code>countryFlag(code)</code> via Unicode-Regionalindikatoren, <code>countryName(code)</code> via <code>Intl.DisplayNames(['de'])</code> — deutsche Ländernamen aus ISO-Code ohne Lookup-Tabelle.</td></tr>
+    <tr><td><code>lib/supabase.ts</code></td><td>Supabase-Client (Service Role Key, server-only).</td></tr>
+    <tr><td><code>lib/session.ts</code></td><td>JWT Session-Handling (Auth0).</td></tr>
+    <tr><td><code>lib/utils.ts</code></td><td>Tailwind-Merge-Hilfsfunktion.</td></tr>
+    <tr><td><code>types/index.ts</code></td><td>Gemeinsame TypeScript-Interfaces.</td></tr>
+  </table>
+
+  <div class="info-box">
+    <strong>EnrichedEvent Interface:</strong> <code>app/events/page.tsx</code> holt rohe DB-Zeilen und
+    mappt sie in das <code>EnrichedEvent</code>-Format (definiert in <code>events-filterable-content.tsx</code>).
+    Dabei werden <code>snake_case</code> DB-Felder in <code>camelCase</code> umgewandelt und Fallback-Werte gesetzt.
+    Das ist der einzige Ort, an dem Frontend-Daten angereichert werden.
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <h2 id="s4">4. Admin-Backend — Event-Verwaltung</h2>
+
+  <p>
+    Das Admin ist eine separate Next.js-App unter <code>admin/</code>. Sie teilt denselben Git-Repo,
+    hat aber eigene <code>package.json</code>, <code>tsconfig.json</code> und Vercel-Deployment.
+  </p>
+
+  <h3>Admin-Seiten</h3>
+  <table>
+    <tr><th>Route</th><th>Funktion</th></tr>
+    <tr><td><code>/</code> (Dashboard)</td><td>Tabelle aller Events mit Status, Route, Teilnahme. Buttons: Edit, Rescan, Log. Header-Button "Beschreibungen generieren" für Bulk-Notes.</td></tr>
+    <tr><td><code>/events/create</code></td><td>Neues Event anlegen: URL(s) eingeben oder GPX hochladen → Agent läuft → Preview → Speichern in DB.</td></tr>
+    <tr><td><code>/events/[id]/edit</code></td><td>Alle Felder direkt bearbeiten. Publish/Unpublish-Button, Löschen. Zeigt Routendaten-Status.</td></tr>
+    <tr><td><code>/events/[id]/rescan</code></td><td>Agent neu ausführen → Diff-Tabelle zeigt Unterschiede → selektiv übernehmen.</td></tr>
+    <tr><td><code>/events/[id]/history</code></td><td>Agent-Scan-Log-Einträge für das Event.</td></tr>
+  </table>
+
+  <h3>Admin API-Routen</h3>
+  <table>
+    <tr><th>Endpoint</th><th>Methode</th><th>Funktion</th></tr>
+    <tr><td><code>/api/agent</code></td><td>POST</td><td>Event erstellen: Agent ausführen (oder direktes GPX/Route-Parsing ohne API-Key), Ergebnis zurückgeben.</td></tr>
+    <tr><td><code>/api/agent/rescan</code></td><td>POST</td><td>Bestehendes Event neu scannen: Agent ausführen, Diff vs. DB-Stand zurückgeben.</td></tr>
+    <tr><td><code>/api/agent/rescan/apply</code></td><td>POST</td><td>Ausgewählte Felder aus Rescan in DB schreiben, Scan-Log-Eintrag anlegen.</td></tr>
+    <tr><td><code>/api/agent/generate-notes</code></td><td>POST</td><td>Bulk: Alle published Events ohne <code>notes</code> finden, Website scrapen, Claude generiert Beschreibung (max. 350 Zeichen), direkt in DB speichern.</td></tr>
+    <tr><td><code>/api/events</code></td><td>GET / POST</td><td>Event-Liste abrufen / neues Event in DB schreiben.</td></tr>
+    <tr><td><code>/api/events/[id]</code></td><td>GET / PUT / DELETE</td><td>Einzelnes Event lesen, aktualisieren oder löschen.</td></tr>
+    <tr><td><code>/api/events/[id]/publish</code></td><td>POST</td><td>Status auf <code>published</code> setzen.</td></tr>
+    <tr><td><code>/api/events/[id]/unpublish</code></td><td>POST</td><td>Status auf <code>draft</code> setzen.</td></tr>
+    <tr><td><code>/api/events/upload-gpx</code></td><td>POST</td><td>GPX-Datei entgegennehmen, Content als Base64 für Agent zurückgeben.</td></tr>
+  </table>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <h2 id="s5">5. KI-Agent — Automatische Datenbeschaffung</h2>
+
+  <p>
+    Das Herzstück des Admins ist ein KI-Agent (<code>admin/lib/agents/events.ts</code>),
+    der mit <strong>Claude Sonnet</strong> (Anthropic) betrieben wird und drei Tools hat:
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>🔍 scrape_webpage</h3>
+      <p>Ruft eine URL ab, entfernt Scripts/Styles/Nav/Footer via Cheerio, gibt max. 8.000 Zeichen Textinhalt zurück. Wird für Event-Info-Seiten genutzt.</p>
+    </div>
+    <div class="card">
+      <h3>🗺️ extract_route_from_url</h3>
+      <p>Extrahiert GPS-Route aus Komoot oder RideWithGPS URLs. Gibt <code>distance_km</code>, <code>elevation_m</code>, <code>min/max_elevation_m</code> und Punkt-Anzahl zurück.</p>
+    </div>
+    <div class="card">
+      <h3>📂 parse_gpx</h3>
+      <p>Parsed GPX-XML direkt. Berechnet Distanz (Haversine), Höhenprofil (Ramer-Douglas-Peucker-Vereinfachung) und kumulativen Höhengewinn.</p>
+    </div>
+  </div>
+
+  <h3>Agent-Prompt (System)</h3>
+  <div class="card">
+    <p>Der Agent extrahiert folgende Felder aus URLs und GPX-Daten:</p>
+    <table>
+      <tr><th>Feld</th><th>Format</th><th>Hinweis</th></tr>
+      <tr><td><code>name</code></td><td>Text</td><td>Offizieller Event-Name</td></tr>
+      <tr><td><code>short_name</code></td><td>Text</td><td>Kurzname (z.B. "MSR")</td></tr>
+      <tr><td><code>date</code></td><td>YYYY-MM-DD</td><td></td></tr>
+      <tr><td><code>location</code></td><td>Text</td><td>Startort</td></tr>
+      <tr><td><code>city</code></td><td>Text</td><td>Stadt</td></tr>
+      <tr><td><code>country</code></td><td>ISO-Code</td><td>DE, SE, IT, AT, DK, …</td></tr>
+      <tr><td><code>distance_km</code></td><td>Zahl</td><td></td></tr>
+      <tr><td><code>elevation_m</code></td><td>Zahl</td><td>Gesamthöhenmeter (kumulativ)</td></tr>
+      <tr><td><code>type</code></td><td>Enum</td><td>race | granfondo | charity | training</td></tr>
+      <tr><td><code>bike_type</code></td><td>Enum</td><td>road | gravel | mtb</td></tr>
+      <tr><td><code>participants</code></td><td>Zahl</td><td>Geschätzte Teilnehmerzahl</td></tr>
+      <tr><td><code>start_time</code></td><td>HH:MM</td><td></td></tr>
+      <tr><td><code>gradient_class</code></td><td>Enum</td><td>flat | hilly | mountainous</td></tr>
+      <tr><td><code>url</code></td><td>URL</td><td>Offizielle Event-Website</td></tr>
+      <tr><td><code>slug</code></td><td>Text</td><td>Lowercase, Bindestriche</td></tr>
+      <tr><td><code>notes</code></td><td>Text</td><td>Max. 350 Zeichen, Deutsch — IMMER ausfüllen!</td></tr>
+    </table>
+  </div>
+
+  <h3>Auto-Difficulty</h3>
+  <p>Nach dem Agent-Lauf (und nach Rescan) wird automatisch ein Schwierigkeitsgrad berechnet,
+  wenn <code>difficulty</code> nicht vom Agent gesetzt wurde (<code>admin/lib/difficulty.ts</code>):
+  </p>
+  <div class="card">
+    <code style="display:block;white-space:pre-wrap;">score = (distance_km / 40) + (elevation_m / 400)
+&lt; 3.0  → easy    (Leicht)
+3–6    → medium  (Mittel)
+6–10   → hard    (Schwer)
+&gt; 10   → extreme (Extrem)</code>
+    <p style="margin-top:12px;font-size:0.85rem;color:#999">
+      Beispiel: MSR 300 km / 2.800 Hm → score 14.5 → extreme.<br>
+      Kann im Edit-Formular manuell überschrieben werden.
+    </p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <h2 id="s6">6. Datenbankschema — Events-Tabelle im Detail</h2>
+
   <div class="card">
     <h4>Tabelle: events</h4>
     <table>
-      <tr><th>Spalte</th><th>Typ</th><th>Inhalt</th></tr>
-      <tr><td><code>id</code></td><td>UUID</td><td>Eindeutige ID (automatisch generiert)</td></tr>
-      <tr><td><code>name</code></td><td>Text</td><td>z.B. "Mecklenburger Seen Runde 300"</td></tr>
-      <tr><td><code>date</code></td><td>Datum</td><td>z.B. 2026-05-30</td></tr>
-      <tr><td><code>location</code></td><td>Text</td><td>z.B. "Neustrelitz"</td></tr>
+      <tr><th>Spalte</th><th>Typ</th><th>Inhalt / Beispiel</th></tr>
+      <tr><td><code>id</code></td><td>UUID</td><td>Automatisch generiert</td></tr>
+      <tr><td><code>name</code></td><td>Text</td><td>"Mecklenburger Seen Runde 300"</td></tr>
+      <tr><td><code>short_name</code></td><td>Text</td><td>"MSR 300"</td></tr>
+      <tr><td><code>slug</code></td><td>Text</td><td>"mecklenburger-seen-runde-300"</td></tr>
+      <tr><td><code>date</code></td><td>Date</td><td>2026-05-30</td></tr>
+      <tr><td><code>start_time</code></td><td>Text</td><td>"07:00"</td></tr>
+      <tr><td><code>location</code></td><td>Text</td><td>"Neustrelitz"</td></tr>
+      <tr><td><code>city</code></td><td>Text</td><td>"Neustrelitz"</td></tr>
+      <tr><td><code>country</code></td><td>Text</td><td>"DE" — ISO 3166-1 Alpha-2</td></tr>
       <tr><td><code>distance_km</code></td><td>Zahl</td><td>300</td></tr>
-      <tr><td><code>elevation_m</code></td><td>Zahl</td><td>3200</td></tr>
-      <tr><td><code>country</code></td><td>Text</td><td>"DE", "SE", "DK", "IT", "AT"</td></tr>
-      <tr><td><code>participants</code></td><td>Zahl</td><td>3900</td></tr>
-      <tr><td><code>difficulty</code></td><td>Text</td><td>"hard", "extreme"</td></tr>
-      <tr><td><code>type</code></td><td>Text</td><td>"race", "gran_fondo"</td></tr>
-      <tr><td><code>url</code></td><td>Text</td><td>Link zur Event-Website</td></tr>
-      <tr><td><code>notes</code></td><td>Text</td><td>Eigene Notizen</td></tr>
-      <tr><td><code>status</code></td><td>Text</td><td>"training" oder leer</td></tr>
+      <tr><td><code>elevation_m</code></td><td>Zahl</td><td>2800 — kumulativer Höhengewinn</td></tr>
+      <tr><td><code>min_elevation_m</code></td><td>Zahl</td><td>Tiefster GPS-Punkt</td></tr>
+      <tr><td><code>max_elevation_m</code></td><td>Zahl</td><td>Höchster GPS-Punkt</td></tr>
+      <tr><td><code>type</code></td><td>Enum</td><td>race | granfondo | charity | training</td></tr>
+      <tr><td><code>bike_type</code></td><td>Enum</td><td>road | gravel | mtb</td></tr>
+      <tr><td><code>difficulty</code></td><td>Enum</td><td>easy | medium | hard | extreme</td></tr>
+      <tr><td><code>gradient_class</code></td><td>Enum</td><td>flat | hilly | mountainous</td></tr>
+      <tr><td><code>participation</code></td><td>Enum</td><td>planned | registered | completed | dnf | canceled</td></tr>
+      <tr><td><code>status</code></td><td>Text</td><td>published | draft (published = sichtbar auf Frontend)</td></tr>
+      <tr><td><code>participants</code></td><td>Zahl</td><td>Teilnehmerzahl</td></tr>
+      <tr><td><code>url</code></td><td>URL</td><td>Offizielle Event-Website</td></tr>
+      <tr><td><code>event_info_url</code></td><td>URL</td><td>Gespeicherte Info-URL für Rescan</td></tr>
+      <tr><td><code>route_source_url</code></td><td>URL</td><td>Komoot/RideWithGPS-URL für Rescan</td></tr>
+      <tr><td><code>route_polyline</code></td><td>JSONB</td><td><code>[[lat, lon], …]</code> — vereinfachte GPS-Punkte</td></tr>
+      <tr><td><code>elevation_profile</code></td><td>JSONB</td><td><code>[{"d": km, "e": meter}, …]</code></td></tr>
+      <tr><td><code>color</code></td><td>Text</td><td>Hex-Farbe (#60a5fa) für Karten-Pin und Card-Gradient</td></tr>
+      <tr><td><code>notes</code></td><td>Text</td><td>Deutsche Beschreibung (max. 350 Zeichen), AI-generiert</td></tr>
+      <tr><td><code>last_scanned_at</code></td><td>Timestamp</td><td>Letzter Rescan-Zeitpunkt</td></tr>
+      <tr><td><code>updated_at</code></td><td>Timestamp</td><td>Letzte manuelle Änderung</td></tr>
+      <tr><td><code>created_at</code></td><td>Timestamp</td><td>Erstellungszeitpunkt</td></tr>
     </table>
-    <p style="margin-top:12px;font-size:0.85rem;color:#999">
-      <strong>Aktuelle Events (Saison 2026):</strong>
-      MSR 300 (DE, Rennrad, Gran Fondo, Dabei) ·
-      Vätternrundan 315 (SE, Rennrad, Gran Fondo, Dabei) ·
-      L'Étape Denmark (DK, Rennrad, Rennen, Dabei) ·
-      Strade Bianche (IT, Gravel, Training, Dabei — 14.04.2026) ·
-      Kitzbüheler Radmarathon (AT, Rennrad, Gran Fondo, Geplant — 06.09.2026)
-    </p>
-    <p style="font-size:0.85rem;color:#999">
-      <strong>Badge-System (Events-Seite):</strong> Jede Event-Card zeigt drei Badges:
-      (1) <em>Dabei</em> (primary) oder <em>Geplant</em> (outline) — code-seitig aus <code>eventMeta.participation</code>;
-      (2) <em>Gran Fondo</em> (primary) / <em>Rennen</em> (rot) / <em>Training</em> (amber) — berechnet aus DB-Feldern <code>status</code> + <code>type</code> per <code>getEventModus()</code>;
-      (3) <em>Rennrad</em> oder <em>Gravel</em> — code-seitig aus <code>eventMeta.bikeType</code>.
-    </p>
-    <br>
-    <h4>Tabelle: bikes (Garage)</h4>
+  </div>
+
+  <div class="card">
+    <h4>Tabelle: agent_scan_log</h4>
+    <p>Protokolliert jeden Agent-Lauf für Debugging und Nachvollziehbarkeit.</p>
     <table>
-      <tr><th>Spalte</th><th>Typ</th><th>Inhalt</th></tr>
-      <tr><td><code>id</code></td><td>UUID</td><td>Eindeutige ID</td></tr>
-      <tr><td><code>name</code></td><td>Text</td><td>z.B. "Trek Émonda SL7"</td></tr>
-      <tr><td><code>brand</code></td><td>Text</td><td>Hersteller</td></tr>
-      <tr><td><code>type</code></td><td>Text</td><td>"road", "gravel", "mtb"</td></tr>
-      <tr><td><code>weight_kg</code></td><td>Zahl</td><td>6.8</td></tr>
-      <tr><td><code>year</code></td><td>Zahl</td><td>2023</td></tr>
-      <tr><td><code>photo_url</code></td><td>Text</td><td>Link zum Foto in Supabase Storage</td></tr>
+      <tr><th>Spalte</th><th>Inhalt</th></tr>
+      <tr><td><code>event_id</code></td><td>Referenz auf events.id</td></tr>
+      <tr><td><code>scan_type</code></td><td>"create" | "rescan"</td></tr>
+      <tr><td><code>result</code></td><td>JSONB: alle vom Agent gefundenen Felder</td></tr>
+      <tr><td><code>diff_summary</code></td><td>Text-Zusammenfassung der Änderungen</td></tr>
+      <tr><td><code>applied</code></td><td>Boolean: wurden die Änderungen übernommen?</td></tr>
     </table>
-    <br>
-    <h4>Tabelle: oauth_tokens (Strava-Verbindung)</h4>
+  </div>
+
+  <div class="card">
+    <h4>Weitere Tabellen</h4>
     <table>
-      <tr><th>Spalte</th><th>Typ</th><th>Inhalt</th></tr>
-      <tr><td><code>user_email</code></td><td>Text</td><td>E-Mail des Nutzers</td></tr>
-      <tr><td><code>provider</code></td><td>Text</td><td>"strava"</td></tr>
-      <tr><td><code>access_token</code></td><td>Text</td><td>Aktueller Zugriffsschlüssel (läuft ab)</td></tr>
-      <tr><td><code>refresh_token</code></td><td>Text</td><td>Erneuerungsschlüssel (dauerhaft)</td></tr>
-      <tr><td><code>expires_at</code></td><td>Zeitstempel</td><td>Wann läuft der Access Token ab?</td></tr>
+      <tr><th>Tabelle</th><th>Inhalt</th></tr>
+      <tr><td><code>bikes</code></td><td>Fahrräder der Garage (name, brand, type, weight_kg, year, photo_url)</td></tr>
+      <tr><td><code>oauth_tokens</code></td><td>Strava-Tokens (user_email, access_token, refresh_token, expires_at)</td></tr>
     </table>
   </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s5">5. Login & Sicherheit — Wer darf was sehen?</h2>
+  <h2 id="s7">7. Datenflüsse — Wie laufen die Kernprozesse ab?</h2>
 
-  <p>
-    Die Website nutzt ein mehrschichtiges Sicherheitskonzept. Aktuell ist sie vollständig
-    geschützt — nur Maik kann sich einloggen. Später kann sie mit einer Code-Änderung öffentlich gemacht werden.
-  </p>
-
-  <h3>Das Schichtenmodell</h3>
-
-  <div class="arch-diagram">
-    <div style="text-align:center;margin-bottom:16px;color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.15em;">
-      Sicherheitsschichten — von außen nach innen
-    </div>
-
-    <div style="border:2px solid #ec4899;border-radius:12px;padding:16px;margin-bottom:12px;background:rgba(236,72,153,0.04);">
-      <div style="color:#ec4899;font-weight:700;margin-bottom:8px;">🛡️ Schicht 1: HTTPS / TLS-Verschlüsselung</div>
-      <p style="font-size:0.85rem;color:#999;margin:0;">
-        Alle Daten zwischen Browser und Server sind verschlüsselt. Niemand kann den Datenverkehr
-        mitlesen — automatisch von Vercel bereitgestellt, Zertifikat kostenlos via Let's Encrypt.
-      </p>
-    </div>
-
-    <div style="border:2px solid #f59e0b;border-radius:12px;padding:16px;margin-bottom:12px;background:rgba(245,158,11,0.04);">
-      <div style="color:#f59e0b;font-weight:700;margin-bottom:8px;">🔒 Schicht 2: Middleware (Türsteher)</div>
-      <p style="font-size:0.85rem;color:#999;margin:0;">
-        Die Datei <code>proxy.ts</code> prüft <em>jede</em> Anfrage, bevor sie die Seite erreicht.
-        Kein gültiger Session-Cookie? → Sofortige Weiterleitung zum Login. Kein Schlupfloch möglich.
-      </p>
-    </div>
-
-    <div style="border:2px solid var(--blue);border-radius:12px;padding:16px;margin-bottom:12px;background:rgba(96,165,250,0.04);">
-      <div style="color:var(--blue);font-weight:700;margin-bottom:8px;">🎫 Schicht 3: JWT Session-Token</div>
-      <p style="font-size:0.85rem;color:#999;margin:0;">
-        Nach dem Login erstellt der Server einen digital signierten "Ausweis" (JWT = JSON Web Token).
-        Dieser enthält E-Mail und Name, ist <strong>8 Stunden gültig</strong> und kann nicht
-        gefälscht werden — er ist mit einem geheimen Schlüssel signiert, der nur auf dem Server liegt.
-      </p>
-    </div>
-
-    <div style="border:2px solid var(--green);border-radius:12px;padding:16px;background:rgba(74,222,128,0.04);">
-      <div style="color:var(--green);font-weight:700;margin-bottom:8px;">🍪 Schicht 4: HttpOnly Cookie</div>
-      <p style="font-size:0.85rem;color:#999;margin:0;">
-        Der JWT wird als <code>HttpOnly</code>-Cookie gespeichert. Das bedeutet: JavaScript im Browser
-        kann ihn <em>nicht</em> lesen oder stehlen — nur der Server hat Zugriff. Schutz vor
-        XSS-Angriffen (Code-Injection durch böswillige Dritte).
-      </p>
-    </div>
-  </div>
-
-  <h3>Sicherheitsmaßnahmen im Detail</h3>
-
-  <div class="security-item">
-    <div class="security-icon">🔐</div>
-    <div class="security-content">
-      <strong>Keine Passwörter im Code</strong>
-      <p>API-Schlüssel, Datenbankpasswörter und Geheimnisse stehen nie im Quellcode.
-      Sie werden als "Umgebungsvariablen" in Vercel gespeichert und nur zur Laufzeit injiziert.
-      Auf GitHub ist davon nichts zu sehen.</p>
-    </div>
-  </div>
-
-  <div class="security-item">
-    <div class="security-icon">🛡️</div>
-    <div class="security-content">
-      <strong>Service Role Key — nur server-seitig</strong>
-      <p>Der Supabase-Datenbankschlüssel (<code>SUPABASE_SERVICE_ROLE_KEY</code>) erlaubt vollen
-      Datenzugriff — er wird <em>nie</em> an den Browser geschickt. Nur der Next.js-Servercode
-      (läuft auf Vercel, nicht im Browser) hat Zugriff.</p>
-    </div>
-  </div>
-
-  <div class="security-item">
-    <div class="security-icon">🔄</div>
-    <div class="security-content">
-      <strong>Automatische Token-Erneuerung</strong>
-      <p>Strava-Zugriffsschlüssel laufen nach 6 Stunden ab. Die Website prüft das automatisch
-      und erneuert den Token im Hintergrund — ohne dass Maik sich erneut bei Strava anmelden muss.</p>
-    </div>
-  </div>
-
-  <div class="security-item">
-    <div class="security-icon">🚫</div>
-    <div class="security-content">
-      <strong>OAuth2 — Passwort wird nie geteilt</strong>
-      <p>Die Website erfährt nie das Strava-Passwort. Stattdessen nutzt sie OAuth2:
-      Strava gibt einen zeitlich begrenzten Schlüssel aus — ähnlich wie ein Hotelzimmerschlüssel,
-      der nur bestimmte Türen öffnet und ablaufen kann.</p>
-    </div>
-  </div>
-
-  <div class="security-item">
-    <div class="security-icon">📋</div>
-    <div class="security-content">
-      <strong>Zukunft: Öffentlich schalten</strong>
-      <p>Die Auth-Middleware (<code>proxy.ts</code>) kann mit einer Zeile deaktiviert werden
-      (<code>matcher: []</code>). Dann ist die Website für jeden zugänglich — ohne Login.
-      Alle Seiten sind bereits dafür vorbereitet.</p>
-    </div>
-  </div>
-
-
-  <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s6">6. Datenflüsse — Wie läuft was ab?</h2>
-
-  <h3>Login-Flow</h3>
+  <h3>Event erstellen (Create-Flow)</h3>
   <div class="flow">
     <div class="flow-step">
       <div class="flow-num orange">1</div>
       <div class="flow-content">
-        <strong>Maik ruft die Website auf</strong>
-        <p>Browser → Vercel. Die Middleware <code>proxy.ts</code> prüft: Gibt es einen gültigen Session-Cookie? Nein → Weiterleitung zu Auth0.</p>
+        <strong>Admin gibt URLs ein oder lädt GPX hoch</strong>
+        <p>Event-Info-URL (z.B. vatternrundan.se), Routen-URL (z.B. ridewithgps.com/routes/…) und/oder GPX-Datei.</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-num orange">2</div>
       <div class="flow-content">
-        <strong>Auth0-Loginseite erscheint</strong>
-        <p>Auth0 zeigt ein professionelles Login-Formular. Maik gibt E-Mail und Passwort ein.</p>
+        <strong>Agent-API-Route entscheidet</strong>
+        <p>Ist <code>ANTHROPIC_API_KEY</code> konfiguriert? → Ja: Claude-Agent mit bis zu 8 Turns. → Nein: Direktes GPX-Parsing oder Route-Extraktion ohne KI.</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-num orange">3</div>
       <div class="flow-content">
-        <strong>Auth0 prüft die Credentials</strong>
-        <p>Auth0 bestätigt: "Ja, das ist Maik." Und schickt einen einmaligen Code zurück an <code>/api/auth/callback</code>.</p>
+        <strong>Claude scrapet, extrahiert, generiert</strong>
+        <p>Agent ruft <code>scrape_webpage</code> für Event-Info auf, <code>extract_route_from_url</code> für GPS, gibt JSON mit allen Feldern inkl. notes zurück.</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-num orange">4</div>
       <div class="flow-content">
-        <strong>Server erstellt JWT-Session</strong>
-        <p>Der Code tauscht Auth0-Token gegen User-Daten. Ein JWT mit E-Mail + Name wird erstellt, als HttpOnly-Cookie gesetzt. Weiterleitung zur Startseite.</p>
+        <strong>Auto-Difficulty-Berechnung</strong>
+        <p>Falls Agent keine difficulty gesetzt hat: <code>computeDifficulty(distance_km, elevation_m)</code> aus <code>admin/lib/difficulty.ts</code>.</p>
       </div>
     </div>
-    <div class="flow-step" style="margin-bottom:0">
+    <div class="flow-step">
       <div class="flow-num orange">5</div>
-      <div class="flow-content" style="padding-bottom:0">
-        <strong>Maik ist eingeloggt</strong>
-        <p>Der Cookie begleitet jede weitere Anfrage automatisch. Nach 8 Stunden muss er sich neu anmelden.</p>
+      <div class="flow-content">
+        <strong>Preview im Browser</strong>
+        <p>Admin sieht alle extrahierten Felder, kann sie editieren, dann auf "In Datenbank speichern" klicken.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num green">6</div>
+      <div class="flow-content">
+        <strong>POST /api/events speichert in Supabase</strong>
+        <p>Event ist in DB — aber noch nicht sichtbar (<code>status: 'draft'</code>). Mit "Publish" wird <code>status: 'published'</code> gesetzt und erscheint auf malletma.de.</p>
       </div>
     </div>
   </div>
 
-  <h3>Strava-Verbindungsflow</h3>
+  <h3>Frontend-Rendering (Events-Seite)</h3>
   <div class="flow">
     <div class="flow-step">
       <div class="flow-num blue">1</div>
       <div class="flow-content">
-        <strong>Maik klickt "Strava verbinden"</strong>
-        <p>→ <code>/api/strava/connect</code> → Weiterleitung zu strava.com/oauth/authorize</p>
+        <strong>Server Component lädt alle Events</strong>
+        <p><code>app/events/page.tsx</code> (Server Component, <code>force-dynamic</code>) ruft <code>supabase.from('events').select('*')</code> auf.</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-num blue">2</div>
       <div class="flow-content">
-        <strong>Strava fragt um Erlaubnis</strong>
-        <p>Strava zeigt: "malletma.de möchte deine Aktivitäten lesen." Maik klickt "Erlauben".</p>
+        <strong>Filtern und Anreichern</strong>
+        <p>Upcoming/Past trennen, <code>EnrichedEvent[]</code> bauen (camelCase, Lat/Lon aus erster Route-Koordinate, Fallbacks).</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-num blue">3</div>
       <div class="flow-content">
-        <strong>Strava schickt Autorisierungscode zurück</strong>
-        <p>→ <code>/api/strava/callback</code>. Der Server tauscht den Code gegen Access Token + Refresh Token.</p>
+        <strong>Client-Component übernimmt</strong>
+        <p><code>EventsFilterableContent</code> empfängt <code>EnrichedEvent[]</code>, verwaltet Filter-State in React, rendert Timeline + Karte + Cards.</p>
       </div>
     </div>
-    <div class="flow-step" style="margin-bottom:0">
+    <div class="flow-step">
       <div class="flow-num blue">4</div>
-      <div class="flow-content" style="padding-bottom:0">
-        <strong>Tokens werden in Supabase gespeichert</strong>
-        <p>Zugeordnet zur E-Mail. Ab sofort kann die Website Strava-Aktivitäten abrufen — ohne erneute Anmeldung.</p>
+      <div class="flow-content">
+        <strong>Karten/Charts lazy geladen</strong>
+        <p>Leaflet und Recharts werden mit <code>dynamic(..., {ssr: false})</code> geladen — verhindert Server-Rendering-Fehler von Browser-APIs.</p>
       </div>
     </div>
   </div>
 
-  <h3>Strava-Aktivitäten laden</h3>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <h2 id="s8">8. Filter-System — Dynamische Pill-Filter</h2>
+
+  <div class="card">
+    <p>Das Filter-System auf der Events-Seite hat zwei Dimensionen:</p>
+    <table>
+      <tr><th>Dimension</th><th>Werte</th><th>Quelle</th></tr>
+      <tr><td><strong>Rad-Typ</strong></td><td>Rennrad · Gravel · MTB</td><td>DB: <code>bike_type</code></td></tr>
+      <tr><td><strong>Land</strong></td><td>Dynamisch aus Events (Flagge + Ländername)</td><td>DB: <code>country</code> + <code>Intl.DisplayNames</code></td></tr>
+    </table>
+
+    <h4 style="margin-top:16px">Auto-Hide-Regel</h4>
+    <p>
+      Eine Filter-Dimension wird <strong>ausgeblendet</strong>, wenn weniger als 2 Optionen
+      einen Count &gt; 0 haben. Gibt es z.B. nur Rennrad-Events, erscheint der Rad-Filter nicht —
+      er wäre nutzlos. Sobald mindestens 2 Typen vorkommen, erscheint der Filter.
+    </p>
+
+    <h4>Empty-Prevention</h4>
+    <p>
+      Klickt man auf die letzte aktive Pill einer Dimension, werden alle Optionen der Dimension
+      wieder aktiviert. Die Ergebnisliste bleibt nie leer.
+    </p>
+
+    <h4>Country-Filter</h4>
+    <p>
+      Ländernamen werden dynamisch aus den ISO-Codes der Events generiert:
+      <code>countryName("SE")</code> → "Schweden" (via <code>Intl.DisplayNames(['de'])</code>).
+      Flaggen via Unicode-Regionalindikatoren:
+      <code>countryFlag("SE")</code> → "🇸🇪" (kein Emoji-Lookup-Table nötig).
+    </p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <h2 id="s9">9. GPX &amp; Routendaten — Verarbeitungspipeline</h2>
+
   <div class="flow">
     <div class="flow-step">
       <div class="flow-num green">1</div>
       <div class="flow-content">
-        <strong>Seite wird geladen</strong>
-        <p>Next.js holt aus Supabase den gespeicherten Strava-Token für die eingeloggte E-Mail.</p>
+        <strong>Eingabe: GPX-Datei oder URL</strong>
+        <p>GPX-Upload über Admin-Formular (Multipart), oder Komoot/RideWithGPS-URL.</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-num green">2</div>
       <div class="flow-content">
-        <strong>Token noch gültig?</strong>
-        <p>Wenn der Token älter als 6h ist: automatische Erneuerung via Strava API. Neuer Token wird in Supabase aktualisiert.</p>
+        <strong>Parsing (<code>admin/lib/parsers/gpx.ts</code> oder <code>route-extractor.ts</code>)</strong>
+        <p>GPX: Cheerio parsed XML, extrahiert <code>&lt;trkpt&gt;</code>-Koordinaten und Elevationen.<br>
+        Komoot: Öffentliche API (<code>/api/v2/tours/{id}</code>).<br>
+        RideWithGPS: JSON-Endpunkt, bevorzugt <code>elevation_gain</code> aus Metadaten.</p>
       </div>
     </div>
-    <div class="flow-step" style="margin-bottom:0">
+    <div class="flow-step">
       <div class="flow-num green">3</div>
-      <div class="flow-content" style="padding-bottom:0">
-        <strong>Aktivitäten abrufen</strong>
-        <p>Anfrage an <code>strava.com/api/v3/athlete/activities</code> → JSON-Antwort → wird in der Stats-Seite angezeigt.</p>
+      <div class="flow-content">
+        <strong>Höhenprofil (<code>admin/lib/parsers/utils.ts</code>)</strong>
+        <p><code>buildElevationProfile()</code>: Berechnet Distanz (Haversine zwischen Punkte),
+        vereinfacht Profil auf max. 200 Punkte (Ramer-Douglas-Peucker, ε=0.02 km),
+        berechnet kumulativen Höhengewinn (Summe aller positiven Deltas ≥ 1 m).</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num green">4</div>
+      <div class="flow-content">
+        <strong>Polyline-Vereinfachung</strong>
+        <p>GPS-Punkte werden auf max. 300 Punkte reduziert (Ramer-Douglas-Peucker, ε=0.001°).
+        Gespeichert als <code>[[lat, lon], …]</code> in Supabase JSONB-Feld.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num green">5</div>
+      <div class="flow-content">
+        <strong>Ergebnis: ParsedRoute</strong>
+        <p><code>{ polyline, elevation_profile, distance_km, elevation_m, min_elevation_m, max_elevation_m }</code> — wird in DB gespeichert.</p>
       </div>
     </div>
   </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s7">7. Projektstruktur — Welche Datei macht was?</h2>
+  <h2 id="s10">10. Login &amp; Sicherheit</h2>
+
+  <h3>Frontend-Authentifizierung</h3>
+  <p>
+    Die Middleware (<code>proxy.ts</code>) prüft jeden Request auf einen gültigen HttpOnly-JWT-Cookie.
+    Auth0 übernimmt Login und Token-Ausstellung. Nach 8 Stunden muss neu eingeloggt werden.
+  </p>
+
+  <h3>Admin-Authentifizierung</h3>
+  <p>
+    Das Admin nutzt dieselbe Auth0-Integration (eigene <code>admin/middleware.ts</code> + Auth-API-Routen).
+    Alle Admin-API-Routen sind hinter der Session-Prüfung.
+  </p>
+
+  <div class="security-item">
+    <div class="security-icon">🛡️</div>
+    <div class="security-content">
+      <strong>Service Role Key — nur server-seitig</strong>
+      <p>Der Supabase-Schlüssel liegt nur in Vercel-Umgebungsvariablen, nie im Browser.
+      Kein RLS (Row Level Security) nötig, da kein direkter Browser-Zugriff auf Supabase.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">🔐</div>
+    <div class="security-content">
+      <strong>API-Keys nie im Code</strong>
+      <p><code>ANTHROPIC_API_KEY</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code>, Auth0-Secrets —
+      alle als Vercel-Umgebungsvariablen, nie in Git.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">⚠️</div>
+    <div class="security-content">
+      <strong>Offene Punkte (Tech Debt)</strong>
+      <p>Admin-API-Routen prüfen Session, aber haben noch kein explizites Allowlist-Filtering für
+      PUT-Payloads. Der <code>select('*')</code> in der Events-Abfrage könnte auf benötigte Spalten
+      eingeschränkt werden (Performance). Strava-Token Cookie fehlt noch <code>Secure</code>-Flag.</p>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <h2 id="s11">11. Projektstruktur</h2>
 
   <div class="tree">
 <span class="folder">malletma_web/</span>
-├── <span class="folder">app/</span>                           <span class="comment">← Alle Seiten der Website (Next.js App Router)</span>
-│   ├── <span class="highlight">layout.tsx</span>               <span class="comment">← Grundgerüst: Navigation + Schriftarten + Dark Mode</span>
-│   ├── <span class="highlight">globals.css</span>              <span class="comment">← Design-System: Farben, Schriften, Dark Theme</span>
-│   ├── <span class="highlight">page.tsx</span>                 <span class="comment">← Startseite (Hero + letzte Strava-Aktivität)</span>
-│   ├── <span class="folder">events/</span>
-│   │   └── <span class="highlight">page.tsx</span>             <span class="comment">← Event-Kalender mit Karten, Profilen, Wetter</span>
-│   ├── <span class="folder">garage/</span>
-│   │   └── <span class="highlight">page.tsx</span>             <span class="comment">← Fahrradsammlung aus Supabase</span>
-│   ├── <span class="folder">stats/</span>
-│   │   └── <span class="highlight">page.tsx</span>             <span class="comment">← Strava-Aktivitäten und Statistiken</span>
-│   └── <span class="folder">api/</span>                       <span class="comment">← Server-Funktionen (unsichtbar für Besucher)</span>
-│       ├── <span class="folder">auth/</span>
-│       │   ├── <span class="file">login/route.ts</span>       <span class="comment">← Startet Auth0-Login</span>
-│       │   ├── <span class="file">callback/route.ts</span>    <span class="comment">← Empfängt Auth0-Antwort, erstellt Session</span>
-│       │   └── <span class="file">logout/route.ts</span>      <span class="comment">← Löscht Cookie, loggt aus</span>
-│       └── <span class="folder">strava/</span>
-│           ├── <span class="file">connect/route.ts</span>     <span class="comment">← Startet Strava-Verbindung</span>
-│           ├── <span class="file">callback/route.ts</span>    <span class="comment">← Empfängt Strava-Token, speichert in DB</span>
-│           └── <span class="file">activities/route.ts</span>  <span class="comment">← Liefert Aktivitätsdaten (mit Refresh)</span>
+├── <span class="folder">app/</span>                         <span class="comment"># Frontend-Seiten (Next.js App Router)</span>
+│   ├── <span class="file">events/page.tsx</span>           <span class="comment"># Race Calendar (Server Component)</span>
+│   ├── <span class="file">garage/page.tsx</span>           <span class="comment"># Fahrräder</span>
+│   ├── <span class="file">stats/page.tsx</span>            <span class="comment"># Strava-Stats</span>
+│   └── <span class="file">page.tsx</span>                  <span class="comment"># Startseite</span>
+├── <span class="folder">components/</span>                   <span class="comment"># React-Komponenten (Frontend)</span>
+│   ├── <span class="highlight">events-filterable-content.tsx</span> <span class="comment"># Herzstück: Filter + Timeline + Cards</span>
+│   ├── <span class="highlight">event-filters.tsx</span>         <span class="comment"># Pill-Filter-Leiste</span>
+│   ├── <span class="file">event-visuals.tsx</span>         <span class="comment"># Karte + Höhenprofil pro Card</span>
+│   ├── <span class="file">overview-map.tsx</span>          <span class="comment"># Leaflet Übersichtskarte</span>
+│   ├── <span class="file">route-map.tsx</span>             <span class="comment"># Leaflet Routenkarte</span>
+│   ├── <span class="file">elevation-chart.tsx</span>       <span class="comment"># Recharts Höhenprofil</span>
+│   └── <span class="file">event-countdown.tsx</span>       <span class="comment"># Live-Countdown</span>
+├── <span class="folder">lib/</span>                          <span class="comment"># Frontend-Utilities</span>
+│   ├── <span class="highlight">country.ts</span>               <span class="comment"># countryFlag() + countryName() via Intl</span>
+│   ├── <span class="file">supabase.ts</span>              <span class="comment"># DB-Client</span>
+│   └── <span class="file">session.ts</span>               <span class="comment"># Auth0 JWT</span>
+├── <span class="folder">types/index.ts</span>                <span class="comment"># Gemeinsame TypeScript-Interfaces</span>
+├── <span class="folder">docs/architektur.html</span>         <span class="comment"># Diese Dokumentation</span>
 │
-├── <span class="folder">components/</span>                    <span class="comment">← Wiederverwendbare UI-Bausteine</span>
-│   ├── <span class="highlight">nav.tsx</span>                  <span class="comment">← Navigationsleiste (oben, fixiert)</span>
-│   ├── <span class="highlight">event-countdown.tsx</span>      <span class="comment">← Live-Countdown bis zum Event</span>
-│   ├── <span class="highlight">event-visuals.tsx</span>        <span class="comment">← Wrapper für Karte + Höhenprofil</span>
-│   ├── <span class="highlight">route-map.tsx</span>            <span class="comment">← Leaflet-Karte mit GPS-Route (pro Event)</span>
-│   ├── <span class="highlight">elevation-chart.tsx</span>      <span class="comment">← Höhenprofil-Diagramm (Recharts)</span>
-│   ├── <span class="highlight">overview-map.tsx</span>         <span class="comment">← Leaflet-Übersichtskarte mit gefilterten Event-Pins</span>
-│   ├── <span class="highlight">event-filters.tsx</span>        <span class="comment">← Filter-UI: Flat Pills mit Counts, Auto-Hide</span>
-│   ├── <span class="highlight">events-filterable-content.tsx</span> <span class="comment">← Client-Wrapper: Filter-State, Timeline-Dim, Cards</span>
-│   └── <span class="highlight">activity-feed.tsx</span>        <span class="comment">← Strava-Aktivitätsliste</span>
-│
-├── <span class="folder">lib/</span>                           <span class="comment">← Hilfsfunktionen (kein UI)</span>
-│   ├── <span class="highlight">session.ts</span>               <span class="comment">← JWT prüfen, Session lesen</span>
-│   ├── <span class="highlight">supabase.ts</span>              <span class="comment">← Datenbankverbindung (Singleton)</span>
-│   ├── <span class="highlight">event-data.ts</span>            <span class="comment">← GPS-Routen (60 Punkte je Event)</span>
-│   └── <span class="highlight">utils.ts</span>                 <span class="comment">← CSS-Klassen zusammenführen</span>
-│
-├── <span class="folder">types/</span>
-│   └── <span class="highlight">index.ts</span>                 <span class="comment">← TypeScript-Definitionen (Strava, Bike, Event)</span>
-│
-├── <span class="file">proxy.ts</span>                       <span class="comment">← TÜRSTEHER: prüft jeden Request auf Login</span>
-├── <span class="file">vercel.json</span>                    <span class="comment">← "Das ist ein Next.js-Projekt" (für Vercel)</span>
-├── <span class="file">next.config.ts</span>               <span class="comment">← Next.js-Konfiguration</span>
-├── <span class="file">tsconfig.json</span>                <span class="comment">← TypeScript-Konfiguration</span>
-└── <span class="file">package.json</span>                 <span class="comment">← Alle installierten Pakete + Skripte</span>
-  </div>
-
-  <h3>Server vs. Client — Ein wichtiger Unterschied</h3>
-  <div class="card-grid">
-    <div class="card" style="border-color:rgba(96,165,250,0.3)">
-      <h4 style="color:var(--blue)">Server Components (Standard)</h4>
-      <p>Laufen auf Vercel, nicht im Browser. Können direkt auf die Datenbank zugreifen. Sind schnell und sicher.
-      Alle <code>page.tsx</code>-Dateien sind Server Components.</p>
-      <p style="font-size:0.85rem;">Kein <code>'use client'</code> am Anfang der Datei.</p>
-    </div>
-    <div class="card" style="border-color:rgba(192,132,252,0.3)">
-      <h4 style="color:var(--purple)">Client Components</h4>
-      <p>Laufen im Browser, können auf Klicks reagieren, Zustand halten, Live-Updates zeigen.
-      Leaflet-Karte, Countdown-Timer und Recharts-Diagramme müssen Client Components sein.</p>
-      <p style="font-size:0.85rem;">Beginnen mit <code>'use client'</code> als erste Zeile.</p>
-    </div>
+└── <span class="folder">admin/</span>                        <span class="comment"># Admin-Backend (separate Next.js-App)</span>
+    ├── <span class="folder">app/</span>
+    │   ├── <span class="file">page.tsx</span>              <span class="comment"># Dashboard: Event-Liste</span>
+    │   ├── <span class="folder">events/</span>
+    │   │   ├── <span class="file">create/page.tsx</span>   <span class="comment"># Event erstellen</span>
+    │   │   └── <span class="file">[id]/edit/page.tsx</span>  <span class="comment"># Event bearbeiten</span>
+    │   │   └── <span class="file">[id]/rescan/page.tsx</span> <span class="comment"># Agent neu ausführen</span>
+    │   ├── <span class="folder">api/</span>
+    │   │   ├── <span class="highlight">agent/route.ts</span>       <span class="comment"># Create-Flow (Agent + GPX-Fallback)</span>
+    │   │   ├── <span class="highlight">agent/rescan/route.ts</span> <span class="comment"># Rescan-Flow</span>
+    │   │   ├── <span class="highlight">agent/rescan/apply/route.ts</span> <span class="comment"># Diff übernehmen</span>
+    │   │   ├── <span class="highlight">agent/generate-notes/route.ts</span> <span class="comment"># Bulk-Beschreibungen</span>
+    │   │   └── <span class="file">events/[id]/route.ts</span> <span class="comment"># CRUD einzelnes Event</span>
+    │   └── <span class="folder">components/</span>
+    │       └── <span class="file">generate-notes-button.tsx</span> <span class="comment"># Client-Button für Bulk-Notes</span>
+    └── <span class="folder">lib/</span>
+        ├── <span class="highlight">agents/events.ts</span>     <span class="comment"># Claude-Agent: Prompt + Tool-Loop</span>
+        ├── <span class="highlight">difficulty.ts</span>        <span class="comment"># computeDifficulty(distance, elevation)</span>
+        ├── <span class="highlight">country.ts</span>           <span class="comment"># Kopie von /lib/country.ts (separate App)</span>
+        └── <span class="folder">parsers/</span>
+            ├── <span class="file">gpx.ts</span>           <span class="comment"># GPX-XML-Parser → ParsedRoute</span>
+            ├── <span class="file">route-extractor.ts</span> <span class="comment"># Komoot + RideWithGPS + Generic</span>
+            └── <span class="file">utils.ts</span>         <span class="comment"># buildElevationProfile() + Haversine + RDP</span>
   </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s8">8. Deployment — Wie kommt die Website ins Internet?</h2>
+  <h2 id="s12">12. Deployment</h2>
 
   <div class="flow">
     <div class="flow-step">
-      <div class="flow-num orange">1</div>
+      <div class="flow-num blue">1</div>
       <div class="flow-content">
-        <strong>Code schreiben / ändern</strong>
-        <p>Entwicklung lokal auf dem Mac mit <code>npm run dev</code> (lokaler Testserver unter localhost:3000)</p>
+        <strong>Code-Änderung lokal</strong>
+        <p>Entwicklung in VS Code, lokaler Dev-Server (<code>npm run dev</code> im Root für Frontend, im <code>admin/</code> für Admin).</p>
       </div>
     </div>
     <div class="flow-step">
-      <div class="flow-num orange">2</div>
+      <div class="flow-num blue">2</div>
       <div class="flow-content">
-        <strong>Git Commit + Push zu GitHub</strong>
-        <p>Änderungen werden mit Git versioniert und zu GitHub hochgeladen.
-        GitHub ist die "Cloud-Sicherheitskopie" des gesamten Codes.</p>
+        <strong>Git Push</strong>
+        <p><code>git push origin main</code> — ein Commit, ein Push für beide Apps (Mono-Repo).</p>
       </div>
     </div>
     <div class="flow-step">
-      <div class="flow-num orange">3</div>
+      <div class="flow-num blue">3</div>
       <div class="flow-content">
-        <strong>Vercel erkennt automatisch den Push</strong>
-        <p>Vercel ist mit GitHub verbunden. Jeder Push zu <code>main</code> löst automatisch ein neues Deployment aus.</p>
+        <strong>Vercel erkennt Push automatisch</strong>
+        <p>Zwei getrennte Vercel-Projekte reagieren auf den Push. Vercel prüft, welche Dateien sich geändert haben und deployed nur wenn nötig.</p>
       </div>
     </div>
     <div class="flow-step">
-      <div class="flow-num orange">4</div>
+      <div class="flow-num green">4</div>
       <div class="flow-content">
-        <strong>Build-Prozess (~60 Sekunden)</strong>
-        <p>Vercel führt <code>next build</code> aus: TypeScript wird kompiliert, optimiert,
-        statische Assets werden komprimiert.</p>
-      </div>
-    </div>
-    <div class="flow-step" style="margin-bottom:0">
-      <div class="flow-num orange">5</div>
-      <div class="flow-content" style="padding-bottom:0">
-        <strong>Live! Weltweit verfügbar</strong>
-        <p>Die neue Version ist sofort aktiv. Vercel verteilt sie über ein globales CDN-Netzwerk —
-        schnell von überall auf der Welt erreichbar.</p>
+        <strong>Live in ~60 Sekunden</strong>
+        <p>Next.js-Build → Vercel Edge Network → Website live. Beide Builds laufen parallel.</p>
       </div>
     </div>
   </div>
 
   <div class="info-box green">
-    <strong>Kein manueller FTP-Upload.</strong> Kein SSH auf einen Server. Kein Wartungsfenster.
-    Der gesamte Prozess ist automatisiert und dauert unter 2 Minuten. Bei einem Fehler im Build
-    bleibt die alte Version live.
-  </div>
-
-  <h3>Umgebungsvariablen (Geheimnisse)</h3>
-  <div class="card">
-    <p>API-Schlüssel und Passwörter sind in Vercel als "Environment Variables" hinterlegt.
-    Sie werden beim Build injiziert — sind aber <em>nie</em> in der Codebasis oder auf GitHub zu sehen.</p>
-    <table>
-      <tr><th>Variable</th><th>Wofür?</th></tr>
-      <tr><td><code>AUTH0_DOMAIN</code></td><td>Auth0-Instanz-URL</td></tr>
-      <tr><td><code>AUTH0_CLIENT_ID</code></td><td>Öffentliche App-ID bei Auth0</td></tr>
-      <tr><td><code>AUTH0_CLIENT_SECRET</code></td><td>Geheimer Schlüssel für Auth0 (niemals teilen!)</td></tr>
-      <tr><td><code>AUTH0_SECRET</code></td><td>Schlüssel zum Signieren der JWT-Sessions</td></tr>
-      <tr><td><code>STRAVA_CLIENT_ID</code></td><td>Öffentliche App-ID bei Strava</td></tr>
-      <tr><td><code>STRAVA_CLIENT_SECRET</code></td><td>Geheimer Schlüssel für Strava</td></tr>
-      <tr><td><code>SUPABASE_URL</code></td><td>Adresse der Supabase-Datenbank</td></tr>
-      <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td>Admin-Schlüssel für Datenbank (nur server-seitig!)</td></tr>
-    </table>
+    <strong>Mono-Repo-Setup:</strong> Beide Apps liegen im selben Git-Repository.
+    Vercel-Projekt "malletma_web" hat Root Directory <code>/</code> (Frontend),
+    Vercel-Projekt "malletma_admin" hat Root Directory <code>/admin</code>.
+    Jedes Projekt hat eigene Umgebungsvariablen im Vercel Dashboard.
   </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s9">9. Warum diese Entscheidungen? — Begründungen</h2>
+  <h2 id="s13">13. Dropdown-Werte — Standardisierte Felder</h2>
+
+  <p>Alle Enum-Felder haben definierte Werte. Diese sind in Admin-Dropdowns und im Agent-Prompt festgelegt:</p>
 
   <div class="card-grid">
     <div class="card">
-      <h3>Warum Next.js statt einfachem HTML?</h3>
-      <p>Statisches HTML kann keine Live-Daten laden. Next.js ermöglicht es, Strava-Daten
-      in Echtzeit zu holen, Seiten dynamisch zu bauen und trotzdem schnell zu sein.
-      Außerdem: eine App, die beides kann — Server-Logik und UI.</p>
+      <h4>type</h4>
+      <ul>
+        <li><code>race</code> — Rennen</li>
+        <li><code>granfondo</code> — Gran Fondo</li>
+        <li><code>charity</code> — Charity</li>
+        <li><code>training</code> — Training</li>
+      </ul>
     </div>
     <div class="card">
-      <h3>Warum nicht WordPress?</h3>
-      <p>WordPress ist für Blogs konzipiert. Strava-Integration, GPS-Karten, Echtzeit-Countdown
-      und ein modernes Design wären mit WordPress sehr aufwändig und langsam. Next.js ist maßgeschneidert
-      für genau diese Art dynamischer Web-Apps.</p>
+      <h4>bike_type</h4>
+      <ul>
+        <li><code>road</code> — Rennrad</li>
+        <li><code>gravel</code> — Gravel</li>
+        <li><code>mtb</code> — MTB</li>
+      </ul>
     </div>
     <div class="card">
-      <h3>Warum Supabase statt eigener Datenbank?</h3>
-      <p>Eine eigene PostgreSQL-Instanz zu betreiben bedeutet: Server kaufen, Backups konfigurieren,
-      Security-Updates einspielen, 24/7 monitoring. Supabase macht das alles automatisch — für einen
-      Hobbyisten die absolut richtige Wahl.</p>
+      <h4>difficulty</h4>
+      <ul>
+        <li><code>easy</code> — Leicht (&lt;3 Punkte)</li>
+        <li><code>medium</code> — Mittel (3–6)</li>
+        <li><code>hard</code> — Schwer (6–10)</li>
+        <li><code>extreme</code> — Extrem (&gt;10)</li>
+      </ul>
     </div>
     <div class="card">
-      <h3>Warum Auth0 statt selbst gebautes Login?</h3>
-      <p>Sicherheit ist komplex. Selbst gebaute Login-Systeme haben oft Schwachstellen (Session
-      Fixation, Brute-Force, etc.). Auth0 ist SOC 2 zertifiziert und wird von Fortune-500-Firmen
-      genutzt — für ein persönliches Projekt massiv überdimensioniert, aber sicher.</p>
+      <h4>gradient_class</h4>
+      <ul>
+        <li><code>flat</code> — Flach</li>
+        <li><code>hilly</code> — Hügelig</li>
+        <li><code>mountainous</code> — Bergig</li>
+      </ul>
     </div>
     <div class="card">
-      <h3>Warum TypeScript statt JavaScript?</h3>
-      <p>Bei 15+ Dateien, Strava-API-Typen, Datenbankschemas und React-Props verliert man ohne
-      Typen schnell den Überblick. TypeScript fängt Fehler ab, bevor die Seite abstürzt — z.B.
-      wenn Strava ein Feld umbenennt oder Supabase null zurückgibt.</p>
+      <h4>participation</h4>
+      <ul>
+        <li><code>planned</code> — Geplant</li>
+        <li><code>registered</code> — Angemeldet</li>
+        <li><code>completed</code> — Absolviert</li>
+        <li><code>dnf</code> — DNF</li>
+        <li><code>canceled</code> — Abgesagt</li>
+      </ul>
     </div>
     <div class="card">
-      <h3>Warum Vercel statt eigenem Server?</h3>
-      <p>Kein Server zu administrieren, automatische Skalierung, globales CDN, kostenlos für
-      kleine Projekte, perfekte Next.js-Integration. Für einen Entwickler allein ist das die
-      mit Abstand effizienteste Lösung.</p>
+      <h4>status (Sichtbarkeit)</h4>
+      <ul>
+        <li><code>published</code> — Sichtbar auf Frontend</li>
+        <li><code>draft</code> — Entwurf, nicht sichtbar</li>
+      </ul>
+      <p style="font-size:0.8rem;color:#999;margin-top:8px">Hinweis: Legacy-Wert "active" wird im Admin-Edit-Form zu "published" normalisiert.</p>
     </div>
-    <div class="card">
-      <h3>Warum Leaflet für die Routenkarten?</h3>
-      <p>Leaflet ist Open Source und kostenlos — im Gegensatz zu Google Maps (teuer bei Skalierung).
-      Es zeigt OpenStreetMap-Tiles (oder CartoDB für das dunkle Design) und benötigt keinen API-Key.
-      Perfekt für die detaillierte GPS-Routendarstellung.</p>
-    </div>
-    <div class="card">
-      <h3>Warum Leaflet auch für die Übersichtskarte?</h3>
-      <p>Die Übersichtskarte (overview-map.tsx) zeigt alle Events als farbige Pins und reagiert live auf den Filter. Sie wurde bewusst mit Leaflet statt SVG umgesetzt: Die Karte muss auf Filterwechsel reagieren, die Pins dynamisch aktualisieren und automatisch auf die sichtbaren Punkte einzoomen (<code>fitBounds</code>). Ein statisches SVG könnte das nicht leisten. Außerdem sind jetzt 5 Events über 5 Länder verteilt (DE, SE, DK, IT, AT) — ein dynamischer Zoom ist hier klar überlegen. Tiles: CARTO Dark Matter (kein API-Key nötig, passt perfekt ins dunkle Theme).</p>
-    </div>
-    <div class="card">
-      <h3>Warum echte GPS-Daten statt Bildern?</h3>
-      <p>Die Routenkarten sind interaktiv — man kann rein- und rauszoomen, den Verlauf verfolgen.
-      Die GPS-Koordinaten wurden direkt von Komoot und RideWithGPS via API abgerufen — 60 echte
-      Punkte pro Route, keine Alibi-Daten.</p>
-    </div>
+  </div>
+
+  <h3>Modus-Mapping (Frontend-Anzeige)</h3>
+  <p>Auf Event-Cards wird ein "Modus-Badge" berechnet:</p>
+  <div class="card">
+    <code style="display:block;white-space:pre-wrap;">type === 'training'  → Badge "Training"   (amber)
+type === 'race'      → Badge "Rennen"     (rot)
+type === 'charity'   → Badge "Charity"    (blau)
+sonst                → Badge "Gran Fondo" (primary)</code>
   </div>
 
 
   <!-- ═══════════════════════════════════════════ -->
-  <h2 id="s10">10. Glossar — Fachbegriffe erklärt</h2>
+  <h2 id="s14">14. Glossar</h2>
 
   <table>
-    <tr><th>Begriff</th><th>Erklärung in einfacher Sprache</th></tr>
-    <tr>
-      <td><strong>API</strong></td>
-      <td>Eine Schnittstelle, über die Programme miteinander reden. Wie ein Kellner zwischen Gast (App) und Küche (Datenservice). Strava hat eine API, über die Aktivitäten abgerufen werden können.</td>
-    </tr>
-    <tr>
-      <td><strong>JWT</strong><br><small>(JSON Web Token)</small></td>
-      <td>Ein digital signierter "Ausweis" mit Nutzer-Informationen. Enthält E-Mail und Name, ist zeitlich begrenzt und kann nicht gefälscht werden — weil er mit einem geheimen Schlüssel signiert ist.</td>
-    </tr>
-    <tr>
-      <td><strong>OAuth2</strong></td>
-      <td>Ein standardisiertes Verfahren, bei dem man einer App Zugriff auf einen anderen Dienst erlaubt — ohne das Passwort zu teilen. "Mit Strava anmelden" nutzt OAuth2.</td>
-    </tr>
-    <tr>
-      <td><strong>Cookie</strong></td>
-      <td>Eine kleine Datei, die der Server im Browser des Nutzers hinterlässt. Bei jedem weiteren Besuch schickt der Browser den Cookie automatisch mit — so "erkennt" die Website den Nutzer.</td>
-    </tr>
-    <tr>
-      <td><strong>HttpOnly Cookie</strong></td>
-      <td>Ein Cookie, auf das JavaScript im Browser keinen Zugriff hat. Nur der Server kann es lesen. Schutz gegen Angriffe, die versuchen, Cookies via JavaScript zu stehlen.</td>
-    </tr>
-    <tr>
-      <td><strong>HTTPS / TLS</strong></td>
-      <td>Verschlüsselung des Datenverkehrs zwischen Browser und Server. Das Schloss-Symbol in der Browser-Adressleiste zeigt an, dass HTTPS aktiv ist. Verhindert, dass Dritte Daten mitlesen.</td>
-    </tr>
-    <tr>
-      <td><strong>CDN</strong><br><small>(Content Delivery Network)</small></td>
-      <td>Ein weltweites Netzwerk von Servern. Die Website wird auf Servern nahe beim Besucher bereitgestellt — egal ob aus Berlin oder Tokyo aufgerufen, die Ladezeit bleibt kurz.</td>
-    </tr>
-    <tr>
-      <td><strong>Server Component</strong></td>
-      <td>Code, der auf dem Vercel-Server läuft, bevor die Seite an den Browser geschickt wird. Hat direkten Datenbankzugriff. Der Browser sieht nur das fertige HTML-Ergebnis.</td>
-    </tr>
-    <tr>
-      <td><strong>Client Component</strong></td>
-      <td>Code, der im Browser des Nutzers ausgeführt wird. Kann auf Klicks reagieren, animieren und Live-Updates zeigen. Kein direkter Datenbankzugriff möglich.</td>
-    </tr>
-    <tr>
-      <td><strong>TypeScript</strong></td>
-      <td>Eine Erweiterung von JavaScript mit Typsystem. Man definiert vorab die "Form" von Daten — z.B. dass ein Event immer einen Namen und ein Datum haben muss. Fehler werden früh erkannt.</td>
-    </tr>
-    <tr>
-      <td><strong>PostgreSQL</strong></td>
-      <td>Ein professionelles relationales Datenbanksystem — ähnlich wie Excel-Tabellen, aber für Millionen von Datensätzen geeignet, mit Beziehungen zwischen Tabellen und hoher Sicherheit.</td>
-    </tr>
-    <tr>
-      <td><strong>Deployment</strong></td>
-      <td>Der Vorgang, neuen Code live zu schalten — also aus dem Entwicklungscomputer in die Produktion (öffentlich zugänglichen Server) zu bringen. Bei Vercel vollautomatisch via GitHub.</td>
-    </tr>
-    <tr>
-      <td><strong>GPS-Koordinaten</strong></td>
-      <td>Genauer Standort auf der Erde als zwei Zahlen: Breitengrad (Nord-Süd) und Längengrad (Ost-West). 60 solcher Punkte pro Route ergeben eine genaue Strecke auf der Karte.</td>
-    </tr>
-    <tr>
-      <td><strong>Middleware</strong></td>
-      <td>Code, der bei <em>jeder</em> Anfrage ausgeführt wird, bevor die eigentliche Seite geladen wird. Die <code>proxy.ts</code>-Datei ist die Middleware — sie prüft den Login-Status wie ein Türsteher.</td>
-    </tr>
-    <tr>
-      <td><strong>Umgebungsvariablen</strong><br><small>(Environment Variables)</small></td>
-      <td>Geheime Konfigurationswerte (API-Keys, Passwörter), die nicht im Code stehen, sondern vom Server zur Laufzeit bereitgestellt werden. Auf GitHub sieht man sie nie.</td>
-    </tr>
-    <tr>
-      <td><strong>XSS</strong><br><small>(Cross-Site Scripting)</small></td>
-      <td>Ein Angriff, bei dem bösartiger JavaScript-Code in eine Website eingeschleust wird, um z.B. Cookies zu stehlen. HttpOnly-Cookies und kein <code>dangerouslySetInnerHTML</code> schützen davor.</td>
-    </tr>
-    <tr>
-      <td><strong>Singleton</strong></td>
-      <td>Ein Entwurfsmuster, bei dem von einer Klasse nur eine einzige Instanz erstellt wird. Der Supabase-Client ist ein Singleton — die Datenbankverbindung wird einmal aufgebaut und wiederverwendet.</td>
-    </tr>
+    <tr><th>Begriff</th><th>Erklärung</th></tr>
+    <tr><td><strong>App Router</strong></td><td>Neueres Next.js-System: Ordnerstruktur bestimmt URL-Routen. <code>app/events/page.tsx</code> → <code>/events</code>.</td></tr>
+    <tr><td><strong>Server Component</strong></td><td>React-Komponente, die auf dem Server gerendert wird. Hat Zugriff auf DB, aber kein <code>useState</code>.</td></tr>
+    <tr><td><strong>Client Component</strong></td><td>Läuft im Browser des Nutzers. Kann Interaktivität (onClick, State), braucht aber <code>'use client'</code>-Direktive.</td></tr>
+    <tr><td><strong>force-dynamic</strong></td><td>Next.js-Direktive: Seite wird bei jedem Request neu gerendert (kein statisches Caching). Nötig für Live-Daten.</td></tr>
+    <tr><td><strong>JSONB</strong></td><td>PostgreSQL-Datentyp für JSON-Daten mit Indexierung. Speichert z.B. die GPS-Koordinaten-Arrays.</td></tr>
+    <tr><td><strong>JWT</strong></td><td>JSON Web Token — digital signierter "Ausweis" für eingeloggte Nutzer. Kann nicht gefälscht werden.</td></tr>
+    <tr><td><strong>HttpOnly Cookie</strong></td><td>Browser-Cookie, auf das JavaScript keinen Zugriff hat. Schutz vor XSS-Angriffen.</td></tr>
+    <tr><td><strong>SSR (Server-Side Rendering)</strong></td><td>HTML wird auf dem Server gebaut, nicht im Browser. Schnelleres erstes Laden, gut für SEO.</td></tr>
+    <tr><td><strong>Haversine-Formel</strong></td><td>Mathematische Formel zur Berechnung der Entfernung zwischen zwei GPS-Koordinaten auf der Erdkugel.</td></tr>
+    <tr><td><strong>Ramer-Douglas-Peucker</strong></td><td>Algorithmus zur Vereinfachung von Kurven/Polygonen. Reduziert GPS-Punkte bei minimalem Informationsverlust.</td></tr>
+    <tr><td><strong>RLS</strong></td><td>Row Level Security — Supabase-Funktion, die Datenbankregeln direkt in der DB definiert. Hier nicht genutzt (kein Browser-Direktzugriff).</td></tr>
+    <tr><td><strong>Mono-Repo</strong></td><td>Mehrere Projekte (Frontend + Admin) in einem einzigen Git-Repository. Vereinfacht Code-Sharing und Deployment.</td></tr>
+    <tr><td><strong>ISO 3166-1 Alpha-2</strong></td><td>Internationaler Standard für Länderkürzel: DE = Deutschland, SE = Schweden, IT = Italien usw.</td></tr>
+    <tr><td><strong>Intl.DisplayNames</strong></td><td>Browser/Node.js-API zur Übersetzung von Sprach- und Regionscodes in lesbare Namen (z.B. "SE" → "Schweden" auf Deutsch).</td></tr>
+    <tr><td><strong>Cheerio</strong></td><td>HTML-Parser für Node.js, ähnlich wie jQuery-Syntax. Wird genutzt um Websites zu scrapen und Text zu extrahieren.</td></tr>
+    <tr><td><strong>Leaflet</strong></td><td>Open-Source JavaScript-Bibliothek für interaktive Karten. Kein API-Key nötig mit CARTO-Tiles.</td></tr>
+    <tr><td><strong>Recharts</strong></td><td>React-Diagramm-Bibliothek. Wird für Höhenprofile (Area-Chart) genutzt.</td></tr>
+    <tr><td><strong>Claude Sonnet</strong></td><td>KI-Modell von Anthropic (claude-sonnet-4-20250514). Betreibt den Event-Agent im Admin.</td></tr>
   </table>
-
-
-  <div class="separator"></div>
-  <div style="text-align:center;color:var(--muted);font-size:0.8rem;padding:20px 0;">
-    <p>Technische Dokumentation · malletma.de · Stand: März 2026</p>
-    <p style="margin-top:6px;">Erstellt mit Claude Code — Anthropic</p>
-  </div>
 
 </div>
 </body>

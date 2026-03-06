@@ -1,14 +1,12 @@
 import { NextRequest } from 'next/server'
 import { redirect } from 'next/navigation'
-import { getSession } from '@/lib/session'
-import { getSupabase } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code')
   if (!code) return new Response('Missing code', { status: 400 })
 
-  const session = await getSession()
-  if (!session) redirect('/api/auth/login')
+  const email = process.env.STRAVA_OWNER_EMAIL ?? ''
 
   const tokenRes = await fetch('https://www.strava.com/oauth/token', {
     method: 'POST',
@@ -24,10 +22,10 @@ export async function GET(request: NextRequest) {
   const tokens = await tokenRes.json()
   if (!tokenRes.ok) return new Response('Strava auth failed', { status: 401 })
 
-  const supabase = getSupabase()
-  await supabase.from('users').upsert({ email: session.email }, { onConflict: 'email' })
+  const supabase = getSupabaseAdmin()
+  await supabase.from('users').upsert({ email }, { onConflict: 'email' })
   await supabase.from('oauth_tokens').upsert({
-    user_email: session.email,
+    user_email: email,
     provider: 'strava',
     access_token: tokens.access_token,
     refresh_token: tokens.refresh_token,

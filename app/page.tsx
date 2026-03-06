@@ -1,53 +1,7 @@
 export const dynamic = 'force-dynamic'
 
-import { getSession } from '@/lib/session'
-import { getSupabase } from '@/lib/supabase'
+import { getStravaActivities } from '@/lib/strava'
 import Link from 'next/link'
-import { StravaActivity } from '@/types'
-
-async function getLatestActivity(email: string): Promise<StravaActivity | null> {
-  const supabase = getSupabase()
-  const { data: tokenRow } = await supabase
-    .from('oauth_tokens')
-    .select('access_token, expires_at, refresh_token')
-    .eq('user_email', email)
-    .eq('provider', 'strava')
-    .single()
-
-  if (!tokenRow) return null
-
-  let accessToken = tokenRow.access_token
-  if (new Date(tokenRow.expires_at) < new Date()) {
-    const refreshRes = await fetch('https://www.strava.com/oauth/token', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        client_id: Number(process.env.STRAVA_CLIENT_ID),
-        client_secret: process.env.STRAVA_CLIENT_SECRET,
-        grant_type: 'refresh_token',
-        refresh_token: tokenRow.refresh_token,
-      }),
-    })
-    if (!refreshRes.ok) return null
-    const refreshed = await refreshRes.json()
-    accessToken = refreshed.access_token
-    await supabase.from('oauth_tokens').upsert({
-      user_email: email,
-      provider: 'strava',
-      access_token: refreshed.access_token,
-      refresh_token: refreshed.refresh_token,
-      expires_at: new Date(refreshed.expires_at * 1000).toISOString(),
-    }, { onConflict: 'user_email,provider' })
-  }
-
-  const res = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=1', {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    next: { revalidate: 300 },
-  })
-  if (!res.ok) return null
-  const activities = await res.json()
-  return activities[0] ?? null
-}
 
 function formatDuration(seconds: number) {
   const h = Math.floor(seconds / 3600)
@@ -56,8 +10,8 @@ function formatDuration(seconds: number) {
 }
 
 export default async function HomePage() {
-  const session = await getSession()
-  const latest = session ? await getLatestActivity(session.email) : null
+  const activities = await getStravaActivities(process.env.STRAVA_OWNER_EMAIL ?? '', 1)
+  const latest = activities[0] ?? null
 
   return (
     <div className="min-h-screen">
@@ -118,15 +72,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Strava nicht verbunden */}
-      {!latest && session && (
-        <section className="max-w-6xl mx-auto px-6 py-16 text-center">
-          <p className="text-muted-foreground mb-4">Strava noch nicht verbunden.</p>
-          <a href="/api/strava/connect" className="px-6 py-3 bg-primary text-primary-foreground rounded-full font-semibold hover:bg-primary/90 transition-colors inline-block">
-            Strava verbinden
-          </a>
-        </section>
-      )}
 
       {/* Quick Links */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
