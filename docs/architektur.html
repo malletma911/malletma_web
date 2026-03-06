@@ -169,7 +169,7 @@
 <div class="page">
 
   <div class="hero">
-    <p class="sub">Technische Dokumentation · Version 2.0 · März 2026</p>
+    <p class="sub">Technische Dokumentation · Version 2.1 · März 2026</p>
     <h1>malletma.de</h1>
     <p class="desc">
       Persönliche Radsport-Website von Maik Malletschek. Diese Dokumentation erklärt verständlich
@@ -319,7 +319,8 @@
   <table>
     <tr><th>Datei</th><th>Inhalt</th></tr>
     <tr><td><code>lib/country.ts</code></td><td><code>countryFlag(code)</code> via Unicode-Regionalindikatoren, <code>countryName(code)</code> via <code>Intl.DisplayNames(['de'])</code> — deutsche Ländernamen aus ISO-Code ohne Lookup-Tabelle.</td></tr>
-    <tr><td><code>lib/supabase.ts</code></td><td>Supabase-Client (Service Role Key, server-only).</td></tr>
+    <tr><td><code>lib/strava.ts</code></td><td>Zentralisierte Strava-Logik: <code>getAccessToken()</code> (Token-Refresh), <code>getStravaActivities()</code>.</td></tr>
+    <tr><td><code>lib/supabase.ts</code></td><td>Dual Client: <code>getSupabase()</code> (Anon Key, öffentliche Reads) + <code>getSupabaseAdmin()</code> (Service Role, Strava-Tokens).</td></tr>
     <tr><td><code>lib/session.ts</code></td><td>JWT Session-Handling (Auth0).</td></tr>
     <tr><td><code>lib/utils.ts</code></td><td>Tailwind-Merge-Hilfsfunktion.</td></tr>
     <tr><td><code>types/index.ts</code></td><td>Gemeinsame TypeScript-Interfaces.</td></tr>
@@ -337,8 +338,8 @@
   <h2 id="s4">4. Admin-Backend — Event-Verwaltung</h2>
 
   <p>
-    Das Admin ist eine separate Next.js-App unter <code>admin/</code>. Sie teilt denselben Git-Repo,
-    hat aber eigene <code>package.json</code>, <code>tsconfig.json</code> und Vercel-Deployment.
+    Das Admin ist eine separate Next.js-App (<code>malletma_admin</code>) in einem eigenen lokalen Projektverzeichnis.
+    Es hat eigene <code>package.json</code>, <code>tsconfig.json</code> und wird via <code>vercel --prod</code> CLI deployed.
   </p>
 
   <h3>Admin-Seiten</h3>
@@ -547,8 +548,8 @@
     <div class="flow-step">
       <div class="flow-num blue">1</div>
       <div class="flow-content">
-        <strong>Server Component lädt alle Events</strong>
-        <p><code>app/events/page.tsx</code> (Server Component, <code>force-dynamic</code>) ruft <code>supabase.from('events').select('*')</code> auf.</p>
+        <strong>Server Component lädt Events via Anon Key</strong>
+        <p><code>app/events/page.tsx</code> (Server Component, <code>force-dynamic</code>) ruft <code>getSupabase()</code> (Anon Key) auf, selektiert nur benötigte Spalten und filtert server-seitig auf <code>status IN ('published', 'active')</code>.</p>
       </div>
     </div>
     <div class="flow-step">
@@ -659,43 +660,127 @@
   <!-- ═══════════════════════════════════════════ -->
   <h2 id="s10">10. Login &amp; Sicherheit</h2>
 
-  <h3>Frontend-Authentifizierung</h3>
-  <p>
-    Die Middleware (<code>proxy.ts</code>) prüft jeden Request auf einen gültigen HttpOnly-JWT-Cookie.
-    Auth0 übernimmt Login und Token-Ausstellung. Nach 8 Stunden muss neu eingeloggt werden.
-  </p>
-
-  <h3>Admin-Authentifizierung</h3>
-  <p>
-    Das Admin nutzt dieselbe Auth0-Integration (eigene <code>admin/middleware.ts</code> + Auth-API-Routen).
-    Alle Admin-API-Routen sind hinter der Session-Prüfung.
-  </p>
-
-  <div class="security-item">
-    <div class="security-icon">🛡️</div>
-    <div class="security-content">
-      <strong>Service Role Key — nur server-seitig</strong>
-      <p>Der Supabase-Schlüssel liegt nur in Vercel-Umgebungsvariablen, nie im Browser.
-      Kein RLS (Row Level Security) nötig, da kein direkter Browser-Zugriff auf Supabase.</p>
-    </div>
-  </div>
+  <h3>Architektur-Sicherheit</h3>
 
   <div class="security-item">
     <div class="security-icon">🔐</div>
     <div class="security-content">
-      <strong>API-Keys nie im Code</strong>
-      <p><code>ANTHROPIC_API_KEY</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code>, Auth0-Secrets —
-      alle als Vercel-Umgebungsvariablen, nie in Git.</p>
+      <strong>Authentifizierung (Auth0)</strong>
+      <p>Admin-Bereich ist durch Auth0 OAuth2 mit PKCE-kompatiblem Flow geschützt. Session-Token werden als JWT mit HS256 signiert und als httpOnly Cookie gespeichert (8h Ablaufzeit).</p>
     </div>
   </div>
 
   <div class="security-item">
-    <div class="security-icon">⚠️</div>
+    <div class="security-icon">🛡️</div>
     <div class="security-content">
-      <strong>Offene Punkte (Tech Debt)</strong>
-      <p>Admin-API-Routen prüfen Session, aber haben noch kein explizites Allowlist-Filtering für
-      PUT-Payloads. Der <code>select('*')</code> in der Events-Abfrage könnte auf benötigte Spalten
-      eingeschränkt werden (Performance). Strava-Token Cookie fehlt noch <code>Secure</code>-Flag.</p>
+      <strong>Proxy Auth-Guard (Next.js 16)</strong>
+      <p><code>proxy.ts</code> validiert JWT-Session auf jeder Route. API-Routes geben 401 zurück, Seiten leiten zum Login weiter. Next.js 16 verwendet die <code>proxy</code>-Konvention statt der veralteten <code>middleware</code>-Konvention.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">🛡️</div>
+    <div class="security-content">
+      <strong>Defense-in-Depth</strong>
+      <p>Zusätzlich zum Proxy validiert jede API-Route die Session eigenständig via <code>requireSession()</code>. Bei Proxy-Bypass oder Fehlkonfiguration greifen die Route-Guards.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">🛡️</div>
+    <div class="security-content">
+      <strong>OAuth CSRF-Schutz</strong>
+      <p>Auth0 Login-Flow verwendet einen <code>state</code>-Parameter (UUID), der in einem httpOnly Cookie gespeichert und im Callback validiert wird.</p>
+    </div>
+  </div>
+
+  <h3>Datenbank-Sicherheit</h3>
+
+  <div class="security-item">
+    <div class="security-icon">🗄️</div>
+    <div class="security-content">
+      <strong>Row Level Security (RLS)</strong>
+      <p>RLS-Policies aktiv: <code>events</code> — nur published/active für anon-Key. <code>oauth_tokens</code>, <code>users</code>, <code>agent_scan_log</code> — kein anon-Zugriff. <code>bikes</code> — öffentlich lesbar. Service-Role-Key umgeht RLS für Admin-Operationen.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">🔑</div>
+    <div class="security-content">
+      <strong>Dual Supabase Client Pattern</strong>
+      <p>Frontend (<code>malletma-web</code>) nutzt den Supabase <strong>Anon Key</strong> für öffentliche Reads via <code>getSupabase()</code>. Service Role Key wird nur im Admin-Backend via <code>getSupabaseAdmin()</code> für Schreiboperationen und Strava-Token-Management server-seitig verwendet.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">📊</div>
+    <div class="security-content">
+      <strong>DB-Performance-Indizes</strong>
+      <p>Indizes auf <code>events(status)</code>, <code>events(date)</code> und <code>events(status, date)</code> für schnelle Event-Abfragen. Frontend-Queries verwenden spezifische Spaltenauswahl statt <code>select('*')</code>.</p>
+    </div>
+  </div>
+
+  <h3>Input-Validierung</h3>
+
+  <div class="security-item">
+    <div class="security-icon">✅</div>
+    <div class="security-content">
+      <strong>UUID-Validierung</strong>
+      <p>Alle API-Routes validieren UUID-Parameter mit Regex via <code>isValidUUID()</code> bevor sie an Supabase weitergegeben werden.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">✅</div>
+    <div class="security-content">
+      <strong>Field Whitelisting</strong>
+      <p>PUT/UPDATE-Operationen verwenden Whitelists (<code>EDITABLE_FIELDS</code>) — nur definierte Felder werden akzeptiert. Rescan-Apply Route filtert auf erlaubte Felder.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">✅</div>
+    <div class="security-content">
+      <strong>Numerische Feldvalidierung</strong>
+      <p>Numerische Felder (<code>distance_km</code>, <code>elevation_m</code>, etc.) werden server-seitig validiert und konvertiert.</p>
+    </div>
+  </div>
+
+  <h3>Transport-Sicherheit</h3>
+
+  <div class="security-item">
+    <div class="security-icon">🔒</div>
+    <div class="security-content">
+      <strong>Security Headers</strong>
+      <p>HSTS (2 Jahre, includeSubDomains, preload), X-Content-Type-Options: nosniff, X-Frame-Options: DENY, X-XSS-Protection, Referrer-Policy: strict-origin-when-cross-origin, Permissions-Policy (kein Kamera/Mikro/Geo). Konfiguriert in <code>next.config.ts</code> beider Apps.</p>
+    </div>
+  </div>
+
+  <div class="security-item">
+    <div class="security-icon">🍪</div>
+    <div class="security-content">
+      <strong>Cookie-Sicherheit</strong>
+      <p>Session-Cookie: httpOnly, secure (production), sameSite=lax, 8h Ablaufzeit. Kein JavaScript-Zugriff auf Session-Daten möglich.</p>
+    </div>
+  </div>
+
+  <h3>Secrets Management</h3>
+
+  <div class="security-item">
+    <div class="security-icon">🔐</div>
+    <div class="security-content">
+      <strong>Environment Variables</strong>
+      <p>Alle Secrets (Auth0, Supabase, Strava, Anthropic) sind in Vercel Environment Variables gespeichert. <code>.env.local</code> ist in <code>.gitignore</code> ausgeschlossen. Keine <code>NEXT_PUBLIC_</code>-prefixed Secrets — Service Role Key, Client Secrets und API Keys sind nur server-seitig verfügbar.</p>
+    </div>
+  </div>
+
+  <h3>API-Sicherheit</h3>
+
+  <div class="security-item">
+    <div class="security-icon">🤖</div>
+    <div class="security-content">
+      <strong>Agent-Begrenzungen</strong>
+      <p>Scraping auf 8.000 Zeichen pro Webseite begrenzt. Timeout von 8 Sekunden für externe Requests. User-Agent identifiziert den Bot. Claude Agent hat ein Maximum von 8 Turns gegen endlose Loops.</p>
     </div>
   </div>
 
@@ -704,7 +789,7 @@
   <h2 id="s11">11. Projektstruktur</h2>
 
   <div class="tree">
-<span class="folder">malletma_web/</span>
+<span class="folder">malletma_web/</span>                        <span class="comment"># Frontend (Git-Repo → GitHub → Vercel auto-deploy)</span>
 ├── <span class="folder">app/</span>                         <span class="comment"># Frontend-Seiten (Next.js App Router)</span>
 │   ├── <span class="file">events/page.tsx</span>           <span class="comment"># Race Calendar (Server Component)</span>
 │   ├── <span class="file">garage/page.tsx</span>           <span class="comment"># Fahrräder</span>
@@ -720,34 +805,40 @@
 │   └── <span class="file">event-countdown.tsx</span>       <span class="comment"># Live-Countdown</span>
 ├── <span class="folder">lib/</span>                          <span class="comment"># Frontend-Utilities</span>
 │   ├── <span class="highlight">country.ts</span>               <span class="comment"># countryFlag() + countryName() via Intl</span>
-│   ├── <span class="file">supabase.ts</span>              <span class="comment"># DB-Client</span>
-│   └── <span class="file">session.ts</span>               <span class="comment"># Auth0 JWT</span>
+│   ├── <span class="highlight">strava.ts</span>                <span class="comment"># Zentralisierte Strava-Token-Verwaltung + API</span>
+│   ├── <span class="file">supabase.ts</span>              <span class="comment"># Dual Client: getSupabase() (anon) + getSupabaseAdmin() (service)</span>
+│   └── <span class="file">session.ts</span>               <span class="comment"># Auth0 JWT + requireSession() + isValidUUID()</span>
 ├── <span class="folder">types/index.ts</span>                <span class="comment"># Gemeinsame TypeScript-Interfaces</span>
 ├── <span class="folder">docs/architektur.html</span>         <span class="comment"># Diese Dokumentation</span>
 │
-└── <span class="folder">admin/</span>                        <span class="comment"># Admin-Backend (separate Next.js-App)</span>
-    ├── <span class="folder">app/</span>
-    │   ├── <span class="file">page.tsx</span>              <span class="comment"># Dashboard: Event-Liste</span>
-    │   ├── <span class="folder">events/</span>
-    │   │   ├── <span class="file">create/page.tsx</span>   <span class="comment"># Event erstellen</span>
-    │   │   └── <span class="file">[id]/edit/page.tsx</span>  <span class="comment"># Event bearbeiten</span>
-    │   │   └── <span class="file">[id]/rescan/page.tsx</span> <span class="comment"># Agent neu ausführen</span>
-    │   ├── <span class="folder">api/</span>
-    │   │   ├── <span class="highlight">agent/route.ts</span>       <span class="comment"># Create-Flow (Agent + GPX-Fallback)</span>
-    │   │   ├── <span class="highlight">agent/rescan/route.ts</span> <span class="comment"># Rescan-Flow</span>
-    │   │   ├── <span class="highlight">agent/rescan/apply/route.ts</span> <span class="comment"># Diff übernehmen</span>
-    │   │   ├── <span class="highlight">agent/generate-notes/route.ts</span> <span class="comment"># Bulk-Beschreibungen</span>
-    │   │   └── <span class="file">events/[id]/route.ts</span> <span class="comment"># CRUD einzelnes Event</span>
-    │   └── <span class="folder">components/</span>
-    │       └── <span class="file">generate-notes-button.tsx</span> <span class="comment"># Client-Button für Bulk-Notes</span>
-    └── <span class="folder">lib/</span>
-        ├── <span class="highlight">agents/events.ts</span>     <span class="comment"># Claude-Agent: Prompt + Tool-Loop</span>
-        ├── <span class="highlight">difficulty.ts</span>        <span class="comment"># computeDifficulty(distance, elevation)</span>
-        ├── <span class="highlight">country.ts</span>           <span class="comment"># Kopie von /lib/country.ts (separate App)</span>
-        └── <span class="folder">parsers/</span>
-            ├── <span class="file">gpx.ts</span>           <span class="comment"># GPX-XML-Parser → ParsedRoute</span>
-            ├── <span class="file">route-extractor.ts</span> <span class="comment"># Komoot + RideWithGPS + Generic</span>
-            └── <span class="file">utils.ts</span>         <span class="comment"># buildElevationProfile() + Haversine + RDP</span>
+<span class="folder">malletma_admin/</span>                       <span class="comment"># Admin-Backend (separates Repo → Vercel CLI deploy)</span>
+├── <span class="highlight">proxy.ts</span>                     <span class="comment"># Auth-Guard (Next.js 16 proxy-Konvention)</span>
+├── <span class="folder">app/</span>
+│   ├── <span class="file">page.tsx</span>              <span class="comment"># Dashboard: Event-Liste</span>
+│   ├── <span class="folder">events/</span>
+│   │   ├── <span class="file">create/page.tsx</span>   <span class="comment"># Event erstellen</span>
+│   │   ├── <span class="file">[id]/edit/page.tsx</span>  <span class="comment"># Event bearbeiten</span>
+│   │   └── <span class="file">[id]/rescan/page.tsx</span> <span class="comment"># Agent neu ausführen</span>
+│   ├── <span class="highlight">security/page.tsx</span>     <span class="comment"># Sicherheitsdokumentation</span>
+│   ├── <span class="highlight">architektur/page.tsx</span>  <span class="comment"># Architekturdokumentation</span>
+│   ├── <span class="folder">api/</span>
+│   │   ├── <span class="highlight">agent/route.ts</span>       <span class="comment"># Create-Flow (Agent + GPX-Fallback)</span>
+│   │   ├── <span class="highlight">agent/rescan/route.ts</span> <span class="comment"># Rescan-Flow</span>
+│   │   ├── <span class="highlight">agent/rescan/apply/route.ts</span> <span class="comment"># Diff übernehmen (Field Whitelisting)</span>
+│   │   ├── <span class="highlight">agent/generate-notes/route.ts</span> <span class="comment"># Bulk-Beschreibungen</span>
+│   │   └── <span class="file">events/[id]/route.ts</span> <span class="comment"># CRUD einzelnes Event (UUID-Validierung)</span>
+│   └── <span class="folder">components/</span>
+│       └── <span class="file">generate-notes-button.tsx</span> <span class="comment"># Client-Button für Bulk-Notes</span>
+├── <span class="folder">lib/</span>
+│   ├── <span class="highlight">session.ts</span>           <span class="comment"># requireSession() + isValidUUID() + UnauthorizedError</span>
+│   ├── <span class="highlight">agents/events.ts</span>     <span class="comment"># Claude-Agent: Prompt + Tool-Loop</span>
+│   ├── <span class="highlight">difficulty.ts</span>        <span class="comment"># computeDifficulty(distance, elevation)</span>
+│   ├── <span class="highlight">country.ts</span>           <span class="comment"># countryFlag() + countryName()</span>
+│   └── <span class="folder">parsers/</span>
+│       ├── <span class="file">gpx.ts</span>           <span class="comment"># GPX-XML-Parser → ParsedRoute</span>
+│       ├── <span class="file">route-extractor.ts</span> <span class="comment"># Komoot + RideWithGPS + Generic</span>
+│       └── <span class="file">utils.ts</span>         <span class="comment"># buildElevationProfile() + Haversine + RDP</span>
+└── <span class="file">supabase-rls-security.sql</span> <span class="comment"># RLS-Policies + Indizes (manuell ausgeführt)</span>
   </div>
 
 
@@ -765,15 +856,15 @@
     <div class="flow-step">
       <div class="flow-num blue">2</div>
       <div class="flow-content">
-        <strong>Git Push</strong>
-        <p><code>git push origin main</code> — ein Commit, ein Push für beide Apps (Mono-Repo).</p>
+        <strong>Git Push (Frontend) / Vercel CLI (Admin)</strong>
+        <p>Frontend: <code>git push origin main</code> → automatisches Vercel-Deployment. Admin: <code>vercel --prod</code> CLI-Deployment (kein Git-Repo).</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-num blue">3</div>
       <div class="flow-content">
-        <strong>Vercel erkennt Push automatisch</strong>
-        <p>Zwei getrennte Vercel-Projekte reagieren auf den Push. Vercel prüft, welche Dateien sich geändert haben und deployed nur wenn nötig.</p>
+        <strong>Vercel baut und deployed</strong>
+        <p>Frontend: Vercel erkennt GitHub-Push automatisch und baut. Admin: <code>vercel --prod</code> baut und deployed direkt.</p>
       </div>
     </div>
     <div class="flow-step">
@@ -786,10 +877,10 @@
   </div>
 
   <div class="info-box green">
-    <strong>Mono-Repo-Setup:</strong> Beide Apps liegen im selben Git-Repository.
-    Vercel-Projekt "malletma_web" hat Root Directory <code>/</code> (Frontend),
-    Vercel-Projekt "malletma_admin" hat Root Directory <code>/admin</code>.
-    Jedes Projekt hat eigene Umgebungsvariablen im Vercel Dashboard.
+    <strong>Zwei separate Repos:</strong>
+    <code>malletma_web</code> liegt auf GitHub und wird automatisch via Vercel deployed (git push → auto-deploy).
+    <code>malletma_admin</code> ist ein separates lokales Projekt ohne Git-Repo und wird manuell via <code>vercel --prod</code> CLI deployed.
+    Jedes Vercel-Projekt hat eigene Umgebungsvariablen.
   </div>
 
 
@@ -878,8 +969,8 @@ sonst                → Badge "Gran Fondo" (primary)</code>
     <tr><td><strong>SSR (Server-Side Rendering)</strong></td><td>HTML wird auf dem Server gebaut, nicht im Browser. Schnelleres erstes Laden, gut für SEO.</td></tr>
     <tr><td><strong>Haversine-Formel</strong></td><td>Mathematische Formel zur Berechnung der Entfernung zwischen zwei GPS-Koordinaten auf der Erdkugel.</td></tr>
     <tr><td><strong>Ramer-Douglas-Peucker</strong></td><td>Algorithmus zur Vereinfachung von Kurven/Polygonen. Reduziert GPS-Punkte bei minimalem Informationsverlust.</td></tr>
-    <tr><td><strong>RLS</strong></td><td>Row Level Security — Supabase-Funktion, die Datenbankregeln direkt in der DB definiert. Hier nicht genutzt (kein Browser-Direktzugriff).</td></tr>
-    <tr><td><strong>Mono-Repo</strong></td><td>Mehrere Projekte (Frontend + Admin) in einem einzigen Git-Repository. Vereinfacht Code-Sharing und Deployment.</td></tr>
+    <tr><td><strong>RLS</strong></td><td>Row Level Security — Supabase-Funktion, die Datenbankregeln direkt in der DB definiert. Aktiv für alle Tabellen: events (nur published für anon), oauth_tokens/users/agent_scan_log (gesperrt für anon), bikes (öffentlich lesbar).</td></tr>
+    <tr><td><strong>Separate Repos</strong></td><td>Frontend und Admin sind zwei getrennte Projekte. Frontend auf GitHub (auto-deploy), Admin lokal (CLI-deploy).</td></tr>
     <tr><td><strong>ISO 3166-1 Alpha-2</strong></td><td>Internationaler Standard für Länderkürzel: DE = Deutschland, SE = Schweden, IT = Italien usw.</td></tr>
     <tr><td><strong>Intl.DisplayNames</strong></td><td>Browser/Node.js-API zur Übersetzung von Sprach- und Regionscodes in lesbare Namen (z.B. "SE" → "Schweden" auf Deutsch).</td></tr>
     <tr><td><strong>Cheerio</strong></td><td>HTML-Parser für Node.js, ähnlich wie jQuery-Syntax. Wird genutzt um Websites zu scrapen und Text zu extrahieren.</td></tr>
