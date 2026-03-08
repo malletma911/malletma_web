@@ -1,15 +1,25 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
+import type { Metadata } from 'next'
 import { getSupabase } from '@/lib/supabase'
 import { Bike } from '@/types'
 import Image from 'next/image'
 
+export const metadata: Metadata = {
+  title: 'Garage — Maik Malletschek',
+  description: 'Meine Fahrräder und Equipment.',
+}
+
 async function getBikes(): Promise<Bike[]> {
   const supabase = getSupabase()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('bikes')
     .select('id,name,brand,type,description,photo_url,weight_kg,year,created_at')
     .order('created_at', { ascending: false })
+  if (error) {
+    console.error('Failed to fetch bikes:', error.message)
+    return []
+  }
   return data ?? []
 }
 
@@ -43,7 +53,7 @@ export default async function GaragePage() {
               <div key={bike.id} className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all">
                 {bike.photo_url ? (
                   <div className="relative aspect-[4/3] bg-muted">
-                    <Image src={bike.photo_url} alt={bike.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <Image src={bike.photo_url} alt={bike.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
                 ) : (
                   <div className="aspect-[4/3] bg-muted flex items-center justify-center text-6xl">🚲</div>

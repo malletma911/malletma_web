@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from 'react'
+import type L from 'leaflet'
 
 export interface EventPin {
   lat: number
@@ -12,12 +13,9 @@ export interface EventPin {
 
 export default function OverviewMap({ pins }: { pins: EventPin[] }) {
   const mapRef = useRef<HTMLDivElement>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mapInstanceRef = useRef<any>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const leafletRef = useRef<any>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const markersRef = useRef<any[]>([])
+  const mapInstanceRef = useRef<L.Map | null>(null)
+  const leafletRef = useRef<typeof L | null>(null)
+  const markersRef = useRef<L.Marker[]>([])
 
   const updateMarkers = useCallback(() => {
     const L = leafletRef.current
@@ -74,6 +72,8 @@ export default function OverviewMap({ pins }: { pins: EventPin[] }) {
         link.id = 'leaflet-css'
         link.rel = 'stylesheet'
         link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+        link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY='
+        link.crossOrigin = 'anonymous'
         document.head.appendChild(link)
       }
 

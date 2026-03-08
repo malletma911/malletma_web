@@ -1,8 +1,14 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
+import type { Metadata } from 'next'
 import { getSupabase } from '@/lib/supabase'
 import { countryFlag, countryName } from '@/lib/country'
 import EventsFilterableContent, { EnrichedEvent } from '@/components/events-filterable-content'
+
+export const metadata: Metadata = {
+  title: 'Race Calendar — Maik Malletschek',
+  description: 'Bevorstehende Rad-Events und Rennen.',
+}
 
 interface EventRow {
   id: string
@@ -34,11 +40,15 @@ const EVENT_COLUMNS = 'id,name,date,location,distance_km,elevation_m,type,url,no
 
 async function getEvents(): Promise<EventRow[]> {
   const supabase = getSupabase()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('events')
     .select(EVENT_COLUMNS)
     .or('status.eq.published,status.eq.active')
     .order('date', { ascending: true })
+  if (error) {
+    console.error('Failed to fetch events:', error.message)
+    return []
+  }
   return data ?? []
 }
 

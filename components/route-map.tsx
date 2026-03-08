@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import type L from 'leaflet'
 
 interface Props {
   route: [number, number][]
@@ -11,7 +12,7 @@ interface Props {
 
 export default function RouteMap({ route, color, center, zoom }: Props) {
   const mapRef = useRef<HTMLDivElement>(null)
-  const instanceRef = useRef<unknown>(null)
+  const instanceRef = useRef<L.Map | null>(null)
 
   useEffect(() => {
     if (!mapRef.current || instanceRef.current) return
@@ -24,6 +25,8 @@ export default function RouteMap({ route, color, center, zoom }: Props) {
         link.id = 'leaflet-css'
         link.rel = 'stylesheet'
         link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+        link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY='
+        link.crossOrigin = 'anonymous'
         document.head.appendChild(link)
       }
 
@@ -54,7 +57,7 @@ export default function RouteMap({ route, color, center, zoom }: Props) {
 
     return () => {
       if (instanceRef.current) {
-        ;(instanceRef.current as { remove: () => void }).remove()
+        instanceRef.current.remove()
         instanceRef.current = null
       }
     }

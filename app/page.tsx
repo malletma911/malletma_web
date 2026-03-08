@@ -1,13 +1,8 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 import { getStravaActivities } from '@/lib/strava'
+import { formatDuration } from '@/lib/utils'
 import Link from 'next/link'
-
-function formatDuration(seconds: number) {
-  const h = Math.floor(seconds / 3600)
-  const m = Math.floor((seconds % 3600) / 60)
-  return h > 0 ? `${h}h ${m}min` : `${m}min`
-}
 
 export default async function HomePage() {
   const activities = await getStravaActivities(process.env.STRAVA_OWNER_EMAIL ?? '', 1)

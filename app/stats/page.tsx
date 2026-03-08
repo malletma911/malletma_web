@@ -1,7 +1,13 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
+import type { Metadata } from 'next'
 import { getStravaActivities } from '@/lib/strava'
 import ActivityFeed from '@/components/activity-feed'
+
+export const metadata: Metadata = {
+  title: 'Stats — Maik Malletschek',
+  description: 'Strava-Statistiken und letzte Aktivitäten.',
+}
 
 export default async function StatsPage() {
   const activities = await getStravaActivities(process.env.STRAVA_OWNER_EMAIL ?? '', 30)

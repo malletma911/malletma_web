@@ -2,8 +2,14 @@
 
 import dynamic from 'next/dynamic'
 
-const RouteMap = dynamic(() => import('./route-map'), { ssr: false })
-const ElevationChart = dynamic(() => import('./elevation-chart'), { ssr: false })
+const RouteMap = dynamic(() => import('./route-map'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-black/20 rounded-2xl animate-pulse" />,
+})
+const ElevationChart = dynamic(() => import('./elevation-chart'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-black/20 rounded-2xl animate-pulse" />,
+})
 
 interface Props {
   route: [number, number][]

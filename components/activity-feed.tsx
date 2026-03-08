@@ -1,12 +1,7 @@
 'use client'
 
 import { StravaActivity } from '@/types'
-
-function formatDuration(seconds: number) {
-  const h = Math.floor(seconds / 3600)
-  const m = Math.floor((seconds % 3600) / 60)
-  return h > 0 ? `${h}h ${m}min` : `${m}min`
-}
+import { formatDuration } from '@/lib/utils'
 
 const typeIcons: Record<string, string> = {
   Ride: '🚴',
