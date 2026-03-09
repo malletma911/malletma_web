@@ -2,85 +2,95 @@ export const revalidate = 300
 
 import type { Metadata } from 'next'
 import { getSupabase } from '@/lib/supabase'
-import { Bike } from '@/types'
-import Image from 'next/image'
+import type { Bike, BikeStravaStats } from '@/types'
+import BikeShowcase from '@/components/bike-showcase'
 
 export const metadata: Metadata = {
   title: 'Garage — Maik Malletschek',
   description: 'Meine Fahrräder und Equipment.',
 }
 
-async function getBikes(): Promise<Bike[]> {
+async function getBikesWithStats(): Promise<{
+  bikes: Bike[]
+  stats: Record<string, BikeStravaStats>
+}> {
   const supabase = getSupabase()
-  const { data, error } = await supabase
-    .from('bikes')
-    .select('id,name,brand,type,description,photo_url,weight_kg,year,created_at')
-    .order('created_at', { ascending: false })
-  if (error) {
-    console.error('Failed to fetch bikes:', error.message)
-    return []
-  }
-  return data ?? []
-}
 
-const typeLabels: Record<string, string> = {
-  road: 'Rennrad',
-  gravel: 'Gravel',
-  mtb: 'MTB',
-  tt: 'Zeitfahren',
+  const [bikesRes, statsRes] = await Promise.all([
+    supabase
+      .from('bikes')
+      .select('*')
+      .eq('status', 'active')
+      .order('display_order', { ascending: true }),
+    supabase
+      .from('bike_strava_stats')
+      .select('*'),
+  ])
+
+  if (bikesRes.error) {
+    console.error('Failed to fetch bikes:', bikesRes.error.message)
+  }
+  if (statsRes.error) {
+    console.error('Failed to fetch bike stats:', statsRes.error.message)
+  }
+
+  const bikes = (bikesRes.data ?? []) as Bike[]
+  const stats: Record<string, BikeStravaStats> = {}
+  for (const s of (statsRes.data ?? []) as BikeStravaStats[]) {
+    stats[s.bike_id] = s
+  }
+
+  return { bikes, stats }
 }
 
 export default async function GaragePage() {
-  const bikes = await getBikes()
+  const { bikes, stats } = await getBikesWithStats()
+
+  const totalKm = Object.values(stats).reduce((sum, s) => sum + Number(s.total_distance_km || 0), 0)
+  const totalElevation = Object.values(stats).reduce((sum, s) => sum + Number(s.total_elevation_m || 0), 0)
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="mb-12">
-          <p className="text-primary text-xs font-semibold tracking-[0.3em] uppercase mb-3">Meine Bikes</p>
-          <h1 className="font-[family-name:var(--font-bebas)] text-5xl sm:text-6xl md:text-8xl tracking-wider">GARAGE</h1>
-        </div>
-
-        {bikes.length === 0 ? (
-          <div className="text-center py-32 text-muted-foreground">
-            <p className="text-6xl mb-6">🚲</p>
-            <p className="text-xl">Noch keine Fahrräder eingetragen.</p>
-            <p className="text-sm mt-2">Füge deine Bikes in der Supabase-Datenbank hinzu.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bikes.map(bike => (
-              <div key={bike.id} className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all">
-                {bike.photo_url ? (
-                  <div className="relative aspect-[4/3] bg-muted">
-                    <Image src={bike.photo_url} alt={bike.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-                ) : (
-                  <div className="aspect-[4/3] bg-muted flex items-center justify-center text-6xl">🚲</div>
-                )}
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h2 className="text-xl font-bold">{bike.name}</h2>
-                      {bike.brand && <p className="text-muted-foreground text-sm">{bike.brand}</p>}
-                    </div>
-                    {bike.type && (
-                      <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                        {typeLabels[bike.type] ?? bike.type}
-                      </span>
-                    )}
-                  </div>
-                  {bike.description && <p className="text-muted-foreground text-sm mt-3">{bike.description}</p>}
-                  <div className="flex gap-4 mt-4 pt-4 border-t border-border text-sm text-muted-foreground">
-                    {bike.weight_kg && <span>{bike.weight_kg} kg</span>}
-                    {bike.year && <span>{bike.year}</span>}
-                  </div>
-                </div>
+    <div className="min-h-screen pt-24 pb-24">
+      {/* Header */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-8">
+        <p className="text-primary text-xs font-semibold tracking-[0.3em] uppercase mb-3">Meine Bikes</p>
+        <h1 className="font-[family-name:var(--font-bebas)] text-5xl sm:text-7xl md:text-8xl tracking-wider">GARAGE</h1>
+        {bikes.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            <div className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
+              <p className="text-base font-bold tabular-nums leading-none text-foreground">{bikes.length}</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Bikes</p>
+            </div>
+            {totalKm > 0 && (
+              <div className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
+                <p className="text-base font-bold tabular-nums leading-none text-foreground">
+                  {totalKm.toLocaleString('de-DE', { maximumFractionDigits: 0 })} km
+                </p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Gesamtstrecke</p>
               </div>
-            ))}
+            )}
+            {totalElevation > 0 && (
+              <div className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
+                <p className="text-base font-bold tabular-nums leading-none text-foreground">
+                  {totalElevation.toLocaleString('de-DE', { maximumFractionDigits: 0 })} hm
+                </p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Höhenmeter</p>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* Bike Showcase */}
+      {bikes.length === 0 ? (
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center py-32 text-muted-foreground">
+            <p className="text-xl">Noch keine Fahrräder eingetragen.</p>
+          </div>
+        </div>
+      ) : (
+        <BikeShowcase bikes={bikes} stats={stats} />
+      )}
     </div>
   )
 }

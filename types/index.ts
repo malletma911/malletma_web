@@ -11,17 +11,42 @@ export interface StravaActivity {
   max_speed: number
   average_heartrate?: number
   suffer_score?: number
+  gear_id?: string
 }
 
 export interface Bike {
   id: string
   name: string
   brand: string | null
+  model: string | null
   type: 'road' | 'gravel' | 'mtb' | 'tt' | string
   photo_url: string | null
   description: string | null
   weight_kg: number | null
   year: number | null
+  frame_material: string | null
+  groupset: string | null
+  wheels: string | null
+  strava_gear_id: string | null
+  display_order: number
+  status: string
+  color: string | null
+}
+
+export interface BikeStravaStats {
+  bike_id: string
+  total_distance_km: number
+  total_elevation_m: number
+  total_moving_time_s: number
+  total_activities: number
+  max_speed_kmh: number | null
+  longest_ride_km: number | null
+  longest_ride_name: string | null
+  biggest_climb_m: number | null
+  biggest_climb_name: string | null
+  avg_speed_kmh: number | null
+  last_activity_date: string | null
+  synced_at: string
 }
 
 export interface Event {
