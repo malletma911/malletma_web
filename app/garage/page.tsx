@@ -89,7 +89,7 @@ export default async function GaragePage() {
           </div>
         </div>
       ) : (
-        <BikeShowcase bikes={bikes} stats={stats} />
+        <BikeShowcase bikes={bikes} stats={stats} allStats={stats} />
       )}
     </div>
   )

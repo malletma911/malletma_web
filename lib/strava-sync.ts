@@ -1,7 +1,7 @@
 import { getSupabaseAdmin } from './supabase'
 import type { StravaActivity } from '@/types'
 
-async function getAccessToken(email: string): Promise<string | null> {
+export async function getAccessToken(email: string): Promise<string | null> {
   const supabase = getSupabaseAdmin()
   const { data: tokenRow } = await supabase
     .from('oauth_tokens')
@@ -46,6 +46,32 @@ interface StravaGear {
   id: string
   name: string
   distance: number
+}
+
+interface StravaGearDetail {
+  id: string
+  name: string
+  brand_name: string
+  model_name: string
+  frame_type: number // 1=mtb, 2=cross, 3=road, 4=tt
+  weight: number // grams, 0 if not set
+  description: string
+}
+
+export const FRAME_TYPE_MAP: Record<number, string> = {
+  1: 'mtb',
+  2: 'gravel',
+  3: 'road',
+  4: 'tt',
+  5: 'road', // track → road
+}
+
+export async function fetchGearDetail(accessToken: string, gearId: string): Promise<StravaGearDetail | null> {
+  const res = await fetch(`https://www.strava.com/api/v3/gear/${gearId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  if (!res.ok) return null
+  return res.json()
 }
 
 export async function getStravaGearList(email: string): Promise<StravaGear[]> {
@@ -129,6 +155,25 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
     const gearId = bike.strava_gear_id
     if (!gearId) continue
 
+    // Fetch gear details from Strava and update bike info
+    const gearDetail = await fetchGearDetail(accessToken, gearId)
+    if (gearDetail) {
+      const bikeUpdate: Record<string, unknown> = {}
+      if (gearDetail.brand_name) bikeUpdate.brand = gearDetail.brand_name
+      if (gearDetail.model_name) bikeUpdate.model = gearDetail.model_name
+      if (gearDetail.weight > 0) {
+        bikeUpdate.weight_kg = gearDetail.weight < 100
+          ? Math.round(gearDetail.weight * 10) / 10
+          : Math.round(gearDetail.weight / 100) / 10
+      }
+      if (gearDetail.frame_type && FRAME_TYPE_MAP[gearDetail.frame_type]) {
+        bikeUpdate.type = FRAME_TYPE_MAP[gearDetail.frame_type]
+      }
+      if (Object.keys(bikeUpdate).length > 0) {
+        await supabase.from('bikes').update(bikeUpdate).eq('id', bike.id)
+      }
+    }
+
     const activities = byGear.get(gearId) ?? []
 
     let totalDistanceKm = 0
@@ -140,6 +185,18 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
     let biggestClimbM = 0
     let biggestClimbName = ''
     let lastActivityDate: string | null = null
+    let lastActivityName: string | null = null
+    let firstActivityDate: string | null = null
+    let totalWatts = 0
+    let wattsCount = 0
+    let maxWatts = 0
+    let totalHr = 0
+    let hrCount = 0
+    let maxHr = 0
+    let totalSufferScore = 0
+    let totalPrCount = 0
+    let totalKudos = 0
+    let trainerCount = 0
 
     for (const a of activities) {
       const distKm = a.distance / 1000
@@ -162,7 +219,28 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
 
       if (!lastActivityDate || a.start_date > lastActivityDate) {
         lastActivityDate = a.start_date
+        lastActivityName = a.name
       }
+      if (!firstActivityDate || a.start_date < firstActivityDate) {
+        firstActivityDate = a.start_date
+      }
+
+      if (a.average_watts && a.average_watts > 0) {
+        totalWatts += a.average_watts
+        wattsCount++
+      }
+      if (a.max_watts && a.max_watts > maxWatts) maxWatts = a.max_watts
+
+      if (a.average_heartrate && a.average_heartrate > 0) {
+        totalHr += a.average_heartrate
+        hrCount++
+      }
+      if (a.max_heartrate && a.max_heartrate > maxHr) maxHr = a.max_heartrate
+
+      if (a.suffer_score) totalSufferScore += a.suffer_score
+      if (a.pr_count) totalPrCount += a.pr_count
+      if (a.kudos_count) totalKudos += a.kudos_count
+      if (a.trainer) trainerCount++
     }
 
     const avgSpeedKmh = totalMovingTimeS > 0
@@ -184,6 +262,18 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
         biggest_climb_name: biggestClimbName || null,
         avg_speed_kmh: avgSpeedKmh ? Math.round(avgSpeedKmh * 10) / 10 : null,
         last_activity_date: lastActivityDate,
+        last_activity_name: lastActivityName,
+        first_activity_date: firstActivityDate,
+        avg_watts: wattsCount > 0 ? Math.round(totalWatts / wattsCount) : null,
+        max_watts: maxWatts > 0 ? maxWatts : null,
+        avg_heartrate: hrCount > 0 ? Math.round(totalHr / hrCount) : null,
+        max_heartrate: maxHr > 0 ? maxHr : null,
+        total_suffer_score: totalSufferScore > 0 ? totalSufferScore : null,
+        total_pr_count: totalPrCount > 0 ? totalPrCount : null,
+        total_kudos: totalKudos > 0 ? totalKudos : null,
+        trainer_activities: trainerCount > 0 ? trainerCount : null,
+        avg_distance_km: activities.length > 0 ? Math.round(totalDistanceKm / activities.length * 10) / 10 : null,
+        avg_elevation_per_ride: activities.length > 0 ? Math.round(totalElevationM / activities.length) : null,
         synced_at: new Date().toISOString(),
       }, { onConflict: 'bike_id' })
 

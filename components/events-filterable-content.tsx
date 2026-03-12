@@ -49,6 +49,7 @@ export interface EnrichedEvent {
   bikeType: string
   participation: string
   slug: string | null
+  bike: { id: string; name: string; brand: string | null; model: string | null } | null
 }
 
 type ModusValue = 'training' | 'race' | 'gran_fondo' | 'charity'
@@ -216,12 +217,19 @@ export default function EventsFilterableContent({ events }: Props) {
                     <div className="flex items-center gap-2 flex-wrap">
                       {(event.participation === 'registered' || event.participation === 'completed') ? (
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-primary text-primary-foreground">
-                          ✓ Dabei
+                          ✓ Dabei{event.bike ? ` mit ${[event.bike.brand, event.bike.model].filter(Boolean).join(' ') || event.bike.name}` : ''}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border border-muted-foreground/30 text-muted-foreground">
-                          ⏳ Geplant
-                        </span>
+                        <>
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border border-muted-foreground/30 text-muted-foreground">
+                            ⏳ Geplant
+                          </span>
+                          {event.bike && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border border-purple-400/30 bg-purple-400/10 text-purple-400">
+                              🚴 {[event.bike.brand, event.bike.model].filter(Boolean).join(' ') || event.bike.name}
+                            </span>
+                          )}
+                        </>
                       )}
                       <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${mc.color}`}>
                         {mc.label}

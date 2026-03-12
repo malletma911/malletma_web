@@ -10,7 +10,15 @@ export interface StravaActivity {
   average_speed: number
   max_speed: number
   average_heartrate?: number
+  max_heartrate?: number
+  average_watts?: number
+  max_watts?: number
+  kilojoules?: number
+  average_cadence?: number
   suffer_score?: number
+  pr_count?: number
+  kudos_count?: number
+  trainer?: boolean
   gear_id?: string
 }
 
@@ -31,6 +39,8 @@ export interface Bike {
   display_order: number
   status: string
   color: string | null
+  photo_scale: number | null
+  strava_display: Record<string, boolean> | null
 }
 
 export interface BikeStravaStats {
@@ -46,6 +56,18 @@ export interface BikeStravaStats {
   biggest_climb_name: string | null
   avg_speed_kmh: number | null
   last_activity_date: string | null
+  last_activity_name: string | null
+  first_activity_date: string | null
+  avg_watts: number | null
+  max_watts: number | null
+  avg_heartrate: number | null
+  max_heartrate: number | null
+  total_suffer_score: number | null
+  total_pr_count: number | null
+  total_kudos: number | null
+  trainer_activities: number | null
+  avg_distance_km: number | null
+  avg_elevation_per_ride: number | null
   synced_at: string
 }
 
@@ -58,4 +80,5 @@ export interface Event {
   type: 'race' | 'gran_fondo' | 'training' | string
   url: string | null
   notes: string | null
+  bike_id: string | null
 }

@@ -34,9 +34,11 @@ interface EventRow {
   participation: string | null
   start_time: string | null
   gradient_class: string | null
+  bike_id: string | null
+  bike: { id: string; name: string; brand: string | null; model: string | null }[] | { id: string; name: string; brand: string | null; model: string | null } | null
 }
 
-const EVENT_COLUMNS = 'id,name,date,location,distance_km,elevation_m,type,url,notes,country,participants,difficulty,status,slug,route_polyline,elevation_profile,color,short_name,city,bike_type,participation,start_time,gradient_class'
+const EVENT_COLUMNS = 'id,name,date,location,distance_km,elevation_m,type,url,notes,country,participants,difficulty,status,slug,route_polyline,elevation_profile,color,short_name,city,bike_type,participation,start_time,gradient_class,bike_id,bike:bikes!bike_id(id,name,brand,model)'
 
 async function getEvents(): Promise<EventRow[]> {
   const supabase = getSupabase()
@@ -88,6 +90,7 @@ export default async function EventsPage() {
       city: e.city ?? e.location ?? '',
       bikeType: e.bike_type ?? 'road',
       participation: e.participation ?? 'planned',
+      bike: Array.isArray(e.bike) ? (e.bike[0] ?? null) : (e.bike ?? null),
     }
   })
 
