@@ -153,21 +153,9 @@ export default function BikeShowcase({ bikes, stats, allStats }: BikeShowcasePro
   // Mobile: Swipe container
   return (
     <div className="relative">
-      <div
-        ref={containerRef}
-        className="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide"
-        style={{ scrollSnapType: 'x mandatory' }}
-      >
-        {bikes.map((bike, i) => (
-          <div key={bike.id} data-slide={i} className="w-full flex-shrink-0 snap-start">
-            <BikeSlide bike={bike} stats={stats[bike.id] ?? null} allStats={allStats} />
-          </div>
-        ))}
-      </div>
-
-      {/* Dot indicators */}
+      {/* Dot indicators — sticky so always visible */}
       {bikes.length > 1 && (
-        <div className="flex justify-center gap-2 mt-6 pb-4">
+        <div className="sticky top-16 z-10 flex justify-center gap-2 py-3 bg-background/80 backdrop-blur-sm">
           {bikes.map((bike, i) => (
             <button
               key={bike.id}
@@ -182,6 +170,18 @@ export default function BikeShowcase({ bikes, stats, allStats }: BikeShowcasePro
           ))}
         </div>
       )}
+
+      <div
+        ref={containerRef}
+        className="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide"
+        style={{ scrollSnapType: 'x mandatory' }}
+      >
+        {bikes.map((bike, i) => (
+          <div key={bike.id} data-slide={i} className="w-full flex-shrink-0 snap-start">
+            <BikeSlide bike={bike} stats={stats[bike.id] ?? null} allStats={allStats} />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
