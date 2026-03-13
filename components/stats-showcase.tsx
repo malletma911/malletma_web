@@ -15,6 +15,7 @@ interface StatsShowcaseProps {
   stats: AthleteStats
   activities: StoredActivity[]
   display: StatsDisplay
+  allowedHeatmapGearIds?: string[]
 }
 
 function Section({ title, children, delay = 0 }: { title: string; children: React.ReactNode; delay?: number }) {
@@ -56,7 +57,7 @@ function RecordItem({ value, unit, label, name }: { value: string | number; unit
   )
 }
 
-export default function StatsShowcase({ stats, activities, display }: StatsShowcaseProps) {
+export default function StatsShowcase({ stats, activities, display, allowedHeatmapGearIds }: StatsShowcaseProps) {
   const activitiesForCharts = activities.map(a => ({
     start_date: a.start_date,
     distance_km: a.distance_km,
@@ -68,8 +69,9 @@ export default function StatsShowcase({ stats, activities, display }: StatsShowc
     trainer: a.trainer,
   }))
 
+  const heatmapGearSet = allowedHeatmapGearIds ? new Set(allowedHeatmapGearIds) : null
   const polylines = activities
-    .filter(a => !(display.heatmap_hide_virtual && a.trainer))
+    .filter(a => !heatmapGearSet || !a.gear_id || heatmapGearSet.has(a.gear_id))
     .map(a => a.summary_polyline)
     .filter((p): p is string => !!p)
 

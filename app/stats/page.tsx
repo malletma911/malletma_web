@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 
 const DEFAULT_DISPLAY: StatsDisplay = {
   heatmap: true,
-  heatmap_hide_virtual: true,
   monthly_chart: true,
   yearly_comparison: true,
   records: true,
@@ -33,7 +32,7 @@ const DEFAULT_DISPLAY: StatsDisplay = {
 export default async function StatsPage() {
   const supabase = getSupabaseAdmin()
 
-  const [statsRes, activitiesRes, settingsRes] = await Promise.all([
+  const [statsRes, activitiesRes, settingsRes, heatmapBikesRes, bikesRes] = await Promise.all([
     supabase
       .from('athlete_stats')
       .select('*')
@@ -48,6 +47,15 @@ export default async function StatsPage() {
       .select('value')
       .eq('key', 'stats_display')
       .single(),
+    supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'heatmap_bikes')
+      .single(),
+    supabase
+      .from('bikes')
+      .select('id, strava_gear_id')
+      .not('strava_gear_id', 'is', null),
   ])
 
   const athleteStats = statsRes.data as AthleteStats | null
@@ -74,6 +82,17 @@ export default async function StatsPage() {
         </div>
       </div>
     )
+  }
+
+  // Build set of allowed Strava gear IDs for heatmap
+  const heatmapBikeSettings = (heatmapBikesRes.data?.value ?? {}) as Record<string, boolean>
+  const bikeGearMap = (bikesRes.data ?? []) as { id: string; strava_gear_id: string }[]
+  const allowedHeatmapGearIds = new Set<string>()
+  for (const bike of bikeGearMap) {
+    // Default to true if bike not in settings
+    if (heatmapBikeSettings[bike.id] !== false) {
+      allowedHeatmapGearIds.add(bike.strava_gear_id)
+    }
   }
 
   // Filter sensitive data based on display settings
@@ -110,6 +129,7 @@ export default async function StatsPage() {
         stats={filteredStats}
         activities={filteredActivities}
         display={display}
+        allowedHeatmapGearIds={[...allowedHeatmapGearIds]}
       />
     </div>
   )

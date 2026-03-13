@@ -130,7 +130,6 @@ export interface StoredActivity {
 
 export interface StatsDisplay {
   heatmap: boolean
-  heatmap_hide_virtual: boolean
   monthly_chart: boolean
   yearly_comparison: boolean
   records: boolean
