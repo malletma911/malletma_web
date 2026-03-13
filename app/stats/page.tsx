@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 
 const DEFAULT_DISPLAY: StatsDisplay = {
   heatmap: true,
+  heatmap_hide_virtual: true,
   monthly_chart: true,
   yearly_comparison: true,
   records: true,

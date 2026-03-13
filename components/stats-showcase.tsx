@@ -69,6 +69,7 @@ export default function StatsShowcase({ stats, activities, display }: StatsShowc
   }))
 
   const polylines = activities
+    .filter(a => !(display.heatmap_hide_virtual && a.trainer))
     .map(a => a.summary_polyline)
     .filter((p): p is string => !!p)
 
