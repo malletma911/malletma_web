@@ -115,6 +115,7 @@ async function fetchAllActivities(accessToken: string): Promise<StravaActivity[]
 
 export interface SyncResult {
   synced: number
+  activitiesStored?: number
   errors: string[]
 }
 
@@ -286,6 +287,155 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
       result.synced++
     }
   }
+
+  return result
+}
+
+// Sync all activities to DB + compute athlete-level aggregations
+export async function syncAllStats(email: string): Promise<{ activitiesStored: number; errors: string[] }> {
+  const supabase = getSupabaseAdmin()
+  const result = { activitiesStored: 0, errors: [] as string[] }
+
+  const accessToken = await getAccessToken(email)
+  if (!accessToken) {
+    result.errors.push('Could not get Strava access token')
+    return result
+  }
+
+  const allActivities = await fetchAllActivities(accessToken)
+
+  // Store individual activities (batch upsert in chunks of 50)
+  const CHUNK = 50
+  for (let i = 0; i < allActivities.length; i += CHUNK) {
+    const chunk = allActivities.slice(i, i + CHUNK).map(a => ({
+      id: a.id,
+      name: a.name,
+      type: a.type,
+      start_date: a.start_date,
+      distance_km: Math.round(a.distance / 1000 * 100) / 100,
+      elevation_m: Math.round(a.total_elevation_gain),
+      moving_time_s: a.moving_time,
+      avg_speed_kmh: a.average_speed ? Math.round(a.average_speed * 3.6 * 10) / 10 : null,
+      max_speed_kmh: a.max_speed ? Math.round(a.max_speed * 3.6 * 10) / 10 : null,
+      avg_watts: a.average_watts ?? null,
+      max_watts: a.max_watts ?? null,
+      avg_heartrate: a.average_heartrate ?? null,
+      max_heartrate: a.max_heartrate ?? null,
+      avg_cadence: a.average_cadence ?? null,
+      kilojoules: a.kilojoules ?? null,
+      suffer_score: a.suffer_score ?? null,
+      pr_count: a.pr_count ?? 0,
+      kudos_count: a.kudos_count ?? 0,
+      trainer: a.trainer ?? false,
+      gear_id: a.gear_id ?? null,
+      summary_polyline: a.map?.summary_polyline ?? null,
+      synced_at: new Date().toISOString(),
+    }))
+
+    const { error } = await supabase.from('strava_activities').upsert(chunk, { onConflict: 'id' })
+    if (error) {
+      result.errors.push(`Activity batch ${i}: ${error.message}`)
+    } else {
+      result.activitiesStored += chunk.length
+    }
+  }
+
+  // Aggregate athlete-level stats
+  let totalDistKm = 0, totalElevM = 0, totalTimeS = 0, totalKj = 0
+  let maxSpeed = 0, maxW = 0, maxHr = 0, maxElevM = 0
+  let longestKm = 0, longestName = '', biggestClimb = 0, biggestClimbName = ''
+  let totalWatts = 0, wattsN = 0, totalHrSum = 0, hrN = 0
+  let totalKudos = 0, totalPrs = 0, totalSuffer = 0
+  let outdoorN = 0, indoorN = 0
+  let firstDate: string | null = null, lastDate: string | null = null
+
+  for (const a of allActivities) {
+    const dkm = a.distance / 1000
+    totalDistKm += dkm
+    totalElevM += a.total_elevation_gain
+    totalTimeS += a.moving_time
+    if (a.kilojoules) totalKj += a.kilojoules
+
+    const spd = a.max_speed * 3.6
+    if (spd > maxSpeed) maxSpeed = spd
+    if (a.max_watts && a.max_watts > maxW) maxW = a.max_watts
+    if (a.max_heartrate && a.max_heartrate > maxHr) maxHr = a.max_heartrate
+    if (a.total_elevation_gain > maxElevM) maxElevM = a.total_elevation_gain
+
+    if (dkm > longestKm) { longestKm = dkm; longestName = a.name }
+    if (a.total_elevation_gain > biggestClimb) { biggestClimb = a.total_elevation_gain; biggestClimbName = a.name }
+
+    if (a.average_watts && a.average_watts > 0) { totalWatts += a.average_watts; wattsN++ }
+    if (a.average_heartrate && a.average_heartrate > 0) { totalHrSum += a.average_heartrate; hrN++ }
+
+    if (a.kudos_count) totalKudos += a.kudos_count
+    if (a.pr_count) totalPrs += a.pr_count
+    if (a.suffer_score) totalSuffer += a.suffer_score
+    if (a.trainer) indoorN++; else outdoorN++
+
+    if (!firstDate || a.start_date < firstDate) firstDate = a.start_date
+    if (!lastDate || a.start_date > lastDate) lastDate = a.start_date
+  }
+
+  // Streak calculation
+  const activityDates = new Set(allActivities.map(a => a.start_date.split('T')[0]))
+  const sortedDays = [...activityDates].sort()
+  let currentStreak = 0, longestStreak = 0, streak = 0
+
+  for (let i = 0; i < sortedDays.length; i++) {
+    if (i === 0) { streak = 1 }
+    else {
+      const prev = new Date(sortedDays[i - 1])
+      const curr = new Date(sortedDays[i])
+      const diff = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+      streak = diff === 1 ? streak + 1 : 1
+    }
+    if (streak > longestStreak) longestStreak = streak
+  }
+
+  // Current streak: count backwards from today
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  for (let d = new Date(today); ; d.setDate(d.getDate() - 1)) {
+    const ds = d.toISOString().split('T')[0]
+    if (activityDates.has(ds)) currentStreak++
+    else break
+  }
+
+  const n = allActivities.length
+  const { error: statsError } = await supabase.from('athlete_stats').upsert({
+    id: '00000000-0000-0000-0000-000000000001',
+    total_distance_km: Math.round(totalDistKm * 100) / 100,
+    total_elevation_m: Math.round(totalElevM),
+    total_moving_time_s: totalTimeS,
+    total_activities: n,
+    total_kilojoules: totalKj > 0 ? Math.round(totalKj) : null,
+    max_speed_kmh: maxSpeed > 0 ? Math.round(maxSpeed * 10) / 10 : null,
+    max_watts: maxW > 0 ? maxW : null,
+    max_heartrate: maxHr > 0 ? maxHr : null,
+    longest_ride_km: longestKm > 0 ? Math.round(longestKm * 100) / 100 : null,
+    longest_ride_name: longestName || null,
+    biggest_climb_m: biggestClimb > 0 ? Math.round(biggestClimb) : null,
+    biggest_climb_name: biggestClimbName || null,
+    max_elevation_m: maxElevM > 0 ? Math.round(maxElevM) : null,
+    avg_speed_kmh: totalTimeS > 0 ? Math.round(totalDistKm / (totalTimeS / 3600) * 10) / 10 : null,
+    avg_watts: wattsN > 0 ? Math.round(totalWatts / wattsN) : null,
+    avg_heartrate: hrN > 0 ? Math.round(totalHrSum / hrN) : null,
+    avg_distance_km: n > 0 ? Math.round(totalDistKm / n * 10) / 10 : null,
+    avg_elevation_per_ride: n > 0 ? Math.round(totalElevM / n) : null,
+    total_kudos: totalKudos,
+    total_pr_count: totalPrs,
+    total_suffer_score: totalSuffer,
+    outdoor_activities: outdoorN,
+    indoor_activities: indoorN,
+    current_streak_days: currentStreak,
+    longest_streak_days: longestStreak,
+    first_activity_date: firstDate,
+    last_activity_date: lastDate,
+    synced_at: new Date().toISOString(),
+  }, { onConflict: 'id' })
+
+  if (statsError) result.errors.push(`athlete_stats: ${statsError.message}`)
 
   return result
 }

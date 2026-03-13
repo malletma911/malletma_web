@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { syncBikeStats } from '@/lib/strava-sync'
+import { syncBikeStats, syncAllStats } from '@/lib/strava-sync'
 
 export async function POST(req: NextRequest) {
   // Verify authorization: Vercel Cron or shared secret
@@ -19,8 +19,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'STRAVA_OWNER_EMAIL not set' }, { status: 500 })
   }
 
-  const result = await syncBikeStats(email)
-  return NextResponse.json(result)
+  const [bikeResult, allResult] = await Promise.all([
+    syncBikeStats(email),
+    syncAllStats(email),
+  ])
+  return NextResponse.json({
+    bikes: bikeResult,
+    activities: { stored: allResult.activitiesStored, errors: allResult.errors },
+  })
 }
 
 // Vercel Cron uses GET
@@ -37,6 +43,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'STRAVA_OWNER_EMAIL not set' }, { status: 500 })
   }
 
-  const result = await syncBikeStats(email)
-  return NextResponse.json(result)
+  const [bikeResult, allResult] = await Promise.all([
+    syncBikeStats(email),
+    syncAllStats(email),
+  ])
+  return NextResponse.json({
+    bikes: bikeResult,
+    activities: { stored: allResult.activitiesStored, errors: allResult.errors },
+  })
 }
