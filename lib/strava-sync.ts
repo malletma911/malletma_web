@@ -197,6 +197,7 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
     let totalPrCount = 0
     let totalKudos = 0
     let trainerCount = 0
+    let totalKilojoules = 0
 
     for (const a of activities) {
       const distKm = a.distance / 1000
@@ -241,6 +242,7 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
       if (a.pr_count) totalPrCount += a.pr_count
       if (a.kudos_count) totalKudos += a.kudos_count
       if (a.trainer) trainerCount++
+      if (a.kilojoules) totalKilojoules += a.kilojoules
     }
 
     const avgSpeedKmh = totalMovingTimeS > 0
@@ -274,6 +276,7 @@ export async function syncBikeStats(email: string): Promise<SyncResult> {
         trainer_activities: trainerCount > 0 ? trainerCount : null,
         avg_distance_km: activities.length > 0 ? Math.round(totalDistanceKm / activities.length * 10) / 10 : null,
         avg_elevation_per_ride: activities.length > 0 ? Math.round(totalElevationM / activities.length) : null,
+        total_kilojoules: totalKilojoules > 0 ? Math.round(totalKilojoules) : null,
         synced_at: new Date().toISOString(),
       }, { onConflict: 'bike_id' })
 

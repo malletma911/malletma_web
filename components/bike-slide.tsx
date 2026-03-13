@@ -264,11 +264,10 @@ export default function BikeSlide({ bike, stats, allStats, animateOnMount = fals
           className="relative rounded-3xl overflow-hidden mb-4 sm:mb-8"
           style={{
             background: [
-              `repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.06) 8px, rgba(255,255,255,0.06) 9px)`,
-              `repeating-linear-gradient(135deg, transparent, transparent 8px, rgba(255,255,255,0.06) 8px, rgba(255,255,255,0.06) 9px)`,
-              `radial-gradient(ellipse at 50% 15%, rgba(255,255,255,0.06) 0%, transparent 60%)`,
-              `radial-gradient(ellipse at center, ${bikeColor}20 0%, transparent 70%)`,
-              `linear-gradient(to top, rgba(255,255,255,0.03) 0%, transparent 15%)`,
+              `radial-gradient(ellipse at 15% 25%, ${bikeColor}18 0%, transparent 55%)`,
+              `radial-gradient(ellipse at 85% 65%, ${bikeColor}12 0%, transparent 50%)`,
+              `radial-gradient(circle at 55% 15%, rgba(255,255,255,0.05) 0%, transparent 45%)`,
+              `radial-gradient(ellipse at 40% 80%, ${bikeColor}0a 0%, transparent 50%)`,
             ].join(', '),
           }}
           {...(animateOnMount ? {

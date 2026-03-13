@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { getSupabase } from '@/lib/supabase'
 import type { Bike, BikeStravaStats } from '@/types'
 import BikeShowcase from '@/components/bike-showcase'
+import GarageInsights from '@/components/garage-insights'
 
 export const metadata: Metadata = {
   title: 'Garage — Maik Malletschek',
@@ -45,9 +46,16 @@ async function getBikesWithStats(): Promise<{
 
 export default async function GaragePage() {
   const { bikes, stats } = await getBikesWithStats()
+  const allStats = Object.values(stats)
 
-  const totalKm = Object.values(stats).reduce((sum, s) => sum + Number(s.total_distance_km || 0), 0)
-  const totalElevation = Object.values(stats).reduce((sum, s) => sum + Number(s.total_elevation_m || 0), 0)
+  const totalKm = allStats.reduce((sum, s) => sum + Number(s.total_distance_km || 0), 0)
+  const totalElevation = allStats.reduce((sum, s) => sum + Number(s.total_elevation_m || 0), 0)
+  const totalActivities = allStats.reduce((sum, s) => sum + Number(s.total_activities || 0), 0)
+  const totalTimeS = allStats.reduce((sum, s) => sum + Number(s.total_moving_time_s || 0), 0)
+  const topSpeed = Math.max(...allStats.map(s => Number(s.max_speed_kmh || 0)))
+
+  const totalTimeDays = Math.round(totalTimeS / 3600 / 24 * 10) / 10
+  const totalTimeHours = Math.round(totalTimeS / 3600)
 
   return (
     <div className="min-h-screen pt-24 pb-24">
@@ -77,6 +85,26 @@ export default async function GaragePage() {
                 <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Höhenmeter</p>
               </div>
             )}
+            {totalActivities > 0 && (
+              <div className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
+                <p className="text-base font-bold tabular-nums leading-none text-foreground">{totalActivities}</p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Fahrten</p>
+              </div>
+            )}
+            {totalTimeHours > 0 && (
+              <div className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
+                <p className="text-base font-bold tabular-nums leading-none text-foreground">
+                  {totalTimeDays >= 1 ? `${totalTimeDays} Tage` : `${totalTimeHours} h`}
+                </p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Im Sattel</p>
+              </div>
+            )}
+            {topSpeed > 0 && (
+              <div className="px-3 py-2 rounded-lg border border-white/8 bg-white/[0.03]">
+                <p className="text-base font-bold tabular-nums leading-none text-foreground">{topSpeed} km/h</p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">V-Max</p>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -89,7 +117,10 @@ export default async function GaragePage() {
           </div>
         </div>
       ) : (
-        <BikeShowcase bikes={bikes} stats={stats} allStats={stats} />
+        <>
+          <BikeShowcase bikes={bikes} stats={stats} allStats={stats} />
+          <GarageInsights bikes={bikes} stats={stats} />
+        </>
       )}
     </div>
   )

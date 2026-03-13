@@ -68,6 +68,7 @@ export interface BikeStravaStats {
   trainer_activities: number | null
   avg_distance_km: number | null
   avg_elevation_per_ride: number | null
+  total_kilojoules: number | null
   synced_at: string
 }
 
