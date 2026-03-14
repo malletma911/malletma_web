@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Energieberatung-Freiheit — Dr. Henning Biebinger</title>
+  <meta name="description" content="Unabhängige Energieberatung in Schleswig-Holstein. DENA-zertifizierter Energie-Effizienz-Experte. Energieberatung, Solarthermik, Photovoltaik — persönlich vor Ort.">
+  <meta name="author" content="Dr. Henning Biebinger">
+  <meta name="robots" content="index, follow">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Energieberatung-Freiheit — Dr. Henning Biebinger">
+  <meta property="og:description" content="Unabhängige Energieberatung für Schleswig-Holstein. DENA-zertifiziert, persönlich, herstellerneutral.">
+  <meta property="og:type" content="website">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script type="module" crossorigin src="./assets/main-CGL79Thl.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/main-BsthraI3.css">
+</head>
+<body>
+
+<!-- ─── Navigation ─── -->
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="#hero" class="nav__logo">
+      Energieberatung-Freiheit
+      <span>Schleswig-Holstein</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="#about">Über mich</a></li>
+      <li><a href="#leistungen">Leistungen</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+    <a href="#kontakt" class="nav__cta">Beratung anfragen</a>
+    <button class="nav__toggle" id="navToggle" aria-label="Menü öffnen">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile nav overlay -->
+<div class="nav__mobile" id="navMobile">
+  <a href="#about" class="nav__mobile-link">Über mich</a>
+  <a href="#leistungen" class="nav__mobile-link">Leistungen</a>
+  <a href="#vertrauen" class="nav__mobile-link">Vertrauen</a>
+  <a href="#kontakt" class="nav__mobile-link">Kontakt</a>
+  <a href="#kontakt" class="nav__cta">Beratung anfragen</a>
+</div>
+
+<!-- ─── Hero ─── -->
+<section class="hero" id="hero">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="container">
+    <div class="hero__content">
+      <h1 class="hero__title hero-animate-2">
+        <em>Energie</em> verstehen.<br>
+        <em>Effizienz</em> erreichen.
+      </h1>
+      <p class="hero__subtitle hero-animate-3">
+        Unabhängige Energieberatung für Schleswig-Holstein.<br>
+        Zertifiziert, erfahren, persönlich.
+      </p>
+      <div class="hero__actions hero-animate-4">
+        <a href="#kontakt" class="btn btn--primary">
+          Jetzt Beratung anfragen
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="hero__scroll" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    <span>Scrollen</span>
+  </div>
+</section>
+
+<!-- ─── Über mich ─── -->
+<section class="section--about" id="about">
+  <div class="container">
+    <div class="grid-2">
+      <div class="about__text">
+        <span class="section-label reveal">Über mich</span>
+        <h2 class="section-title reveal reveal-delay-1">
+          Persönliche Beratung.<br>Messbare Ergebnisse.
+        </h2>
+        <p class="reveal reveal-delay-2">
+          Dr. Henning Biebinger berät Hauseigentümer und Bauherren in Schleswig-Holstein
+          mit einer klaren Überzeugung: Energieeffizienz ist keine Frage des Komforts —
+          sie ist eine Frage der Verantwortung.
+        </p>
+        <p class="reveal reveal-delay-2">
+          Als DENA-zertifizierter Energie-Effizienz-Experte und registrierter Berater
+          in der BMWK-Energieeffizienz-Expertenliste biete ich unabhängige,
+          herstellerneutrale Beratung — ohne Verkaufsinteressen, nur mit Ihrem
+          Nutzen im Fokus.
+        </p>
+        <p class="reveal reveal-delay-3">
+          Mit langjähriger Erfahrung aus dem industriellen Management bringe ich
+          eine ganzheitliche Perspektive mit, die technische Kompetenz,
+          wirtschaftliches Denken und Ihr individuelles Budget in Einklang bringt.
+        </p>
+        <div class="about__badges reveal reveal-delay-3">
+          <span class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            DENA Energie-Effizienz-Experte
+          </span>
+          <span class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            BMWK Expertenliste
+          </span>
+          <span class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            EnergieWechsel Partner
+          </span>
+        </div>
+      </div>
+      <div class="about__portrait reveal reveal-delay-2">
+        <img
+          src="./images/portrait.jpg"
+          alt="Dr. Henning Biebinger — Energieberater Schleswig-Holstein"
+          class="about__portrait-img"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Leistungen ─── -->
+<section class="section--dark" id="leistungen">
+  <div class="container">
+    <div style="text-align:center; margin-bottom: var(--space-16)">
+      <span class="section-label reveal">Leistungen</span>
+      <h2 class="section-title reveal reveal-delay-1">Was ich für Sie tue</h2>
+      <p class="section-subtitle reveal reveal-delay-2" style="margin-inline: auto">
+        Von der ersten Bestandsanalyse bis zur fertigen Anlage.
+        Kompetente Beratung aus einer Hand.
+      </p>
+    </div>
+    <div class="grid-3">
+
+      <!-- Card 1 -->
+      <div class="service-card reveal">
+        <svg class="service-card__icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 28 L26 10 L44 28 L44 46 L8 46 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+          <path d="M20 46 L20 34 L32 34 L32 46" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
+          <!-- Heat waves -->
+          <path d="M22 24 Q24 20 22 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/>
+          <path d="M26 24 Q28 20 26 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/>
+          <path d="M30 24 Q32 20 30 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/>
+        </svg>
+        <h3 class="service-card__title">Energieberatung &amp; Baubegleitung</h3>
+        <p class="service-card__desc">
+          Ganzheitliche Beratung für Neubauten und Bestandsgebäude —
+          von der Konzeption bis zur Abnahme.
+        </p>
+        <button class="service-card__toggle" aria-expanded="false" aria-controls="details-1">
+          Mehr erfahren
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="service-card__details" id="details-1">
+          <ul class="service-card__list">
+            <li>Energiekonzepte für Neubauten (GEG-konform)</li>
+            <li>Analyse und Optimierung von Bestandsgebäuden</li>
+            <li>Baubegleitung und Qualitätssicherung vor Ort</li>
+            <li>Antragstellung für Förderungen (BEG, KfW, BAFA)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="service-card reveal reveal-delay-1">
+        <svg class="service-card__icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Sun -->
+          <circle cx="26" cy="16" r="7" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <path d="M26 5V8M26 24V27M15 16H12M40 16H37M18.5 8.5L20.6 10.6M31.4 21.4L33.5 23.5M33.5 8.5L31.4 10.6M20.6 21.4L18.5 23.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <!-- Collector panel -->
+          <rect x="10" y="30" width="32" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M18 30 L18 44M26 30 L26 44M34 30 L34 44" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+        </svg>
+        <h3 class="service-card__title">Solarthermik</h3>
+        <p class="service-card__desc">
+          Planung, Analyse und Optimierung thermischer Solaranlagen
+          für Warmwasser und Heizungsunterstützung.
+        </p>
+        <button class="service-card__toggle" aria-expanded="false" aria-controls="details-2">
+          Mehr erfahren
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="service-card__details" id="details-2">
+          <ul class="service-card__list">
+            <li>Systemanalyse bestehender Anlagen</li>
+            <li>Planung und Konzeption von Neuanlagen</li>
+            <li>Optimierung der Ertragswerte</li>
+            <li>Wartungsberatung und Fehlerdiagnose</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="service-card reveal reveal-delay-2">
+        <svg class="service-card__icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- PV panel grid -->
+          <rect x="6" y="10" width="40" height="26" rx="2" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <!-- Grid lines -->
+          <path d="M19.3 10 L19.3 36M32.7 10 L32.7 36M6 23 L46 23" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+          <!-- Lightning bolt -->
+          <path d="M24 19 L20 27 L25 27 L22 35 L30 25 L25 25 Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+          <!-- Stand -->
+          <path d="M20 36 L18 44M32 36 L34 44M15 44 L37 44" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h3 class="service-card__title">Photovoltaik</h3>
+        <p class="service-card__desc">
+          Standortanalyse, Systemauslegung und Projektbegleitung
+          für Ihre PV-Anlage — von der Planung bis zur Inbetriebnahme.
+        </p>
+        <button class="service-card__toggle" aria-expanded="false" aria-controls="details-3">
+          Mehr erfahren
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="service-card__details" id="details-3">
+          <ul class="service-card__list">
+            <li>Standortanalyse und Ertragsprognose</li>
+            <li>Konzeptentwicklung und Systemauslegung</li>
+            <li>Projektbegleitung von Planung bis Inbetriebnahme</li>
+            <li>Funktionsanalyse und Fehlerdiagnose</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── Philosophie ─── -->
+<section class="philosophy" id="philosophie">
+  <!-- Faint architectural background -->
+  <div class="philosophy__bg" aria-hidden="true">
+    <svg viewBox="0 0 400 400" fill="none" stroke="white" stroke-width="0.8">
+      <path d="M50 280 L200 80 L350 280 L350 380 L50 380 Z"/>
+      <path d="M130 280 L130 200 L270 200 L270 280"/>
+      <path d="M170 380 L170 280 L230 280 L230 380"/>
+      <path d="M200 80 L200 40"/>
+      <circle cx="200" cy="32" r="10"/>
+      <path d="M0 280 L400 280"/>
+      <path d="M100 200 L300 200"/>
+    </svg>
+  </div>
+  <div class="container">
+    <div class="philosophy__inner">
+      <span class="philosophy__quote-mark reveal-fade" aria-hidden="true">"</span>
+      <blockquote class="philosophy__quote quote-reveal">
+        Nur eine nicht benötigte kWh<br>ist eine gute kWh.
+      </blockquote>
+      <p class="philosophy__author reveal reveal-delay-1">Dr. Henning Biebinger</p>
+      <p class="philosophy__subtext reveal reveal-delay-2">
+        Echte Energiewende beginnt mit dem Verstehen — nicht mit dem Verkaufen.<br>
+        Meine Beratung ist unabhängig, weil nur so echte Einsparungen entstehen.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Vertrauen ─── -->
+<section class="section--light" id="vertrauen">
+  <div class="container">
+    <div style="text-align:center; margin-bottom: var(--space-16)">
+      <span class="section-label reveal">Warum ich?</span>
+      <h2 class="section-title reveal reveal-delay-1">Ihr Vorteil auf einen Blick</h2>
+    </div>
+    <div class="grid-4">
+
+      <div class="trust-card reveal">
+        <svg class="trust-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <div class="trust-card__title">Zertifizierte Expertise</div>
+        <p class="trust-card__text">DENA-gelisteter Energie-Effizienz-Experte — anerkannt für Förderanträge bei KfW und BAFA.</p>
+      </div>
+
+      <div class="trust-card reveal reveal-delay-1">
+        <svg class="trust-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <div class="trust-card__title">Vollständig Unabhängig</div>
+        <p class="trust-card__text">Keine Bindung an Hersteller oder Handwerksbetriebe. Nur Ihr Interesse zählt.</p>
+      </div>
+
+      <div class="trust-card reveal reveal-delay-2">
+        <svg class="trust-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <div class="trust-card__title">Vor Ort in Schleswig-Holstein</div>
+        <p class="trust-card__text">Persönliche Begehung, lokales Wissen, kurze Wege — Beratung ohne Anonymität.</p>
+      </div>
+
+      <div class="trust-card reveal reveal-delay-3">
+        <svg class="trust-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 8v4l3 3"/>
+        </svg>
+        <div class="trust-card__title">Ganzheitlicher Ansatz</div>
+        <p class="trust-card__text">Von der ersten Analyse bis zur Bauabnahme — alles aus einer Hand, perfekt aufeinander abgestimmt.</p>
+      </div>
+
+    </div>
+
+    <!-- Animated counters -->
+    <div class="counters" style="justify-content: center; margin-top: var(--space-16)">
+      <div class="counter reveal">
+        <span class="counter__value" data-target="15" data-suffix="+">0</span>
+        <span class="counter__label">Jahre Erfahrung</span>
+      </div>
+      <div class="counter reveal reveal-delay-1">
+        <span class="counter__value" data-target="100" data-suffix="%">0</span>
+        <span class="counter__label">Unabhängig</span>
+      </div>
+      <div class="counter reveal reveal-delay-2">
+        <span class="counter__value" data-target="3" data-suffix="">0</span>
+        <span class="counter__label">Zertifizierungen</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Region ─── -->
+<section class="section--surface" id="kontakt">
+  <div class="container">
+    <div class="grid-2">
+      <div>
+        <span class="section-label reveal">Servicegebiet &amp; Kontakt</span>
+        <h2 class="section-title reveal reveal-delay-1">Ihre Region.<br>Mein Zuhause.</h2>
+        <p class="section-subtitle reveal reveal-delay-2">
+          Ich berate Eigentümer und Bauherren in Schleswig und der gesamten
+          Region Schleswig-Holstein — von Flensburg bis Rendsburg,
+          von der Nordsee bis zur Ostseeküste.
+        </p>
+        <div class="contact-info__list reveal reveal-delay-3" style="margin-top: var(--space-8)">
+          <a href="tel:017631227149" class="contact-info__item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24H6.6a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.15 6.15l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 17z"/></svg>
+            0176 31227149
+          </a>
+          <a href="mailto:henning.biebinger@t-online.de" class="contact-info__item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            henning.biebinger@t-online.de
+          </a>
+          <span class="contact-info__item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Schleibogen 43, 24837 Schleswig
+          </span>
+        </div>
+        <div class="contact-hours reveal reveal-delay-4" style="max-width: 320px; margin-top: var(--space-6)">
+          <div class="contact-hours__title">Erreichbarkeit</div>
+          <p>Mo – Fr: 8:00 – 18:00 Uhr<br>Termine nach Vereinbarung<br>Erstes Orientierungsgespräch auch per Telefon oder Video</p>
+        </div>
+      </div>
+      <div class="region__map-wrap reveal reveal-delay-2">
+        <div id="region-map" aria-label="Karte Schleswig-Holstein"></div>
+        <!-- SVG-Fallback entfernt, wird durch Leaflet ersetzt -->
+        <svg class="region__map" viewBox="0 0 440 560" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <!-- Subtle grid pattern -->
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+
+          <!-- Background: sea -->
+          <rect width="440" height="560" fill="#0a1520"/>
+          <rect width="440" height="560" fill="url(#grid)"/>
+
+          <!-- Nordsee label -->
+          <text x="42" y="200" font-size="9" fill="#2a4a62" font-family="Inter,sans-serif" letter-spacing="2" transform="rotate(-90,42,200)">NORDSEE</text>
+          <!-- Ostsee label -->
+          <text x="398" y="210" font-size="9" fill="#2a4a62" font-family="Inter,sans-serif" letter-spacing="2" transform="rotate(90,398,210)">OSTSEE</text>
+
+          <!-- Dänische Grenze (gestrichelt) -->
+          <line x1="148" y1="42" x2="310" y2="42" stroke="rgba(142,155,170,0.35)" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <text x="218" y="36" font-size="8" fill="rgba(142,155,170,0.5)" font-family="Inter,sans-serif" text-anchor="middle" letter-spacing="1">DÄNEMARK</text>
+
+          <!-- ── Hauptfläche Schleswig-Holstein ── -->
+          <!-- Westküste (Nordsee) → Süden → Ostküste (Ostsee) → Norden -->
+          <path d="
+            M 148 42
+            L 132 52  L 118 62  L 108 78  L 100 95
+            L 96 112  L 92 128  L 88 140  L 84 158
+            L 80 172  L 78 188  L 80 200  L 85 212
+            L 88 224  L 84 238  L 80 252  L 78 268
+            L 80 280  L 85 292  L 92 302  L 98 315
+            L 104 328 L 108 342 L 110 358 L 112 374
+            L 116 388 L 120 400 L 126 412 L 132 422
+            L 140 432 L 148 440 L 158 446 L 168 450
+            L 178 454 L 192 458 L 206 460 L 220 462
+            L 234 460 L 248 456 L 260 450 L 270 444
+            L 278 436 L 286 428 L 292 418 L 298 408
+            L 304 398 L 310 388 L 318 376 L 325 364
+            L 330 350 L 333 336 L 332 322 L 328 308
+            L 322 296 L 316 284 L 312 270 L 314 256
+            L 318 242 L 322 228 L 326 214 L 328 200
+            L 326 186 L 320 174 L 316 160 L 318 146
+            L 322 132 L 326 118 L 328 104 L 324 90
+            L 318 76  L 310 64  L 310 42
+            Z
+          " fill="#1a3347" stroke="#253f58" stroke-width="1.2"/>
+
+          <!-- Westküstendetail: Elbmündung -->
+          <path d="M 120 400 C 130 410 145 418 148 440" fill="none" stroke="#253f58" stroke-width="0.8"/>
+
+          <!-- Schleswig-Holstein Binnengewässer: NOK (Nord-Ostsee-Kanal) -->
+          <path d="M 100 315 C 120 318 145 322 168 325 C 200 328 230 330 260 330 C 285 330 305 326 325 320" fill="none" stroke="#0F2840" stroke-width="3" opacity="0.9"/>
+          <path d="M 100 315 C 120 318 145 322 168 325 C 200 328 230 330 260 330 C 285 330 305 326 325 320" fill="none" stroke="#3A7CA5" stroke-width="1" opacity="0.4"/>
+          <text x="205" y="323" font-size="7" fill="#3A7CA5" font-family="Inter,sans-serif" text-anchor="middle" opacity="0.7" letter-spacing="1">NOK</text>
+
+          <!-- Schlei (Förde bei Schleswig) -->
+          <path d="M 222 158 C 240 162 262 168 278 172 C 295 176 308 175 318 174" fill="none" stroke="#3A7CA5" stroke-width="1.2" opacity="0.5"/>
+
+          <!-- Flensburger Förde -->
+          <path d="M 230 62 C 238 75 242 90 244 105 C 246 118 244 130 240 140" fill="none" stroke="#3A7CA5" stroke-width="1.5" opacity="0.45"/>
+
+          <!-- Kieler Förde -->
+          <path d="M 296 245 C 302 255 308 268 312 280" fill="none" stroke="#3A7CA5" stroke-width="2" opacity="0.5"/>
+
+          <!-- Eider-Fluss -->
+          <path d="M 92 248 C 108 250 126 252 144 255 C 162 258 178 258 192 255" fill="none" stroke="#3A7CA5" stroke-width="1" opacity="0.35"/>
+
+          <!-- ── Nordsee-Inseln ── -->
+          <!-- Sylt -->
+          <path d="M 52 68 C 48 75 44 85 44 96 C 44 108 46 120 50 130 C 54 140 58 148 60 156 C 62 164 60 170 56 172 C 52 170 48 165 46 158 C 42 148 42 136 42 124 C 42 112 44 100 46 90 C 48 80 50 72 52 68 Z" fill="#1e3d54" stroke="#2a4f68" stroke-width="1"/>
+          <text x="50" y="122" font-size="7" fill="#8E9BAA" font-family="Inter,sans-serif" text-anchor="middle">Sylt</text>
+
+          <!-- Föhr -->
+          <path d="M 60 192 C 56 194 54 198 54 203 C 54 208 56 212 60 214 C 65 216 70 215 74 212 C 78 208 80 204 78 200 C 76 196 72 192 68 191 C 65 190 62 191 60 192 Z" fill="#1e3d54" stroke="#2a4f68" stroke-width="1"/>
+          <text x="67" y="210" font-size="6.5" fill="#8E9BAA" font-family="Inter,sans-serif" text-anchor="middle">Föhr</text>
+
+          <!-- Pellworm -->
+          <path d="M 68 232 C 64 234 62 238 62 243 C 62 248 64 252 68 254 C 72 256 76 255 78 252 C 80 248 80 244 78 240 C 76 236 72 231 68 232 Z" fill="#1e3d54" stroke="#2a4f68" stroke-width="1"/>
+
+          <!-- Helgoland (weit draußen) -->
+          <path d="M 30 290 C 28 292 27 295 28 298 C 29 301 32 303 35 302 C 38 301 39 298 38 295 C 37 292 34 289 30 290 Z" fill="#1e3d54" stroke="#2a4f68" stroke-width="1"/>
+          <text x="34" y="307" font-size="6" fill="#8E9BAA" font-family="Inter,sans-serif" text-anchor="middle">Helgoland</text>
+
+          <!-- Fehmarn (Ostsee) -->
+          <path d="M 310 430 C 305 428 298 428 294 432 C 290 436 290 442 294 446 C 298 450 306 452 312 450 C 318 448 322 444 320 440 C 318 436 314 432 310 430 Z" fill="#1e3d54" stroke="#2a4f68" stroke-width="1"/>
+          <text x="306" y="443" font-size="6.5" fill="#8E9BAA" font-family="Inter,sans-serif" text-anchor="middle">Fehmarn</text>
+
+          <!-- ── Kreise / Bezirke (feine Linien) ── -->
+          <!-- Kreis Schleswig-Flensburg (grober Umriss) -->
+          <path d="M 148 42 L 310 42 L 316 80 L 312 120 L 305 155 L 285 160 L 262 155 L 240 158 L 220 155 L 200 158 L 180 155 L 160 158 L 148 152 L 136 148 L 124 135 L 112 115 L 108 90 L 118 68 Z" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>
+
+          <!-- ── Service-Radius ── -->
+          <circle cx="222" cy="165" r="115" fill="rgba(232,168,56,0.03)" stroke="rgba(232,168,56,0.18)" stroke-width="1" stroke-dasharray="6 5"/>
+
+          <!-- ── Stadtmarker ── -->
+          <!-- Flensburg -->
+          <circle cx="240" cy="78" r="3" fill="#3A7CA5"/>
+          <text x="250" y="82" font-size="8.5" fill="#8E9BAA" font-family="Inter,sans-serif">Flensburg</text>
+
+          <!-- Schleswig — Hauptmarker -->
+          <g filter="url(#glow)">
+            <circle cx="222" cy="165" r="12" fill="rgba(232,168,56,0.1)" stroke="#E8A838" stroke-width="1.5"/>
+            <circle cx="222" cy="165" r="4.5" fill="#E8A838"/>
+            <circle cx="222" cy="165" r="12" fill="none" stroke="#E8A838" stroke-width="1.2" opacity="0">
+              <animate attributeName="r" from="5" to="24" dur="2.2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" from="0.65" to="0" dur="2.2s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+          <text x="232" y="162" font-size="10" fill="#E8A838" font-weight="700" font-family="Inter,sans-serif">Schleswig</text>
+
+          <!-- Husum -->
+          <circle cx="115" cy="175" r="2.5" fill="#3A7CA5" opacity="0.75"/>
+          <text x="90" y="172" font-size="8" fill="#8E9BAA" font-family="Inter,sans-serif" text-anchor="end">Husum</text>
+
+          <!-- Rendsburg -->
+          <circle cx="192" cy="255" r="2.5" fill="#3A7CA5" opacity="0.75"/>
+          <text x="202" y="259" font-size="8" fill="#8E9BAA" font-family="Inter,sans-serif">Rendsburg</text>
+
+          <!-- Kiel -->
+          <circle cx="300" cy="258" r="3.5" fill="#3A7CA5" opacity="0.9"/>
+          <text x="308" y="262" font-size="9" fill="#8E9BAA" font-family="Inter,sans-serif">Kiel</text>
+
+          <!-- Neumünster -->
+          <circle cx="230" cy="335" r="2.5" fill="#3A7CA5" opacity="0.75"/>
+          <text x="238" y="339" font-size="8" fill="#8E9BAA" font-family="Inter,sans-serif">Neumünster</text>
+
+          <!-- Lübeck -->
+          <circle cx="320" cy="375" r="3" fill="#3A7CA5" opacity="0.75"/>
+          <text x="326" y="379" font-size="8.5" fill="#8E9BAA" font-family="Inter,sans-serif">Lübeck</text>
+
+          <!-- Heide -->
+          <circle cx="118" cy="258" r="2" fill="#3A7CA5" opacity="0.6"/>
+          <text x="90" y="256" font-size="7.5" fill="#8E9BAA" font-family="Inter,sans-serif" text-anchor="end">Heide</text>
+
+          <!-- Itzehoe -->
+          <circle cx="158" cy="365" r="2" fill="#3A7CA5" opacity="0.6"/>
+          <text x="166" y="369" font-size="7.5" fill="#8E9BAA" font-family="Inter,sans-serif">Itzehoe</text>
+
+          <!-- Hamburg-Andeutung im Süden -->
+          <circle cx="220" cy="462" r="4" fill="#243f58" stroke="#3A7CA5" stroke-width="1" opacity="0.6"/>
+          <text x="220" y="478" font-size="8" fill="#8E9BAA" font-family="Inter,sans-serif" text-anchor="middle" opacity="0.7">Hamburg</text>
+
+          <!-- Elbe-Beschriftung -->
+          <text x="145" y="445" font-size="7" fill="#3A7CA5" font-family="Inter,sans-serif" opacity="0.5" letter-spacing="1">ELBE</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="region-form-wrap reveal" style="margin-top: var(--space-16)">
+      <h3 class="region-form-title">Lassen Sie uns sprechen.</h3>
+      <p class="region-form-subtitle">Schreiben Sie mir eine Nachricht oder rufen Sie direkt an.</p>
+      <form class="contact-form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="Neue Beratungsanfrage — Energieberatung-Freiheit">
+        <input type="hidden" name="_replyto" value="">
+
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" id="name" name="name" placeholder=" " required autocomplete="name">
+            <label for="name">Ihr Name *</label>
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" name="email" placeholder=" " required autocomplete="email">
+            <label for="email">E-Mail-Adresse *</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <input type="tel" id="phone" name="phone" placeholder=" " autocomplete="tel">
+            <label for="phone">Telefonnummer (optional)</label>
+          </div>
+          <div class="form-group">
+            <select id="subject" name="subject" required>
+              <option value="" disabled selected></option>
+              <option value="Energieberatung & Baubegleitung">Energieberatung &amp; Baubegleitung</option>
+              <option value="Solarthermik">Solarthermik</option>
+              <option value="Photovoltaik">Photovoltaik</option>
+              <option value="Sonstiges">Sonstiges</option>
+            </select>
+            <label for="subject">Betreff *</label>
+          </div>
+        </div>
+
+        <div class="form-group form-group--textarea">
+          <textarea id="message" name="message" placeholder=" " required></textarea>
+          <label for="message">Ihre Nachricht *</label>
+        </div>
+
+        <label class="form-checkbox">
+          <input type="checkbox" name="datenschutz" required>
+          Ich habe die <a href="./datenschutz.html">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu. *
+        </label>
+
+        <div class="form-submit-wrap">
+          <button type="submit" class="btn btn--primary btn--submit" id="submitBtn">
+            Nachricht senden
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div class="form-success" id="formSuccess">
+            ✓ Vielen Dank! Ich melde mich schnellstmöglich bei Ihnen.
+          </div>
+          <p class="form-dsgvo">
+            Ihre Daten werden ausschließlich zur Bearbeitung Ihrer Anfrage verwendet.
+            Details in der <a href="./datenschutz.html">Datenschutzerklärung</a>.
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div>
+        <div class="footer__brand-name">Energieberatung-Freiheit</div>
+        <p class="footer__tagline">
+          Unabhängige Energieberatung in Schleswig-Holstein.<br>
+          DENA-zertifiziert. Persönlich. Herstellerneutral.
+        </p>
+      </div>
+      <div>
+        <div class="footer__col-title">Navigation</div>
+        <ul class="footer__links">
+          <li><a href="#about">Über mich</a></li>
+          <li><a href="#leistungen">Leistungen</a></li>
+          <li><a href="#vertrauen">Vertrauen</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Kontakt</div>
+        <ul class="footer__links">
+          <li><a href="tel:017631227149">0176 31227149</a></li>
+          <li><a href="mailto:henning.biebinger@t-online.de">henning.biebinger@t-online.de</a></li>
+          <li><span style="color:var(--color-muted)">Schleibogen 43<br>24837 Schleswig</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 Dr. Henning Biebinger · Energieberatung-Freiheit</p>
+      <nav class="footer__legal">
+        <a href="./impressum.html">Impressum</a>
+        <a href="./datenschutz.html">Datenschutz</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
