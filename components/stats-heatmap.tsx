@@ -80,6 +80,16 @@ export default function StatsHeatmap({ polylines }: StatsHeatmapProps) {
         const coords = decodePolyline(encoded)
         if (coords.length < 2) continue
 
+        // Skip polylines with unrealistic GPS jumps (> ~100km between consecutive points)
+        const MAX_JUMP = 1.0 // degrees (~111km)
+        let hasJump = false
+        for (let i = 1; i < coords.length; i++) {
+          const dlat = Math.abs(coords[i][0] - coords[i - 1][0])
+          const dlng = Math.abs(coords[i][1] - coords[i - 1][1])
+          if (dlat > MAX_JUMP || dlng > MAX_JUMP) { hasJump = true; break }
+        }
+        if (hasJump) continue
+
         const latLngs = coords.map(([lat, lng]) => L.latLng(lat, lng))
         latLngs.forEach(ll => bounds.extend(ll))
         hasValidBounds = true
